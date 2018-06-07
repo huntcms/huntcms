@@ -16,7 +16,7 @@
             $('#navigation').slideToggle(400);
         });
 
-        $('.navigation-menu>li').slice(-2).addClass('last-elements');
+        $('.navigation-menu>li').slice(-1).addClass('last-elements');
 
         $('.navigation-menu li.has-submenu a[href="#"]').on('click', function (e) {
             if ($(window).width() < 992) {
