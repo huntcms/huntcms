@@ -16,7 +16,7 @@
             $('#navigation').slideToggle(400);
         });
 
-        $('.navigation-menu>li').slice(-1).addClass('last-elements');
+        // $('.navigation-menu>li').slice(-1).addClass('last-elements');
 
         $('.navigation-menu li.has-submenu a[href="#"]').on('click', function (e) {
             if ($(window).width() < 992) {
@@ -34,7 +34,9 @@
             wheelStep: 10
         });
     }
+
     // === following js will activate the menu in left side bar based on url ====
+    /*
     function initMenuItem() {
         $(".navigation-menu a").each(function () {
             if (this.href == window.location.href) {
@@ -44,10 +46,12 @@
             }
         });
     }
+    */
+
     function init() {
         initNavbar();
         initScrollbar();
-        initMenuItem();
+        // initMenuItem();
     }
 
     init();
