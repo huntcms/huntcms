@@ -1,4 +1,4 @@
-module app.system.controller.PermissionController;
+module app.system.controller.admin.PermissionController;
 
 import hunt;
 

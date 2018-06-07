@@ -1,4 +1,4 @@
-module app.system.controller.RoleController;
+module app.system.controller.admin.RoleController;
 
 import hunt;
 

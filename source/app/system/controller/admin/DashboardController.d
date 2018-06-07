@@ -1,4 +1,4 @@
-module app.system.controller.DashboardController;
+module app.system.controller.admin.DashboardController;
 
 import hunt;
 

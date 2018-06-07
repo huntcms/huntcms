@@ -1,4 +1,4 @@
-module app.system.controller.UserController;
+module app.system.controller.admin.UserController;
 
 import hunt;
 
