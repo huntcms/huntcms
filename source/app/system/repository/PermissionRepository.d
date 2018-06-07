@@ -1,4 +1,4 @@
-module app.system.repository.PermissionRepository;odule app.system.repository.UserRepository.1;
+module app.system.repository.PermissionRepository;
 
 import entity.repository;
 

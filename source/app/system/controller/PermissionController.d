@@ -2,6 +2,9 @@ module app.system.controller.PermissionController;
 
 import hunt;
 
+import app.system.model.Permission;
+import app.system.repository.PermissionRepository;
+
 class PermissionController : Controller
 {
     mixin MakeController;
@@ -22,7 +25,7 @@ class PermissionController : Controller
     @Action string edit()
     {
         auto repository = new PermissionRepository;
-        view.assign("permissions", repository.find( request.get!int("id", 0) ));
+        view.assign("permissions", repository.findById( request.get("id") ));
 
         return view.render("system/permission/add");
     }

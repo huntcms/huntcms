@@ -1,0 +1,6 @@
+#
+# [GET,POST,PUT...]    path    module.controller.method
+#
+
+GET   /   system.dashboard.dashboard
+

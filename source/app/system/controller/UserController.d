@@ -2,6 +2,9 @@ module app.system.controller.UserController;
 
 import hunt;
 
+import app.system.model.User;
+import app.system.repository.UserRepository;
+
 class UserController : Controller
 {
     mixin MakeController;
@@ -22,7 +25,7 @@ class UserController : Controller
     @Action string edit()
     {
         auto repository = new UserRepository;
-        view.assign("permissions", repository.find( request.get!int("id", 0) ));
+        view.assign("permissions", repository.findById( request.get!int("id", 0) ));
 
         return view.render("system/user/edit");
     }

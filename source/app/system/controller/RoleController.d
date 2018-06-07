@@ -2,6 +2,9 @@ module app.system.controller.RoleController;
 
 import hunt;
 
+import app.system.model.Role;
+import app.system.repository.RoleRepository;
+
 class RoleController : Controller
 {
     mixin MakeController;
@@ -22,7 +25,7 @@ class RoleController : Controller
     @Action string edit()
     {
         auto repository = new RoleRepository;
-        view.assign("permissions", repository.find( request.get!int("id", 0) ));
+        view.assign("permissions", repository.findById( request.get!int("id", 0) ));
 
         return view.render("system/role/add");
     }
