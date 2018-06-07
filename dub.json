@@ -1,0 +1,14 @@
+{
+    "name": "huntcms",
+    "description": "A CMS based on hunt framework.",
+    "copyright": "Copyright © 2017-2018, huntframework.com",
+    "homepage": "http://www.huntframework.com/",
+    "license": "Apache-2.0",
+    "targetType" : "executable",
+    "authors": [
+        "zoujiaqing"
+    ],
+    "dependencies": {
+        "hunt": "~>1.0.1"
+    }
+}
