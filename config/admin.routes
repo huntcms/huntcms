@@ -3,6 +3,7 @@
 #
 
 GET         /                         system.dashboard.dashboard
+GET         /login                    system.user.login
 
 GET         /system/users             system.user.list
 GET         /system/user/add          system.user.add

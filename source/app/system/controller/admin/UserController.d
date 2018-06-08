@@ -29,4 +29,9 @@ class UserController : Controller
 
         return view.render("system/user/edit");
     }
+
+    @Action string login()
+    {
+        return view.render("system/user/login");
+    }
 }
