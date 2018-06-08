@@ -8,6 +8,6 @@ class PortalController : Controller
 
     @Action string index()
     {
-        return "<a href="/admincp/">Go to AdminCP!</a>;
+        return "<a href=/admincp/'>Go to AdminCP!</a>";
     }
 }
