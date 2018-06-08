@@ -2,7 +2,7 @@ module app.system.model.Role;
 
 import entity;
 
-@Table("system_role")
+@Table("hc_system_role")
 class Role : Entity
 {
     mixin GetFunction;

@@ -2,7 +2,7 @@ module app.system.model.Menu;
 
 import entity;
 
-@Table("system_menu")
+@Table("hc_system_menu")
 class Menu : Entity
 {
     mixin GetFunction;
@@ -13,7 +13,15 @@ class Menu : Entity
 
     string name;
 
-    string permission_key;
+    @Column("is_action")
+    short isAction;
+
+    // mca is Module + Controller + Action
+    // example: system.user.add
+    string mca;
+
+    @Column("link_url")
+    string linkUrl;
 
     // timestamp
     string created;

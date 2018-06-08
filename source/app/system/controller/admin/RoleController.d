@@ -12,6 +12,7 @@ class RoleController : Controller
     @Action string list()
     {
         auto repository = new RoleRepository;
+
         view.assign("permissions", repository.findAll());
 
         return view.render("system/role/list");
@@ -25,6 +26,7 @@ class RoleController : Controller
     @Action string edit()
     {
         auto repository = new RoleRepository;
+        
         view.assign("permissions", repository.findById( request.get!int("id", 0) ));
 
         return view.render("system/role/add");
