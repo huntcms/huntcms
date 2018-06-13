@@ -4,7 +4,7 @@ import entity;
 
 public import app.system.model.Role;
 
-@Table("hc_system_users")
+@Table("system_user")
 class User : Entity
 {
     mixin GetFunction;

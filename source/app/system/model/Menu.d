@@ -2,7 +2,7 @@ module app.system.model.Menu;
 
 import entity;
 
-@Table("hc_system_menu")
+@Table("system_menu")
 class Menu : Entity
 {
     mixin GetFunction;

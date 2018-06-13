@@ -2,7 +2,7 @@ module app.system.model.Permission;
 
 import entity;
 
-@Table("hc_system_role")
+@Table("system_role")
 class Permission : Entity
 {
     mixin GetFunction;
