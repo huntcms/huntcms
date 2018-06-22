@@ -9,7 +9,6 @@ import kiss.util.serialize;
 
 import core.stdc.time : time;
 
-
 class PermissionController : Controller
 {
     mixin MakeController;
@@ -18,7 +17,7 @@ class PermissionController : Controller
     {
         auto repository = new PermissionRepository;
         auto alldata = repository.findAll();
-        logDebug("permissions : ",toJSON(alldata).toString);
+        logDebug("permissions : ", toJSON(alldata).toString);
         view.assign("permissions", alldata);
 
         return view.render("system/permission/list");
@@ -32,16 +31,23 @@ class PermissionController : Controller
     @Action JSONValue doAdd()
     {
         auto data = request.json();
-        logDebug("permission add : ",data);
-        auto now = cast(int)time(null);
-        Permission pm;
-        pm.key = data["key"].str;
-        pm.title = data["title"].str;
-        pm.isAction = cast(short)data["isAction"].integer;
-        pm.status = cast(short)data["status"].integer;
-        pm.created = now;
-        pm.updated = now;
-        (new PermissionRepository).save(pm);
+        logDebug("permission add : ", data);
+        auto now = cast(int) time(null);
+        try
+        {
+            Permission pm = new Permission;
+            pm.key = data["key"].str;
+            pm.title = data["title"].str;
+            pm.isAction = cast(short) data["isAction"].integer;
+            pm.status = cast(short) data["status"].integer;
+            pm.created = now;
+            pm.updated = now;
+            (new PermissionRepository).save(pm);
+        }
+        catch (Exception e)
+        {
+            logError("--- excep : ", e.msg);
+        }
 
         JSONValue res;
         res["error_code"] = 0;
@@ -51,7 +57,7 @@ class PermissionController : Controller
     @Action string edit()
     {
         auto repository = new PermissionRepository;
-        view.assign("permissions", repository.findById( request.get("id") ));
+        view.assign("permissions", repository.findById(request.get("id")));
 
         return view.render("system/permission/add");
     }
