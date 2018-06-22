@@ -3,9 +3,9 @@ module app.system.model.Menu;
 import entity;
 
 @Table("system_menu")
-class Menu : Entity
+class Menu 
 {
-    mixin GetFunction;
+    mixin MakeEntity;
 
     @AutoIncrement
     @PrimaryKey

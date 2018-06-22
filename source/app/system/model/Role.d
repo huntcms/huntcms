@@ -3,13 +3,16 @@ module app.system.model.Role;
 import entity;
 
 @Table("system_role")
-class Role : Entity
+class Role 
 {
-    mixin GetFunction;
+    mixin MakeEntity;
 
     @AutoIncrement
     @PrimaryKey
     int id;
+
+    // @OneToMany("role")
+    // UserRole[] userRoles;
 
     string name;
 

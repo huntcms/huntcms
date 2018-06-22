@@ -4,6 +4,11 @@ import hunt;
 
 import app.system.model.Permission;
 import app.system.repository.PermissionRepository;
+import kiss.logger;
+import kiss.util.serialize;
+
+import core.stdc.time : time;
+
 
 class PermissionController : Controller
 {
@@ -12,7 +17,9 @@ class PermissionController : Controller
     @Action string list()
     {
         auto repository = new PermissionRepository;
-        view.assign("permissions", repository.findAll());
+        auto alldata = repository.findAll();
+        logDebug("permissions : ",toJSON(alldata).toString);
+        view.assign("permissions", alldata);
 
         return view.render("system/permission/list");
     }
@@ -20,6 +27,25 @@ class PermissionController : Controller
     @Action string add()
     {
         return view.render("system/permission/add");
+    }
+
+    @Action JSONValue doAdd()
+    {
+        auto data = request.json();
+        logDebug("permission add : ",data);
+        auto now = cast(int)time(null);
+        Permission pm;
+        pm.key = data["key"].str;
+        pm.title = data["title"].str;
+        pm.isAction = cast(short)data["isAction"].integer;
+        pm.status = cast(short)data["status"].integer;
+        pm.created = now;
+        pm.updated = now;
+        (new PermissionRepository).save(pm);
+
+        JSONValue res;
+        res["error_code"] = 0;
+        return res;
     }
 
     @Action string edit()
