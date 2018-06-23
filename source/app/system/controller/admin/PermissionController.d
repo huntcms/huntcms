@@ -4,10 +4,10 @@ import hunt;
 
 import app.system.model.Permission;
 import app.system.repository.PermissionRepository;
+
 import kiss.logger;
 import kiss.util.serialize;
-
-import core.stdc.time : time;
+import kiss.datetime;
 
 class PermissionController : Controller
 {
@@ -27,7 +27,8 @@ class PermissionController : Controller
     {
         if(request.method() == HttpMethod.Post)
         {
-            auto now = cast(int) time(null);
+            int now = time();
+
             Permission pm = new Permission;
             pm.key = request.post("key");
             pm.title = request.post("title");
@@ -35,16 +36,17 @@ class PermissionController : Controller
             pm.status = request.post("statusRadio").to!short;
             pm.created = now;
             pm.updated = now;
+
             (new PermissionRepository).save(pm);
             return new RedirectResponse("/admincp/system/permissions");
         }
         return request.createResponse().setContent(view.render("system/permission/add"));
     }
 
-    @Action string edit()
+    @Action string edit(int id)
     {
         auto repository = new PermissionRepository;
-        view.assign("permissions", repository.findById(request.get("id")));
+        view.assign("permission", repository.find(id));
 
         return view.render("system/permission/add");
     }
