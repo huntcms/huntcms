@@ -15,7 +15,7 @@ GET         /system/role/eidt         system.role.edit
 
 GET         /system/permissions       system.permission.list
 GET         /system/permission/add    system.permission.add
-POST        /system/permission/doAdd    system.permission.doAdd
+POST         /system/permission/add    system.permission.add
 GET         /system/permission/eidt   system.permission.edit
 
 

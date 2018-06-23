@@ -23,35 +23,22 @@ class PermissionController : Controller
         return view.render("system/permission/list");
     }
 
-    @Action string add()
+    @Action Response add()
     {
-        return view.render("system/permission/add");
-    }
-
-    @Action JSONValue doAdd()
-    {
-        auto data = request.json();
-        logDebug("permission add : ", data);
-        auto now = cast(int) time(null);
-        try
+        if(request.method() == HttpMethod.Post)
         {
+            auto now = cast(int) time(null);
             Permission pm = new Permission;
-            pm.key = data["key"].str;
-            pm.title = data["title"].str;
-            pm.isAction = cast(short) data["isAction"].integer;
-            pm.status = cast(short) data["status"].integer;
+            pm.key = request.post("key");
+            pm.title = request.post("title");
+            pm.isAction = request.post("actionRadio").to!short;
+            pm.status = request.post("statusRadio").to!short;
             pm.created = now;
             pm.updated = now;
             (new PermissionRepository).save(pm);
+            return new RedirectResponse("/admincp/system/permissions");
         }
-        catch (Exception e)
-        {
-            logError("--- excep : ", e.msg);
-        }
-
-        JSONValue res;
-        res["error_code"] = 0;
-        return res;
+        return request.createResponse().setContent(view.render("system/permission/add"));
     }
 
     @Action string edit()
