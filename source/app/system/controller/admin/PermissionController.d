@@ -25,29 +25,42 @@ class PermissionController : Controller
 
     @Action Response add()
     {
-        if(request.method() == HttpMethod.Post)
+        if (request.method() == HttpMethod.Post)
         {
-            int now = time();
-
+            int now = cast(int) time();
+            auto pr = new PermissionRepository;
             Permission pm = new Permission;
             pm.key = request.post("key");
             pm.title = request.post("title");
             pm.isAction = request.post("actionRadio").to!short;
             pm.status = request.post("statusRadio").to!short;
-            pm.created = now;
+            auto exsit_data = pr.findById(request.post("key"));
+            if(exsit_data !is null)
+                pm.created = exsit_data.created;
+            else
+                pm.created = now;
             pm.updated = now;
 
-            (new PermissionRepository).save(pm);
-            return new RedirectResponse("/admincp/system/permissions");
+            auto saveRes = pr.save(pm);
+            if (saveRes !is null)
+                return new RedirectResponse("/admincp/system/permissions");
+
         }
         return request.createResponse().setContent(view.render("system/permission/add"));
     }
 
-    @Action string edit(int id)
+    @Action string edit(string key)
     {
+        logDebug(" edit key : ", key, "  get key : ", request.get("key"));
         auto repository = new PermissionRepository;
-        view.assign("permission", repository.find(id));
+        view.assign("permission", repository.find(key));
 
-        return view.render("system/permission/add");
+        return view.render("system/permission/edit");
+    }
+
+    @Action Response del(string key)
+    {
+        (new PermissionRepository).removeById(key);
+        return new RedirectResponse("/admincp/system/permissions");
     }
 }

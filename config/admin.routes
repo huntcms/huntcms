@@ -16,6 +16,11 @@ GET         /system/role/eidt         system.role.edit
 GET         /system/permissions       system.permission.list
 GET         /system/permission/add    system.permission.add
 POST         /system/permission/add    system.permission.add
-GET         /system/permission/eidt   system.permission.edit
+GET         /system/permission/edit    system.permission.edit
+GET         /system/permission/del    system.permission.del
 
-
+GET         /system/menus       system.menu.list
+GET         /system/menu/add    system.menu.add
+POST        /system/menu/add    system.menu.add
+GET         /system/menu/edit   system.menu.edit
+GET         /system/menu/del    system.menu.del

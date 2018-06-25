@@ -24,10 +24,10 @@ class Menu
     string linkUrl;
 
     // timestamp
-    string created;
+    int created;
 
     // timestamp
-    string updated;
+    int updated;
 
     // 1: enabled, 0: disabled
     short status;
