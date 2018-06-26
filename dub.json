@@ -5,9 +5,6 @@
     "homepage": "http://www.huntframework.com/",
     "license": "Apache-2.0",
     "targetType": "executable",
-    "authors": [
-        "zoujiaqing"
-    ],
     "dependencies": {
         "hunt": {"path" : "../hunt"}
     }

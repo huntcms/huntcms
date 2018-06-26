@@ -11,6 +11,9 @@ class Role
     @PrimaryKey
     int id;
 
+    // @OneToMany("role")
+    // UserRole[] userRoles;
+
     string name;
 
     // timestamp

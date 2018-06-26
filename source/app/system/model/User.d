@@ -2,7 +2,7 @@ module app.system.model.User;
 
 import entity;
 
-public import app.system.model.Role;
+public import app.system.model.UserRole;
 
 @Table("system_user")
 class User
@@ -12,6 +12,10 @@ class User
     @AutoIncrement
     @PrimaryKey
     int id;
+
+//    int role_id;
+//    @OneToMany("user")
+//    UserRole[] userRoles;
 
     string email;
 

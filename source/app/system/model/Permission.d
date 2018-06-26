@@ -2,8 +2,8 @@ module app.system.model.Permission;
 
 import entity;
 
-@Table("system_role")
-class Permission
+@Table("system_permission")
+class Permission 
 {
     mixin MakeEntity;
 
@@ -13,13 +13,13 @@ class Permission
     string title;
 
     @Column("is_action")
-    bool isAction;
+    short isAction;
 
     // timestamp
-    string created;
+    int created;
 
     // timestamp
-    string updated;
+    int updated;
 
     // 1: enabled, 0: disabled
     short status;
