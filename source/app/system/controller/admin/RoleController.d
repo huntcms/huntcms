@@ -27,7 +27,7 @@ class RoleController : Controller
     {
         auto repository = new RoleRepository;
         
-        view.assign("permissions", repository.findById( request.get!int("id", 0) ));
+        //view.assign("permissions", repository.findById( request.get!int("id", 0) ));
 
         return view.render("system/role/add");
     }

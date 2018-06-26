@@ -5,7 +5,7 @@ import entity;
 public import app.system.model.UserRole;
 
 @Table("system_user")
-class User 
+class User
 {
     mixin MakeEntity;
 
@@ -13,11 +13,9 @@ class User
     @PrimaryKey
     int id;
 
-    int role_id;
-    @OneToMany("user")
-    UserRole[] userRoles;
-
-    short supered;
+//    int role_id;
+//    @OneToMany("user")
+//    UserRole[] userRoles;
 
     string email;
 
@@ -36,4 +34,6 @@ class User
 
     // 1: enabled, 0: disabled
     short status;
+
+    short supered;
 }

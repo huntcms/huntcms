@@ -1,25 +1,39 @@
 #
-# method    path                      module.controller.action
+# method    path                        module.controller.action
 #
 
 GET         /                         system.dashboard.dashboard
 GET         /login                    system.user.login
 POST        /login                    system.user.login
 
-GET         /system/users             system.user.list
-GET         /system/user/add          system.user.add
-GET         /system/user/eidt         system.user.edit
 
-GET         /system/roles             system.role.list
-GET         /system/role/add          system.role.add
-GET         /system/role/eidt         system.role.edit
+GET         /system/users               system.user.list
+GET         /system/user/add            system.user.add
+POST        /system/user/add            system.user.add
+GET         /system/user/edit           system.user.edit
+POST        /system/user/edit           system.user.edit
+GET         /system/user/del            system.user.del
 
-GET         /system/permissions       system.permission.list
-GET         /system/permission/add    system.permission.add
-POST         /system/permission/add    system.permission.add
-GET         /system/permission/eidt   system.permission.edit
+GET         /system/roles               system.role.list
+GET         /system/role/add            system.role.add
+POST        /system/role/add            system.role.add
+GET         /system/role/edit           system.role.edit
+POST        /system/role/edit           system.role.edit
+GET         /system/role/del            system.role.del
 
+GET         /system/permissions         system.permission.list
+GET         /system/permission/add      system.permission.add
+POST        /system/permission/add      system.permission.add
+GET         /system/permission/edit     system.permission.edit
+POST        /system/permission/edit     system.permission.edit
+GET         /system/permission/del      system.permission.del
 
+GET         /system/menus               system.menu.list
+GET         /system/menu/add            system.menu.add
+POST        /system/menu/add            system.menu.add
+GET         /system/menu/edit           system.menu.edit
+POST        /system/menu/edit           system.menu.edit
+GET         /system/menu/del            system.menu.del
 
 GET         /components/articles          components.article.list
 GET         /components/article/add       components.article.add

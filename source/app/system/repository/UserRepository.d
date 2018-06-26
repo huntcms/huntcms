@@ -3,11 +3,12 @@ module app.system.repository.UserRepository;
 import entity.repository;
 
 import app.system.model.User;
-import hunt;
+
+import entity.EntityManager;
+
 class UserRepository : EntityRepository!(User, int)
 {
-    this()
-    {
-        super(Application.getInstance().getEntityManagerFactory().createEntityManager());
+    this(EntityManager manager = null) {
+        super(manager);
     }
 }

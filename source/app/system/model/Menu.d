@@ -3,7 +3,7 @@ module app.system.model.Menu;
 import entity;
 
 @Table("system_menu")
-class Menu 
+class Menu
 {
     mixin MakeEntity;
 
@@ -24,10 +24,10 @@ class Menu
     string linkUrl;
 
     // timestamp
-    string created;
+    int created;
 
     // timestamp
-    string updated;
+    int updated;
 
     // 1: enabled, 0: disabled
     short status;

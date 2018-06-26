@@ -13,16 +13,19 @@ class UserRole
     @PrimaryKey
     int id;
 
+    int user_id;
+
+    int role_id;
+
     // int role_id;
     // @ManyToOne()
     // @JoinColumn("role_id")
     // Role role;
 
-    @ManyToOne()
-    @JoinColumn("user_id")
-    User user;
+//    @ManyToOne()
+//    @JoinColumn("user_id")
+//    User user;
 
     // int user_id;
 
-    int role_id;
 }
