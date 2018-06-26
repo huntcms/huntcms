@@ -3,9 +3,9 @@ module app.system.model.Permission;
 import entity;
 
 @Table("system_role")
-class Permission : Entity
+class Permission
 {
-    mixin GetFunction;
+    mixin MakeEntity;
 
     @PrimaryKey
     string key;

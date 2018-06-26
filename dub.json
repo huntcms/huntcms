@@ -9,6 +9,6 @@
         "zoujiaqing"
     ],
     "dependencies": {
-        "hunt": "~master"
+        "hunt": {"path" : "../hunt"}
     }
 }

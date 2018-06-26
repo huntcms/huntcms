@@ -12,7 +12,6 @@
 </footer>
 <!-- End Footer -->
 
-
 <!-- jQuery  -->
 <script src="/assets/vendor/jquery/jquery-3.3.1.min.js"></script>
 <script src="/assets/admin/js/popper.min.js"></script>
@@ -26,6 +25,24 @@
 <!-- App js -->
 <script src="/assets/admin/js/jquery.core.js"></script>
 <script src="/assets/admin/js/jquery.app.js"></script>
+
+{% if length(errorMessages) > 0 %}
+    {% for message in errorMessages %}
+        <div class="row" id="message-alert" style="position: absolute;right: 20px;z-index: 99999;top: 10px;">
+            <div class="alert alert-danger alert-dismissable">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                {{ message }}
+            </div>
+        </div>
+        <script>
+            $(function () {
+                setTimeout(function(){
+                    $("#message-alert").hide();
+                },3000);
+            })
+        </script>
+    {% endfor %}
+{% endif %}
 
 </body>
 </html>

@@ -3,9 +3,9 @@ module app.system.model.Role;
 import entity;
 
 @Table("system_role")
-class Role : Entity
+class Role
 {
-    mixin GetFunction;
+    mixin MakeEntity;
 
     @AutoIncrement
     @PrimaryKey
@@ -14,10 +14,10 @@ class Role : Entity
     string name;
 
     // timestamp
-    string created;
+    int created;
 
     // timestamp
-    string updated;
+    int updated;
 
     // 1: enabled, 0: disabled
     short status;

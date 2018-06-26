@@ -7,14 +7,15 @@ GET         /login                    system.user.login
 
 GET         /system/users             system.user.list
 GET         /system/user/add          system.user.add
-GET         /system/user/eidt         system.user.edit
+POST        /system/user/add          system.user.add
+GET         /system/user/edit         system.user.edit
 
 GET         /system/roles             system.role.list
 GET         /system/role/add          system.role.add
-GET         /system/role/eidt         system.role.edit
+GET         /system/role/edit         system.role.edit
 
 GET         /system/permissions       system.permission.list
 GET         /system/permission/add    system.permission.add
-GET         /system/permission/eidt   system.permission.edit
+GET         /system/permission/edit   system.permission.edit
 
 

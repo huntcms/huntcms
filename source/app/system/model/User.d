@@ -5,18 +5,13 @@ import entity;
 public import app.system.model.Role;
 
 @Table("system_user")
-class User : Entity
+class User
 {
-    mixin GetFunction;
+    mixin MakeEntity;
 
     @AutoIncrement
     @PrimaryKey
     int id;
-
-    // int role_id;
-    @ManyToOne()
-    @JoinColumn("role_id")
-    Role role;
 
     string email;
 
@@ -28,11 +23,13 @@ class User : Entity
     string name;
 
     // timestamp
-    string created;
+    int created;
 
     // timestamp
-    string updated;
+    int updated;
 
     // 1: enabled, 0: disabled
     short status;
+
+    short supered;
 }
