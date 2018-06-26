@@ -39,7 +39,7 @@ class UserRoleRepository : EntityRepository!(UserRole, int)
     {
         Objects objects;
 
-        objects.em = this.createEntityManager();
+        objects.em = this.getManager();
         objects.builder = objects.em.getCriteriaBuilder();
         objects.criteriaQuery = objects.builder.createQuery!UserRole;
         objects.root = objects.criteriaQuery.from();

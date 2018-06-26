@@ -4,6 +4,7 @@
 
 GET         /                         system.dashboard.dashboard
 GET         /login                    system.user.login
+POST        /login                    system.user.login
 
 GET         /system/users             system.user.list
 GET         /system/user/add          system.user.add
@@ -19,3 +20,15 @@ POST         /system/permission/add    system.permission.add
 GET         /system/permission/eidt   system.permission.edit
 
 
+
+GET         /components/articles          components.article.list
+GET         /components/article/add       components.article.add
+POST        /components/article/add       components.article.add
+GET         /components/article/edit      components.article.edit
+GET         /components/article/del       components.article.del
+
+GET         /components/categories        components.category.list
+GET         /components/category/add      components.category.add
+POST        /components/category/add      components.category.add
+GET         /components/category/edit     components.category.edit
+GET         /components/category/del      components.category.del

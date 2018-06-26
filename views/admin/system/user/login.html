@@ -6,7 +6,7 @@
         <a href="index.html" class="logo-lg"><i class="mdi mdi-fire"></i> <span>HuntCMS</span> </a>
     </div>
 
-    <form class="form-horizontal m-t-20" action="index.html">
+    <form class="form-horizontal m-t-20" method="POST" action="/admincp/login">
 
         <div class="form-group row">
             <div class="col-12">
@@ -14,7 +14,7 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text"><i class="mdi mdi-account"></i></span>
                     </div>
-                    <input class="form-control" type="text" required="" placeholder="Username">
+                    <input class="form-control" type="text" required="" name="username" placeholder="Username">
                 </div>
             </div>
         </div>
@@ -25,7 +25,7 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text"><i class="mdi mdi-fire"></i></span>
                     </div>
-                    <input class="form-control" type="password" required="" placeholder="Password">
+                    <input class="form-control" type="password" required="" name="password" placeholder="Password">
                 </div>
             </div>
         </div>

@@ -27,7 +27,7 @@ class PermissionController : Controller
     {
         if(request.method() == HttpMethod.Post)
         {
-            int now = time();
+            int now = cast(int) time();
 
             Permission pm = new Permission;
             pm.key = request.post("key");
@@ -43,10 +43,10 @@ class PermissionController : Controller
         return request.createResponse().setContent(view.render("system/permission/add"));
     }
 
-    @Action string edit(int id)
+    @Action string edit(string id)
     {
         auto repository = new PermissionRepository;
-        view.assign("permission", repository.find(id));
+        view.assign("permission", repository.find(id.to!string));
 
         return view.render("system/permission/add");
     }

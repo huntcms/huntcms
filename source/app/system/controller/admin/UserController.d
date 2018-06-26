@@ -4,6 +4,7 @@ import hunt;
 
 import app.system.model.User;
 import app.system.repository.UserRepository;
+import app.auth.Login;
 
 class UserController : Controller
 {
@@ -30,8 +31,22 @@ class UserController : Controller
         return view.render("system/user/edit");
     }
 
-    @Action string login()
+    @Action Response login()
     {
-        return view.render("system/user/login");
+        if(request.method() == HttpMethod.Post)
+        {
+            string username = request.post("username" , "");
+            string password = request.post("password" , "");
+
+            logInfo(username , password);
+            auto user = UserInfo.login(username , password);
+            if(user !is null)
+            {
+                UserInfo.put(request , user);
+                
+                return new RedirectResponse("/admincp/system/users");
+            }          
+        }
+        return request.createResponse().setContent(view.render("system/user/login"));
     }
 }

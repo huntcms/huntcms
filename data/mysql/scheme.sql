@@ -78,3 +78,29 @@ CREATE TABLE `hc_system_user`  (
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Compact;
 
 SET FOREIGN_KEY_CHECKS = 1;
+
+
+CREATE TABLE `hc_components_article` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `categories_id` int(11) NOT NULL,
+  `title` varchar(255) DEFAULT NULL,
+  `summary` varchar(255) DEFAULT NULL,
+  `author` varchar(50) DEFAULT NULL,
+  `content` text,
+  `created` int(11) DEFAULT NULL,
+  `updated` int(11) DEFAULT NULL,
+  `status` tinyint(255) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_article_category` (`categories_id`),
+  CONSTRAINT `fk_article_category` FOREIGN KEY (`categories_id`) REFERENCES `hc_components_category` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `hc_components_category` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) DEFAULT NULL,
+  `sort` smallint(6) DEFAULT NULL,
+  `created` int(11) DEFAULT NULL,
+  `updated` int(11) DEFAULT NULL,
+  `status` tinyint(1) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4;

@@ -1,0 +1,108 @@
+{% include "../../header.html" %}
+{% include "../../navigation.html" %}
+
+<div class="wrapper">
+    <div class="container-fluid">
+
+        <!-- Page-Title -->
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="page-title-box">
+                    <div class="btn-group pull-right">
+                        <h4 class="page-title">Add Article</h4>
+                    </div>
+                    <ol class="breadcrumb hide-phone p-0 m-0">
+                        <li class="breadcrumb-item"><a href="#">HuntCMS</a></li>
+                        <li class="breadcrumb-item"><a href="#">Components</a></li>
+                        <li class="breadcrumb-item active">Add Article</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+        <!-- end page title end breadcrumb -->
+
+        <div class="row">
+            <div class="col-12">
+                <div class="card-box">
+                    <h4 class="m-t-0 header-title">Add Article</h4>
+                    <p class="text-muted m-b-30 font-14">
+                        User can add article.
+                    </p>
+
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="p-20">
+                                <form class="form-horizontal" method="POST" action="/admincp/components/article/add" role="form">
+                                    <div class="form-group row">
+                                        <label class="col-2 col-form-label">Category</label>
+                                        <div class="col-10">
+                                            <select class="form-control" name="category">
+                                                <option value="">-- select category --</option>
+                                                {% for category in categories %}
+                                                <option value="{{category.id}}">{{category.name}}</option>                                               
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-2 col-form-label">Title</label>
+                                        <div class="col-10">
+                                            <input type="text" class="form-control" name="title" value="" placeholder="Title.." >
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-2 col-form-label" for="example-summary">Summary</label>
+                                        <div class="col-10">
+                                            <input type="text" id="example-summary" name="summary" value="" class="form-control" placeholder="Summary..">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-2 col-form-label">Author</label>
+                                        <div class="col-10">
+                                            <input type="text" class="form-control" value="" name="author">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-2 col-form-label">Content</label>
+                                        <div class="col-10">
+                                            <textarea class="form-control" name="content"></textarea>
+                                        </div>
+                                    </div>                                   
+
+                                    <div class="form-group row">
+                                        <label class="col-2 col-form-label">Status</label>
+                                        <div class="col-10">
+                                            <div class="custom-control custom-radio">
+                                                <input type="radio" id="customRadio1" name="customRadio" value="1" class="custom-control-input">
+                                                <label class="custom-control-label" for="customRadio1">Enabled</label>
+                                            </div>
+                                            <div class="custom-control custom-radio">
+                                                <input type="radio" id="customRadio2" name="customRadio" value="0" class="custom-control-input">
+                                                <label class="custom-control-label" for="customRadio2">Disabled</label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group mb-0 justify-content-end row">
+                                        <div class="col-md-10">
+                                            <button type="submit" class="btn btn-info waves-effect waves-light">Create</button>
+                                        </div>
+                                    </div>
+
+                                </form>
+                            </div>
+                        </div>
+
+                    </div>
+                    <!-- end row -->
+
+                </div> <!-- end card-box -->
+            </div><!-- end col -->
+        </div>
+        <!-- end row -->
+
+    </div> <!-- end container -->
+</div>
+<!-- end wrapper -->
+
+{% include "../../footer.html" %}
