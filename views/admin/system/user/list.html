@@ -29,7 +29,9 @@
                     <div class="row">
                         <div class="col-sm-6">
                             <div class="m-b-30">
-                                <a href="/admincp/system/user/add" id="addToTable" class="btn btn-success waves-effect waves-light">Add <i class="mdi mdi-plus-circle-outline"></i></a>
+                                <a href="/admincp/system/user/add" id="addToTable"
+                                   class="btn btn-success waves-effect waves-light">Add <i
+                                        class="mdi mdi-plus-circle-outline"></i></a>
                             </div>
                         </div>
                     </div>
@@ -44,30 +46,62 @@
                             <th>Status</th>
                         </tr>
                         </thead>
+                        <div class="form-inline m-b-20">
+                            <div class="row">
+
+                                <div class="col-md-12 text-xs-center">
+                                    <form class="form-horizontal" role="form" action="" method="get">
+                                        <div class="form-group float-left m-r-5">
+                                            <label class="control-label m-r-5">Status</label>
+                                            <select id="demo-foo-filter-status" name="status" class="form-control input-sm">
+                                                <option value="-1">Show all</option>
+                                                <option value="1">Enabled</option>
+                                                <option value="0">Disabled</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group float-left m-r-5">
+                                            <input id="demo-foo-search" name="keyword" type="text" placeholder="Search Name Or Email"
+                                                   class="form-control" autocomplete="on">
+                                        </div>
+                                        <div class="form-group float-left m-r-5">
+                                            <button type="submit"
+                                                    class="btn btn-icon waves-effect waves-light btn-success m-b-5"><i
+                                                    class="fa fa-search"></i></button>
+                                        </div>
+                                        <div class="form-group float-left m-r-5">
+                                            <a href="/admincp/system/users"
+                                               class="btn btn-icon waves-effect waves-light btn-success m-b-5"><i
+                                                    class="fa fa-refresh"></i></a>
+
+                                        </div>
+                                    </form>
+
+                                </div>
+                            </div>
+                        </div>
                         <tbody>
                         {% for user in users %}
-                            <tr>
-                                <td>{{user.name}}</td>
-                                <td>{{user.email}}</td>
-                                <td>{{user.created}}</td>
-                                <td>{{user.updated}}</td>
-                                <td>
-                                    {% if user.status == 0 %}
-                                    <span class="badge label-table badge-danger">Disabled</span>
-                                    {% else %}
-                                    <span class="badge label-table badge-success">Enabled</span>
-                                    {% endif %}
-                                </td>
-                                <td class="actions">
-                                    <a href="/admincp/system/user/edit" class="on-default edit-row" data-toggle="tooltip" data-placement="top" title="" data-original-title="Click Edit"><i class="fa fa-pencil"></i></a>
-                                    <!--{% if user.status == 0 %}-->
-                                    <!--<a href="#" class="hidden on-editing cancel-row" data-toggle="tooltip" data-placement="top" title="" data-original-title="Click Active"><i class="fa fa-check"></i></a>-->
-                                    <!--{% else %}-->
-                                    <!--<a href="#" class="hidden on-editing cancel-row" data-toggle="tooltip" data-placement="top" title="" data-original-title="Click Suspend"><i class="fa fa-times"></i></a>-->
-                                    <!--{% endif %}-->
-                                    <a href="/admincp/system/user/del" class="on-default remove-row" data-toggle="tooltip" data-placement="top" title="" data-original-title="Click Delete"><i class="fa fa-trash-o"></i></a>
-                                </td>
-                            </tr>
+                        <tr>
+                            <td>{{user.name}}</td>
+                            <td>{{user.email}}</td>
+                            <td>{{date('Y-m-d H:i:s',user.created)}}</td>
+                            <td>{{date('Y-m-d H:i:s',user.updated)}}</td>
+                            <td>
+                                {% if user.status == 0 %}
+                                <span class="badge label-table badge-danger">Disabled</span>
+                                {% else %}
+                                <span class="badge label-table badge-success">Enabled</span>
+                                {% endif %}
+                            </td>
+                            <td class="actions">
+                                <a href="/admincp/system/user/edit?id={{ user.id }}" class="on-default edit-row"
+                                   data-toggle="tooltip" data-placement="top" title="" data-original-title="Click Edit"><i
+                                        class="fa fa-pencil"></i></a>
+                                <a href="/admincp/system/user/del?id={{ user.id }}" class="on-default remove-row"
+                                   data-toggle="tooltip" data-placement="top" title=""
+                                   data-original-title="Click Delete"><i class="fa fa-trash-o"></i></a>
+                            </td>
+                        </tr>
                         {% endfor %}
                         </tbody>
                     </table>
