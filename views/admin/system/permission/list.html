@@ -85,13 +85,14 @@
                                         {% else %}
                                             Suspended
                                         {% endif %}
-                                    </span></td>
-                            <td>
-                                <a href="/admincp/system/permission/edit?id={{ permission.id }}"
-                                   class="on-default edit-row" data-toggle="tooltip" data-placement="top" title=""
-                                   data-original-title="Click Edit"><i class="fa fa-pencil"></i></a>
-                                <a href="/admincp/system/permission/del?id={{ permission.id }}"
-                                   class="on-default remove-row" data-toggle="tooltip" data-placement="top" title=""
+                                    </span>
+                            </td>
+                            <td class="actions">
+                                <a href="/admincp/system/permission/edit?id={{ permission.id }}" class="on-default edit-row"
+                                   data-toggle="tooltip" data-placement="top" title="" data-original-title="Click Edit"><i
+                                        class="fa fa-pencil"></i></a>
+                                <a href="/admincp/system/permission/del?id={{ permission.id }}" class="on-default remove-row"
+                                   data-toggle="tooltip" data-placement="top" title=""
                                    data-original-title="Click Delete"><i class="fa fa-trash-o"></i></a>
                             </td>
                         </tr>

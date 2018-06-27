@@ -5,10 +5,11 @@ import hunt.http.RedirectResponse;
 
 import app.system.model.User;
 import app.system.repository.UserRepository;
-import app.auth.Login;
 import app.system.repository.RoleRepository;
 import app.system.repository.UserRoleRepository;
-import lib.Password;
+import app.system.helper.Password;
+
+import app.auth.Login;
 
 import entity.DefaultEntityManagerFactory;
 
@@ -58,7 +59,7 @@ class UserController : Controller
             User user = new User();
 
 
-            int time = cast(int)time();
+            int time = time();
             user.name = name;
             user.email = email;
             user.salt = generateSalt();
@@ -80,24 +81,25 @@ class UserController : Controller
 
             if (errorMessages.length == 0)
             {
-                auto manager = defaultEntityManagerFactory().createEntityManager();
+                auto em = Application.getInstance().getEntityManagerFactory().createEntityManager();
                 try {
-                    manager.getTransaction().begin();
+                    em.getTransaction().begin();
 
-                    auto userRepository = new UserRepository(manager);
+                    auto userRepository = new UserRepository(em);
 
                     userRepository.save(user);
-                    auto userRoleRepository = new UserRoleRepository(manager);
+
+                    auto userRoleRepository = new UserRoleRepository(em);
                     userRoleRepository.saves(user.id, roles);
 
-                    manager.getTransaction().commit();
+                    em.getTransaction().commit();
 
                     return new RedirectResponse("/admincp/system/users");
                 } catch(Exception e) {
 
                     errorMessages ~= "Email already existed.";
 
-                    manager.getTransaction().rollback();
+                    em.getTransaction().rollback();
 
                     kiss.logger.error(e);
                 }

@@ -39,13 +39,13 @@
                                     <div class="form-group row">
                                         <label class="col-2 col-form-label">Id</label>
                                         <div class="col-10">
-                                            <input type="text" class="form-control" id="id" name="id" placeholder="Some text value...">
+                                            <input type="text" class="form-control" required id="id" name="id" placeholder="Some text value...">
                                         </div>
                                     </div>
                                     <div class="form-group row">
                                         <label class="col-2 col-form-label">Title</label>
                                         <div class="col-10">
-                                            <input type="text" class="form-control" id="title" name="title" placeholder="Some text value...">
+                                            <input type="text" class="form-control" required id="title" name="title" placeholder="Some text value...">
                                         </div>
                                     </div>
                                     <div class="form-group row">
@@ -100,3 +100,11 @@
 </div>
 <!-- end wrapper -->
 {% include "../../footer.html" %}
+
+<!-- Parsleyjs -->
+<script type="text/javascript" src="/assets/vendor/parsleyjs/dist/parsley.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('form').parsley();
+    });
+</script>
