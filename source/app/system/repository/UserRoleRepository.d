@@ -30,7 +30,7 @@ class UserRoleRepository : EntityRepository!(UserRole, int)
         auto objects = this.newObjects();
 
         auto p1 = objects.builder.equal(objects.root.UserRole.user_id, userId);
-        auto typedQuery = getManager().createQuery(objects.criteriaQuery.select(objects.root).where( p1 ));
+        auto typedQuery = getEntityManager().createQuery(objects.criteriaQuery.select(objects.root).where( p1 ));
         UserRole[] userRoles = typedQuery.getResultList();
 
         int[] ids;
@@ -60,7 +60,7 @@ class UserRoleRepository : EntityRepository!(UserRole, int)
     {
         Objects objects;
 
-        objects.builder = getManager().getCriteriaBuilder();
+        objects.builder = getEntityManager().getCriteriaBuilder();
         objects.criteriaQuery = objects.builder.createQuery!UserRole;
         objects.root = objects.criteriaQuery.from();
 

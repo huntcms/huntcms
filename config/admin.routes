@@ -46,3 +46,5 @@ GET         /components/category/add      components.category.add
 POST        /components/category/add      components.category.add
 GET         /components/category/edit     components.category.edit
 GET         /components/category/del      components.category.del
+
+POST        /system/file/upload           system.file.upload

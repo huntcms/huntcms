@@ -39,19 +39,19 @@
                                     <div class="form-group row">
                                         <label class="col-2 col-form-label">Name</label>
                                         <div class="col-10">
-                                            <input type="text" class="form-control" id="name" name="name" placeholder="Some text value...">
+                                            <input type="text" class="form-control" required id="name" name="name" placeholder="Some text value...">
                                         </div>
                                     </div>
                                     <div class="form-group row">
                                         <label class="col-2 col-form-label">Mca</label>
                                         <div class="col-10">
-                                            <input type="text" class="form-control" id="mca" name="mca" placeholder="module_controller_action">
+                                            <input type="text" class="form-control" required id="mca" name="mca" placeholder="module_controller_action">
                                         </div>
                                     </div>
                                     <div class="form-group row">
                                         <label class="col-2 col-form-label">LinkUrl</label>
                                         <div class="col-10">
-                                            <input type="text" class="form-control" id="linkUrl" name="linkUrl" placeholder="Some text value...">
+                                            <input type="text" class="form-control" required id="linkUrl" name="linkUrl" placeholder="Some text value...">
                                         </div>
                                     </div>
                                     <div class="form-group row">
@@ -107,3 +107,11 @@
 <!-- end wrapper -->
 
 {% include "../../footer.html" %}
+
+<!-- Parsleyjs -->
+<script type="text/javascript" src="/assets/vendor/parsleyjs/dist/parsley.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('form').parsley();
+    });
+</script>

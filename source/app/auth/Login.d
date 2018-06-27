@@ -35,7 +35,7 @@ class UserInfo
 	static AclUser login(string username , string password)
 	{			
        	auto userRepository =  new UserRepository;
-        auto em = userRepository.getManager();    
+        auto em = userRepository.getEntityManager();    
         CriteriaBuilder builder = em.getCriteriaBuilder();           
 
         CriteriaQuery!(app.system.model.User.User) criteriaQuery = builder.createQuery!(app.system.model.User.User);

@@ -39,25 +39,25 @@
                                     <div class="form-group row">
                                         <label class="col-2 col-form-label">Id</label>
                                         <div class="col-10">
-                                            <input type="text" class="form-control" id="id" name="id" placeholder="Some text value..." value="{{ menu.id }}">
+                                            <input type="text" class="form-control" required id="id" name="id" placeholder="Some text value..." value="{{ menu.id }}">
                                         </div>
                                     </div>
                                     <div class="form-group row">
                                         <label class="col-2 col-form-label">Name</label>
                                         <div class="col-10">
-                                            <input type="text" class="form-control" id="name" name="name" placeholder="Some text value..." value="{{ menu.name }}">
+                                            <input type="text" class="form-control" required id="name" name="name" placeholder="Some text value..." value="{{ menu.name }}">
                                         </div>
                                     </div>
                                     <div class="form-group row">
                                         <label class="col-2 col-form-label">Mca</label>
                                         <div class="col-10">
-                                            <input type="text" class="form-control" id="mca" name="mca" placeholder="Some text value..." value="{{ menu.mca }}">
+                                            <input type="text" class="form-control" required id="mca" name="mca" placeholder="Some text value..." value="{{ menu.mca }}">
                                         </div>
                                     </div>
                                     <div class="form-group row">
                                         <label class="col-2 col-form-label">LinkUrl</label>
                                         <div class="col-10">
-                                            <input type="text" class="form-control" id="linkUrl" name="linkUrl" placeholder="Some text value..." value="{{ menu.linkUrl }}">
+                                            <input type="text" class="form-control" required id="linkUrl" name="linkUrl" placeholder="Some text value..." value="{{ menu.linkUrl }}">
                                         </div>
                                     </div>
                                     <div class="form-group row">
@@ -113,3 +113,11 @@
 <!-- end wrapper -->
 
 {% include "../../footer.html" %}
+
+<!-- Parsleyjs -->
+<script type="text/javascript" src="/assets/vendor/parsleyjs/dist/parsley.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('form').parsley();
+    });
+</script>
