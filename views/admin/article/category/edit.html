@@ -9,12 +9,12 @@
             <div class="col-sm-12">
                 <div class="page-title-box">
                     <div class="btn-group pull-right">
-                        <h4 class="page-title">Add User</h4>
+                        <h4 class="page-title">Edit Category</h4>
                     </div>
                     <ol class="breadcrumb hide-phone p-0 m-0">
                         <li class="breadcrumb-item"><a href="#">HuntCMS</a></li>
                         <li class="breadcrumb-item"><a href="#">User</a></li>
-                        <li class="breadcrumb-item active">Add Category</li>
+                        <li class="breadcrumb-item active">Edit Category</li>
                     </ol>
                 </div>
             </div>
@@ -24,36 +24,44 @@
         <div class="row">
             <div class="col-12">
                 <div class="card-box">
-                    <h4 class="m-t-0 header-title">Add Category</h4>
+                    <h4 class="m-t-0 header-title">Edit Category</h4>
                     <p class="text-muted m-b-30 font-14">
-                        User can add article category.
+                        User can edit article category.
                     </p>
 
                     <div class="row">
                         <div class="col-12">
                             <div class="p-20">
-                                <form class="form-horizontal" method="POST" action="/admincp/components/category/add" role="form">
+                                <form class="form-horizontal" method="POST" action="/admincp/article/category/add" role="form">
                                     <div class="form-group row">
                                         <label class="col-2 col-form-label">name</label>
                                         <div class="col-10">
-                                            <input type="text" name="name" class="form-control" placeholder="Some text value...">
+                                            <input type="text" name="name" class="form-control" value="{{category.name}}" placeholder="Some text value...">
                                         </div>
                                     </div>
                                     <div class="form-group row">
                                         <label class="col-2 col-form-label" for="example-sort">Sort</label>
                                         <div class="col-10">
-                                            <input type="number" id="example-sort" name="sort" class="form-control" placeholder="sort">
+                                            <input type="number" id="example-sort" name="sort" value="{{category.sort}}" class="form-control" placeholder="sort">
                                         </div>
                                     </div>     
                                     <div class="form-group row">
                                         <label class="col-2 col-form-label">Status</label>
                                         <div class="col-10">
                                             <div class="custom-control custom-radio">
-                                                <input type="radio" id="customRadio1" value="1" name="statusRadio" class="custom-control-input">
+                                                {% if category.status == 1 %}
+                                                <input type="radio" id="customRadio1" name="statusRadio" value="1" checked class="custom-control-input">
+                                                {% else %}
+                                                <input type="radio" id="customRadio1" name="statusRadio" value="1" class="custom-control-input">
+                                                {% endif %}
                                                 <label class="custom-control-label" for="customRadio1">Enabled</label>
                                             </div>
                                             <div class="custom-control custom-radio">
-                                                <input type="radio" id="customRadio2" value="0" name="statusRadio" class="custom-control-input">
+                                                {% if category.status == 0 %}
+                                                <input type="radio" id="customRadio2" name="statusRadio" value="0" checked class="custom-control-input">
+                                                {% else %}
+                                                <input type="radio" id="customRadio2" name="statusRadio" value="0" class="custom-control-input">
+                                                {% endif %}
                                                 <label class="custom-control-label" for="customRadio2">Disabled</label>
                                             </div>
                                         </div>
@@ -61,7 +69,8 @@
 
                                     <div class="form-group mb-0 justify-content-end row">
                                         <div class="col-md-10">
-                                            <button type="submit" class="btn btn-info waves-effect waves-light">Create</button>
+                                            <input type="hidden" name="id" value="{{category.id}}">
+                                            <button type="submit" class="btn btn-info waves-effect waves-light">Save</button>
                                         </div>
                                     </div>
 

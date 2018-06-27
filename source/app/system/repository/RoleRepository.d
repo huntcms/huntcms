@@ -16,6 +16,6 @@ class RoleRepository : EntityRepository!(Role, int)
 
     Role[] getUserRoles(int userId)
     {
-        return this.findAllById((new UserRoleRepository).getUserRoleIds(userId));
+        return this.findAllById((new UserRoleRepository(Application.getInstance().getEntityManagerFactory().createEntityManager())).getUserRoleIds(userId));
     }
 }

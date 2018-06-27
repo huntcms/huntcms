@@ -1,7 +1,7 @@
-module app.components.model.Article;
+module app.article.model.Article;
 
 import entity;
-import  app.components.model.Category;
+import  app.article.model.Category;
 
 @Table("components_article")
 class Article 

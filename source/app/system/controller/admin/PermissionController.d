@@ -8,11 +8,18 @@ import app.system.repository.PermissionRepository;
 import kiss.logger;
 import kiss.util.serialize;
 import kiss.datetime;
+import app.system.controller.admin.LogMiddleware;
 
 class PermissionController : Controller
 {
     mixin MakeController;
 
+    this()
+    {
+        this.addMiddleware(new LogMiddleware);
+    }
+
+    //@Middleware("LogMiddleware")
     @Action string list()
     {
         auto repository = new PermissionRepository();

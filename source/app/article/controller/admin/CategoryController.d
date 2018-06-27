@@ -1,8 +1,8 @@
-module app.components.controller.admin.CategoryController;
+module app.article.controller.admin.CategoryController;
 
 import hunt;
-import app.components.repository.CategoryRepository;
-import app.components.model.Category;
+import app.article.repository.CategoryRepository;
+import app.article.model.Category;
 import kiss.datetime;
 
 
@@ -16,7 +16,7 @@ class CategoryController : Controller
        auto alldata = repository.findAll();
        logDebug("categories : ", toJSON(alldata).toString);
        view.assign("categories", alldata); 
-       return view.render("components/category/list");
+       return view.render("article/category/list");
     }
 
     @Action Response add()
@@ -46,21 +46,21 @@ class CategoryController : Controller
             pm.updated = now;
 
             cr.save(pm);
-            return new RedirectResponse("/admincp/components/categories");
+            return new RedirectResponse("/admincp/article/categories");
         }
-        return request.createResponse().setContent(view.render("components/category/add"));
+        return request.createResponse().setContent(view.render("article/category/add"));
     }
 
     @Action string edit(int id)
     {   
         auto category = new CategoryRepository;
         view.assign("category", category.find(id));
-        return view.render("components/category/edit");       
+        return view.render("article/category/edit");       
     } 
 
     @Action Response del(int id)
     {
         (new CategoryRepository).removeById(id);
-        return new RedirectResponse("/admincp/components/categories");
+        return new RedirectResponse("/admincp/article/categories");
     } 
 }

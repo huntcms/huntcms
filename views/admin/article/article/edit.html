@@ -1,6 +1,6 @@
 {% include "../../header.html" %}
 {% include "../../navigation.html" %}
-
+<link href="/assets/vendor/summernote/summernote-bs4.css" rel="stylesheet" />
 <div class="wrapper">
     <div class="container-fluid">
 
@@ -32,7 +32,7 @@
                     <div class="row">
                         <div class="col-12">
                             <div class="p-20">
-                                <form class="form-horizontal" method="POST" action="/admincp/components/article/add" role="form">
+                                <form class="form-horizontal" method="POST" action="/admincp/article/article/add" role="form">
                                     <div class="form-group row">
                                         <label class="col-2 col-form-label">Category</label>
                                         <div class="col-10">
@@ -71,7 +71,7 @@
                                     <div class="form-group row">
                                         <label class="col-2 col-form-label">Content</label>
                                         <div class="col-10">
-                                            <textarea class="form-control" name="content">{{article.content}}</textarea>
+                                            <textarea class="form-control" id="summernote" name="content">{{article.content}}</textarea>
                                         </div>
                                     </div>                                   
 
@@ -125,3 +125,21 @@
 <!-- end wrapper -->
 
 {% include "../../footer.html" %}
+
+<script src="/assets/vendor/summernote/summernote-bs4.min.js"></script>
+<script>
+    jQuery(document).ready(function(){
+
+        $('#summernote').summernote({
+            height: 350,                 // set editor height
+            minHeight: null,             // set minimum height of editor
+            maxHeight: null,             // set maximum height of editor
+            focus: false                 // set focus to editable area after initializing summernote
+        });
+
+        $('.inline-editor').summernote({
+            airMode: true
+        });
+
+    });
+</script>

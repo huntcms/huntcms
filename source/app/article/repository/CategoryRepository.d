@@ -1,11 +1,11 @@
-module app.components.repository.ArticleRepository;
+module app.article.repository.CategoryRepository;
 
 
 import entity.repository;
-import app.components.model.Article;
+import app.article.model.Category;
 import hunt;
 
-class ArticleRepository : EntityRepository!(Article, int)
+class CategoryRepository : EntityRepository!(Category, int)
 {
     this()
     {
