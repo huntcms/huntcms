@@ -8,7 +8,7 @@ import std.digest.sha;
 import std.file;
 import kiss.util.configuration;
 import kiss.datetime;
-import lib.Utils;
+import app.system.helper.Utils;
 import app.auth.Login;
 
 import app.system.repository.UserRepository;
@@ -33,7 +33,7 @@ class FileController : Controller
                 auto filesize = f.fileSize;
                 f.read(filesize, (const(ubyte[]) data) { file_data ~= data; });
                 //logDebug("file content :  ",cast(string)file_data);
-                auto now = cast(int) time();
+                auto now = time();
                 FileInfo fi = new FileInfo;
                 fi.filename = f.fileName;
                 fi.rename = request.post("rename", "");

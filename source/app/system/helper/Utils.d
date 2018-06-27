@@ -1,4 +1,4 @@
-module lib.Utils;
+module app.system.helper.Utils;
 import std.digest.sha;
 
 class Utils

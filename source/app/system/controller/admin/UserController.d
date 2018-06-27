@@ -81,7 +81,7 @@ class UserController : Controller
 
             if (errorMessages.length == 0)
             {
-                auto em = app().getEntityManagerFactory().createEntityManager();
+                auto em = Application.getInstance().getEntityManagerFactory().createEntityManager();
                 try {
                     em.getTransaction().begin();
 

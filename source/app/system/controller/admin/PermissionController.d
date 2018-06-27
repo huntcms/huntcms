@@ -34,7 +34,7 @@ class PermissionController : Controller
     {
         if (request.method() == HttpMethod.Post)
         {
-            int now = cast(int) time();
+            int now = time();
             auto pr = new PermissionRepository();
             Permission pm = new Permission;
             pm.id = request.post("id");
