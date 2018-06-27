@@ -56,7 +56,7 @@ class UserController : Controller
 
             User user = new User();
 
-            int time = time();
+            int time = cast(int)time();
             user.name = name;
             user.email = email;
             user.salt = generateSalt();

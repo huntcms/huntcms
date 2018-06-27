@@ -34,7 +34,7 @@ class UserRoleRepository : EntityRepository!(UserRole, int)
         UserRole[] userRoles = typedQuery.getResultList();
 
         int[] ids;
-        foreach( userRole; userRoles)
+        foreach (userRole; userRoles)
         {
             ids ~= userRole.role_id;
         }

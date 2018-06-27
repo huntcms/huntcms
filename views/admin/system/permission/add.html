@@ -37,9 +37,9 @@
                             <div class="p-20">
                                 <form class="form-horizontal" role="form" action="/admincp/system/permission/add" method="post">
                                     <div class="form-group row">
-                                        <label class="col-2 col-form-label">Key</label>
+                                        <label class="col-2 col-form-label">Id</label>
                                         <div class="col-10">
-                                            <input type="text" class="form-control" id="key" name="key" placeholder="Some text value...">
+                                            <input type="text" class="form-control" id="id" name="id" placeholder="Some text value...">
                                         </div>
                                     </div>
                                     <div class="form-group row">
@@ -99,41 +99,4 @@
     <!-- end container -->
 </div>
 <!-- end wrapper -->
-
-<script>
-        // $(document).ready(function () {
-
-        //     $('#permission_add').click(function (e) {
-        //         var key = $("#key").val();
-        //         var title = $("#title").val();
-        //         var isAction = $("input[name='actionRadio'][checked]").val();
-        //         var status = $("input[name='statusRadio'][checked]").val();
-        //         var data = {
-        //             "key": key, "title": title,
-        //             "isAction": parseInt(isAction), "status": parseInt(status)
-        //         };
-
-        //         $("#permission_add").attr('disabled', true);
-        //         $.ajax({
-        //             url: "/admincp/system/permission/doAdd",
-        //             type: "POST",
-        //             async: false,
-        //             contentType: "application/json;charset=utf-8",
-        //             data: JSON.stringify(data),
-        //             dataType: "json",
-        //             success: function (msg, status) {
-        //                 $("#permission_add").attr('disabled', false);
-        //             },
-        //             "error": function (req, status) {
-        //                 $("#permission_add").attr('disabled', false);
-        //             }
-
-        //         })
-
-        //     });
-
-        // });
-
-
-
-</script> {% include "../../footer.html" %}
+{% include "../../footer.html" %}

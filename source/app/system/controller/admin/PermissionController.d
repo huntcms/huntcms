@@ -15,7 +15,7 @@ class PermissionController : Controller
 
     @Action string list()
     {
-        auto repository = new PermissionRepository;
+        auto repository = new PermissionRepository();
         auto alldata = repository.findAll();
         logDebug("permissions : ", toJSON(alldata).toString);
         view.assign("permissions", alldata);
@@ -28,13 +28,13 @@ class PermissionController : Controller
         if (request.method() == HttpMethod.Post)
         {
             int now = cast(int) time();
-            auto pr = new PermissionRepository;
+            auto pr = new PermissionRepository();
             Permission pm = new Permission;
-            pm.key = request.post("key");
+            pm.id = request.post("id");
             pm.title = request.post("title");
             pm.isAction = request.post("actionRadio").to!short;
             pm.status = request.post("statusRadio").to!short;
-            auto exsit_data = pr.findById(request.post("key"));
+            auto exsit_data = pr.findById(request.post("id"));
             if(exsit_data !is null)
                 pm.created = exsit_data.created;
             else
@@ -49,18 +49,18 @@ class PermissionController : Controller
         return request.createResponse().setContent(view.render("system/permission/add"));
     }
 
-    @Action string edit(string key)
+    @Action string edit(string id)
     {
-        logDebug(" edit key : ", key, "  get key : ", request.get("key"));
-        auto repository = new PermissionRepository;
-        view.assign("permission", repository.find(key));
+        logDebug(" edit id : ", id, "  get id : ", request.get("id"));
+        auto repository = new PermissionRepository();
+        view.assign("permission", repository.find(id));
 
         return view.render("system/permission/edit");
     }
 
-    @Action Response del(string key)
+    @Action Response del(string id)
     {
-        (new PermissionRepository).removeById(key);
+        (new PermissionRepository()).removeById(id);
         return new RedirectResponse("/admincp/system/permissions");
     }
 }
