@@ -135,6 +135,9 @@ class UserController : Controller
             string password = request.post("password" , "");
 
             logInfo(username , password);
+            string temSalt = generateSalt();
+            password = generateUserPassword(password , temSalt);
+            
             auto user = UserInfo.login(username , password);
             if(user !is null)
             {

@@ -6,6 +6,8 @@ import app.system.model.Menu;
 import app.system.model.Role;
 import app.system.repository.UserRepository;
 import app.system.repository.PermissionRepository;
+import app.system.repository.RoleRepository;
+import app.system.repository.RolePermissionRepository;
 import kiss.logger;
 
 import entity.repository;
@@ -57,41 +59,41 @@ class UserInfo
 				return null;
 			}
 
-			// auto acl = Application.getInstance().getAccessManager();
-			// auto acl_user = acl.createUser(cast(int)user.id , user.email);
-			// auto acl_per = new AclPermission();
-			// if (cast(int)user.supered == 1)
-			// {
-			// 	auto repository = new PermissionRepository();
-			// 	auto alldata = repository.findAll();
-			// 	int num = alldata.length ;
-			// 	for(int i = 0 ; i < num ; i ++){
-			// 		writeln(alldata[i]["id"]);
-			// 	}
-			// }
-			// else
-			// {
-
-			// }
 			auto acl = Application.getInstance().getAccessManager();
-			auto acl_user = acl.createUser(cast(int) user.id, user.email);
+			auto acl_user = acl.createUser(cast(int)user.id , user.email);
 			auto acl_per = new AclPermission();
-			acl_per.addPermission("article.article.list", "文章列表");
-			acl_per.addPermission("article.article.add", "添加文章");
-			acl_per.addPermission("article.article.edit", "编辑文章");
-			acl_per.addPermission("article.article.del", "删除文章");
 
-			acl_per.addPermission("article.category.list", "分类列表");
-			acl_per.addPermission("article.category.add", "添加分类");
-			acl_per.addPermission("article.category.edit", "编辑分类");
-			acl_per.addPermission("system.user.list", "员工列表");
+			if (cast(int)user.supered == 1)
+			{
+				auto repository = new PermissionRepository();
+				auto alldata = repository.findAll();
+				int num = cast(int)alldata.length ;
+				for(int i = 0 ; i < num ; i ++){
+					acl_per.addPermission(alldata[i].id , alldata[i].title);				
+				}
+				auto acl_role = acl.createRole(1, "supered", acl_per);  // define the superadministrator with all permissions
+			    acl_user.assignRole(acl_role);
+			}
+			else
+			{
+				auto roleRepository = new RoleRepository();
+				Role[] roles = roleRepository.getUserRoles(cast(int)user.id);
+				auto rolePermission = new RolePermissionRepository();
+				foreach(role ; roles){
+					auto permission = rolePermission.getRolePermissions(role.id);
+					if(permission.length > 0){
+						foreach(pmn ; permission){							
+							acl_per.addPermission(pmn.id , pmn.title);
+						}					
+					}
+					auto acl_role = acl.createRole(role.id , role.name , acl_per);
+					acl_user.assignRole(acl_role);
+				}
+			}	
 
-			auto acl_role = acl.createRole(1, "test", acl_per);
-			acl_user.assignRole(acl_role);
-
-			acl_user.can("system.user.list");
-			writeln(acl_user.can("system.user.list"));
-			writeln("++++++++++++++++++++++++++++++++");
+			// writeln(acl_user.can("system.user.list"));
+			// writeln("++++++++++++++++++++++++++++++++");
+			
 			return acl_user;
 		}
 
