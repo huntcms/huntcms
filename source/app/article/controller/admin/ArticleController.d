@@ -1,11 +1,11 @@
-module app.components.controller.admin.ArticleController;
+module app.article.controller.admin.ArticleController;
 
 
 import hunt;
-import app.components.repository.ArticleRepository;
+import app.article.repository.ArticleRepository;
 import kiss.datetime;
-import app.components.model.Article;
-import app.components.repository.CategoryRepository;
+import app.article.model.Article;
+import app.article.repository.CategoryRepository;
 
 
 class ArticleController : Controller
@@ -19,7 +19,7 @@ class ArticleController : Controller
         logDebug("articles : ", toJSON(alldata).toString);
         view.assign("articles", alldata);
 
-       return view.render("components/article/list");
+       return view.render("article/article/list");
     }
 
     @Action Response add()
@@ -54,13 +54,13 @@ class ArticleController : Controller
 
             are.save(art);
 
-            return new RedirectResponse("/admincp/components/articles");
+            return new RedirectResponse("/admincp/article/articles");
         }
         auto repository = new CategoryRepository;
         auto categories = repository.findAll();
         view.assign("categories", categories);
 
-        return request.createResponse().setContent(view.render("components/article/add"));
+        return request.createResponse().setContent(view.render("article/article/add"));
     }
 
     @Action string edit(int id)
@@ -71,12 +71,12 @@ class ArticleController : Controller
         auto categories = repository.findAll();
         view.assign("categories", categories);      
   
-        return view.render("components/article/edit");
+        return view.render("article/article/edit");
     }   
 
     @Action Response del(int id)
     {
         (new ArticleRepository).removeById(id);
-        return new RedirectResponse("/admincp/components/articles");
+        return new RedirectResponse("/admincp/article/articles");
     }
 }

@@ -14,6 +14,7 @@ import kiss.logger;
 class UserRoleRepository : EntityRepository!(UserRole, int)
 {
 
+    private EntityManager _entityMnagaer;
     struct Objects
     {
         CriteriaBuilder builder;
@@ -23,6 +24,7 @@ class UserRoleRepository : EntityRepository!(UserRole, int)
 
     this(EntityManager manager = null) {
         super(manager);
+        _entityMnagaer = manager;
     }
 
     int[] getUserRoleIds(int userId)
@@ -30,7 +32,7 @@ class UserRoleRepository : EntityRepository!(UserRole, int)
         auto objects = this.newObjects();
 
         auto p1 = objects.builder.equal(objects.root.UserRole.user_id, userId);
-        auto typedQuery = getManager().createQuery(objects.criteriaQuery.select(objects.root).where( p1 ));
+        auto typedQuery = _entityMnagaer.createQuery(objects.criteriaQuery.select(objects.root).where( p1 ));
         UserRole[] userRoles = typedQuery.getResultList();
 
         int[] ids;
@@ -60,7 +62,7 @@ class UserRoleRepository : EntityRepository!(UserRole, int)
     {
         Objects objects;
 
-        objects.builder = getManager().getCriteriaBuilder();
+        objects.builder = _entityMnagaer.getCriteriaBuilder();
         objects.criteriaQuery = objects.builder.createQuery!UserRole;
         objects.root = objects.criteriaQuery.from();
 

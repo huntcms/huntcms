@@ -35,14 +35,14 @@ GET         /system/menu/edit           system.menu.edit
 POST        /system/menu/edit           system.menu.edit
 GET         /system/menu/del            system.menu.del
 
-GET         /components/articles          components.article.list
-GET         /components/article/add       components.article.add
-POST        /components/article/add       components.article.add
-GET         /components/article/edit      components.article.edit
-GET         /components/article/del       components.article.del
+GET         /article/articles           article.article.list
+GET         /article/article/add        article.article.add
+POST        /article/article/add        article.article.add
+GET         /article/article/edit       article.article.edit
+GET         /article/article/del        article.article.del
 
-GET         /components/categories        components.category.list
-GET         /components/category/add      components.category.add
-POST        /components/category/add      components.category.add
-GET         /components/category/edit     components.category.edit
-GET         /components/category/del      components.category.del
+GET         /article/categories         article.category.list
+GET         /article/category/add       article.category.add
+POST        /article/category/add       article.category.add
+GET         /article/category/edit      article.category.edit
+GET         /article/category/del       article.category.del

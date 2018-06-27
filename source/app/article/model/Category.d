@@ -1,4 +1,4 @@
-module app.components.model.Category;
+module app.article.model.Category;
 
 import entity;
 
