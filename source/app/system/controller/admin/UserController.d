@@ -120,19 +120,19 @@ class UserController : AdminBaseController
     @Action string edit()
     {
 
-        auto userRepository = new UserRepository;
+        // auto userRepository = new UserRepository;
 
-        auto user = userRepository.find(id);
-        if(request.method() == "POST")
-        {
-            int id = request.post!int("id");
+        // auto user = userRepository.find(id);
+        // if(request.method() == "POST")
+        // {
+        //     int id = request.post!int("id");
 
-        }
-        auto userRoleRepository = new UserRoleRepository;
-        int id = request.get!int("id");
-        view.assign("user", user);
-        view.assign("userRoles", userRoleRepository.getUserRoleIds(id));
-        view.assign("roles", (new RoleRepository).findAll());
+        // }
+        // auto userRoleRepository = new UserRoleRepository;
+        // int id = request.get!int("id");
+        // view.assign("user", user);
+        // view.assign("userRoles", userRoleRepository.getUserRoleIds(id));
+        // view.assign("roles", (new RoleRepository).findAll());
         return view.render("system/user/edit");
     }
 
@@ -150,7 +150,8 @@ class UserController : AdminBaseController
         {
             string username = request.post("username" , "");
             string password = request.post("password" , "");
-
+            string salt = generateSalt();
+            password = generateUserPassword(password, salt);
             logInfo(username , password);
             auto user = UserInfo.login(username , password);
             if(user !is null)
