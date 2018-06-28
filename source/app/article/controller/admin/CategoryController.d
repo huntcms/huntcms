@@ -4,12 +4,18 @@ import hunt;
 import app.article.repository.CategoryRepository;
 import app.article.model.Category;
 import kiss.datetime;
+import app.common.controller.AdminBaseController;
 
 
-class CategoryController : Controller
+class CategoryController : AdminBaseController
 {
     mixin MakeController;
 
+    this()
+    {
+        super();      
+    }
+    
     @Action string list()
     {      
        auto repository = new CategoryRepository;

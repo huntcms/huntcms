@@ -8,33 +8,33 @@ import entity;
 import entity.EntityManager;
 
 import kiss.logger;
+import hunt;
 
 class FileInfoRepository : EntityRepository!(FileInfo, int)
 {
 
-    private EntityManager _entityManager;
-
-    struct Objects
-    {
-        CriteriaBuilder builder;
-        CriteriaQuery!FileInfo criteriaQuery;
-        Root!FileInfo root;
-    }
+    // struct Objects
+    // {
+    //     CriteriaBuilder builder;
+    //     CriteriaQuery!FileInfo criteriaQuery;
+    //     Root!FileInfo root;
+    // }
 
     this(EntityManager manager = null) {
+        // if(manager is null)
+        //     manager = Application.getInstance().getEntityManagerFactory().createEntityManager();
         super(manager);
-        _entityManager = manager;
     }
 
 
-    Objects newObjects()
-    {
-        Objects objects;
+    // Objects newObjects()
+    // {
+    //     Objects objects;
 
-        objects.builder = _entityManager.getCriteriaBuilder();
-        objects.criteriaQuery = objects.builder.createQuery!FileInfo;
-        objects.root = objects.criteriaQuery.from();
+    //     objects.builder = getEntityManager().getCriteriaBuilder();
+    //     objects.criteriaQuery = objects.builder.createQuery!FileInfo;
+    //     objects.root = objects.criteriaQuery.from();
 
-        return objects;
-    }
+    //     return objects;
+    // }
 }

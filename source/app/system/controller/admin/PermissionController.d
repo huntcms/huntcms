@@ -10,6 +10,10 @@ import kiss.util.serialize;
 import kiss.datetime;
 import app.system.controller.admin.LogMiddleware;
 import app.common.controller.AdminBaseController;
+import app.system.helper.Utils;
+
+import entity.domain;
+
 
 class PermissionController : AdminBaseController
 {
@@ -18,15 +22,16 @@ class PermissionController : AdminBaseController
     this()
     {
         super();   
-        this.addMiddleware(new LogMiddleware);   
+        //this.addMiddleware(new LogMiddleware);   
     }
 
     //@Middleware("LogMiddleware")
     @Action string list()
     {
+        uint page = request.get!uint("page" , 0);
         auto repository = new PermissionRepository();
-        auto alldata = repository.findAll();
-        logDebug("permissions : ", toJSON(alldata).toString);
+        auto alldata = pageToJson!Permission(repository.findAll(new Pageable(page , 20)));
+        logDebug("permissions : ",alldata);
         view.assign("permissions", alldata);
 
         return view.render("system/permission/list");

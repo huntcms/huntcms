@@ -6,11 +6,17 @@ import app.article.repository.ArticleRepository;
 import kiss.datetime;
 import app.article.model.Article;
 import app.article.repository.CategoryRepository;
+import app.common.controller.AdminBaseController;
 
 
-class ArticleController : Controller
+class ArticleController : AdminBaseController
 {
     mixin MakeController;
+
+    this()
+    {
+        super();      
+    }
 
     @Action string list()
     {    

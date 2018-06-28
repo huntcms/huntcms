@@ -1,5 +1,4 @@
-{% include "../../header.html" %}
-{% include "../../navigation.html" %}
+{% include "../../header.html" %} {% include "../../navigation.html" %}
 
 <div class="wrapper">
     <div class="container-fluid">
@@ -12,8 +11,12 @@
                         <h4 class="page-title">Foo Tables</h4>
                     </div>
                     <ol class="breadcrumb hide-phone p-0 m-0">
-                        <li class="breadcrumb-item"><a href="#">HuntCMS</a></li>
-                        <li class="breadcrumb-item"><a href="#">Tables</a></li>
+                        <li class="breadcrumb-item">
+                            <a href="#">HuntCMS</a>
+                        </li>
+                        <li class="breadcrumb-item">
+                            <a href="#">Tables</a>
+                        </li>
                         <li class="breadcrumb-item active">Foo Tables</li>
                     </ol>
                 </div>
@@ -28,24 +31,24 @@
                     <div class="row">
                         <div class="col-sm-6">
                             <div class="m-b-30">
-                                <a href="/admincp/system/permission/add" id="addToTable"
-                                   class="btn btn-success waves-effect waves-light">Add <i
-                                        class="mdi mdi-plus-circle-outline"></i></a>
+                                <a href="/admincp/system/permission/add" id="addToTable" class="btn btn-success waves-effect waves-light">Add
+                                    <i class="mdi mdi-plus-circle-outline"></i>
+                                </a>
                             </div>
                         </div>
                     </div>
 
                     <table class="table table-striped table-bordered toggle-circle m-b-0">
                         <thead>
-                        <tr>
-                            <th data-toggle="true">Id</th>
-                            <th>Title</th>
-                            <th data-hide="phone">isAction</th>
-                            <th data-hide="phone">Created</th>
-                            <th data-hide="phone, tablet">Updated</th>
-                            <th data-hide="phone, tablet">Status</th>
-                            <th data-hide="phone, tablet">Operate</th>
-                        </tr>
+                            <tr>
+                                <th data-toggle="true">Id</th>
+                                <th>Title</th>
+                                <th data-hide="phone">isAction</th>
+                                <th data-hide="phone">Created</th>
+                                <th data-hide="phone, tablet">Updated</th>
+                                <th data-hide="phone, tablet">Status</th>
+                                <th data-hide="phone, tablet">Operate</th>
+                            </tr>
                         </thead>
                         <div class="form-inline m-b-20">
                             <div class="row">
@@ -62,59 +65,80 @@
                                     </div>
                                     <div class="col-md-6 text-center text-right">
                                         <div class="form-group float-right">
-                                            <input id="demo-foo-search" type="text" placeholder="Search Name Or Email"
-                                                   class="form-control" autocomplete="on">
+                                            <input id="demo-foo-search" type="text" placeholder="Search Name Or Email" class="form-control" autocomplete="on">
                                         </div>
                                     </div>
                                 </form>
                             </div>
                         </div>
                         <tbody>
-                        {% for permission in permissions %}
-                        <tr>
-                            <td>{{ permission.id }}</td>
-                            <td>{{ permission.title }}</td>
-                            <td>{{ permission.isAction }}</td>
-                            <td>{{ date('Y-m-d H:i:s',permission.created) }}</td>
-                            <td>{{ date('Y-m-d H:i:s',permission.updated) }}</td>
-                            <td><span class="badge label-table badge-success">
-                                        {% if permission.status == 0 %}
-                                            Disabled
-                                        {% else if permission.status == 1 %}
-                                            Active
-                                        {% else %}
-                                            Suspended
-                                        {% endif %}
+                            {% for permission in permissions.data %}
+                            <tr>
+                                <td>{{ permission.id }}</td>
+                                <td>{{ permission.title }}</td>
+                                <td>{{ permission.isAction }}</td>
+                                <td>{{ date('Y-m-d H:i:s',permission.created) }}</td>
+                                <td>{{ date('Y-m-d H:i:s',permission.updated) }}</td>
+                                <td>
+                                    <span class="badge label-table badge-success">
+                                        {% if permission.status == 0 %} Disabled {% else if permission.status == 1 %} Active {% else %} Suspended {% endif %}
                                     </span>
-                            </td>
-                            <td class="actions">
-                                <a href="/admincp/system/permission/edit?id={{ permission.id }}" class="on-default edit-row"
-                                   data-toggle="tooltip" data-placement="top" title="" data-original-title="Click Edit"><i
-                                        class="fa fa-pencil"></i></a>
-                                <a href="/admincp/system/permission/del?id={{ permission.id }}" class="on-default remove-row"
-                                   data-toggle="tooltip" data-placement="top" title=""
-                                   data-original-title="Click Delete"><i class="fa fa-trash-o"></i></a>
-                            </td>
-                        </tr>
-                        {% endfor %}
+                                </td>
+                                <td class="actions">
+                                    <a href="/admincp/system/permission/edit?id={{ permission.id }}" class="on-default edit-row" data-toggle="tooltip" data-placement="top"
+                                        title="" data-original-title="Click Edit">
+                                        <i class="fa fa-pencil"></i>
+                                    </a>
+                                    <a href="/admincp/system/permission/del?id={{ permission.id }}" class="on-default remove-row" data-toggle="tooltip" data-placement="top"
+                                        title="" data-original-title="Click Delete">
+                                        <i class="fa fa-trash-o"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
                         </tbody>
                         <tfoot>
-                        <tr class="active">
-                            <td colspan="5">
-                                <div class="text-right">
-                                    <ul class="pagination pagination-split justify-content-end footable-pagination m-t-10 m-b-0"></ul>
-                                </div>
-                            </td>
-                        </tr>
+                            <tr class="active">
+                                <td colspan="5">
+                                    <div class="text-right">
+                                        <ul class="pagination pagination-split justify-content-end footable-pagination m-t-10 m-b-0"></ul>
+                                    </div>
+                                </td>
+                            </tr>
                         </tfoot>
                     </table>
                 </div>
             </div>
         </div>
-
+        <nav>
+            <ul class="pagination pagination-split">
+                {% if permissions.cur > 0 %}
+                <li class="page-item">
+                    <a class="page-link" href="/admincp/system/permissions?page={{ permissions.prev }}" aria-label="Previous">
+                        <span aria-hidden="true">«</span>
+                        <span class="sr-only">Previous</span>
+                    </a>
+                </li>
+                {% endif %}
+                <!-- <li class="page-item"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item active"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item"><a class="page-link" href="#">4</a></li>
+                    <li class="page-item"><a class="page-link" href="#">5</a></li> -->
+                {% if permissions.cur < permissions.totalPages %} 
+                <li class="page-item">
+                    <a class="page-link" href="/admincp/system/permissions?page={{ permissions.next }}" aria-label="Next">
+                        <span aria-hidden="true">»</span>
+                        <span class="sr-only">Next</span>
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
         <!-- end row -->
 
-    </div> <!-- end container -->
+    </div>
+    <!-- end container -->
 </div>
 <!-- end wrapper -->
 
