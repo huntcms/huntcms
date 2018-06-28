@@ -9,6 +9,9 @@ import app.common.controller.AdminBaseController;
 import kiss.logger;
 import kiss.util.serialize;
 import kiss.datetime;
+import app.system.helper.Utils;
+
+import entity.domain;
 
 class MenuController : AdminBaseController
 {
@@ -21,9 +24,10 @@ class MenuController : AdminBaseController
 
     @Action string list()
     {
-        auto repository = new MenuRepository;
-        auto alldata = repository.findAll();
-        logDebug("menus : ", toJSON(alldata).toString);
+        uint page = request.get!uint("page" , 0);
+        auto repository = new MenuRepository();
+        auto alldata = pageToJson!Menu(repository.findAll(new Pageable(page , 20)));
+        logDebug("menus : ", alldata);
         view.assign("menus", alldata);
 
         return view.render("system/menu/list");

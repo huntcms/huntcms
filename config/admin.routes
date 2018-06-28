@@ -49,3 +49,6 @@ GET         /article/category/edit      article.category.edit
 GET         /article/category/del       article.category.del
 
 POST        /system/file/upload           system.file.upload
+
+GET         /system/logs                system.log.list
+GET         /system/log/del             system.log.del

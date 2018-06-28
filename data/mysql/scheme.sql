@@ -104,3 +104,26 @@ CREATE TABLE `hc_components_category` (
   `status` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS `hc_system_file_info` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL DEFAULT '0',
+  `filename` varchar(200) NOT NULL DEFAULT '0',
+  `rename` varchar(200) DEFAULT '0',
+  `sha1` varchar(200) NOT NULL DEFAULT '0',
+  `type` varchar(100) DEFAULT '0',
+  `size` bigint(20) DEFAULT '0',
+  `created` int(11) DEFAULT '0',
+  `updated` int(11) DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS `hc_system_log_info` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL DEFAULT '0',
+  `action` varchar(200) NOT NULL DEFAULT '0',
+  `params` text NOT NULL,
+  `type` varchar(50) NOT NULL DEFAULT '0',
+  `time` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

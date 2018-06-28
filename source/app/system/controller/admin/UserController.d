@@ -6,11 +6,10 @@ import app.common.controller.AdminBaseController;
 
 import app.system.model.User;
 import app.system.repository.UserRepository;
+import app.auth.Login;
 import app.system.repository.RoleRepository;
 import app.system.repository.UserRoleRepository;
 import app.system.helper.Password;
-
-import app.auth.Login;
 
 import entity.DefaultEntityManagerFactory;
 
@@ -65,7 +64,7 @@ class UserController : AdminBaseController
             User user = new User();
 
 
-            int time = time();
+            int time = cast(int)time();
             user.name = name;
             user.email = email;
             user.salt = generateSalt();
@@ -87,25 +86,24 @@ class UserController : AdminBaseController
 
             if (errorMessages.length == 0)
             {
-                auto em = Application.getInstance().getEntityManagerFactory().createEntityManager();
+                auto manager = defaultEntityManagerFactory().createEntityManager();
                 try {
-                    em.getTransaction().begin();
+                    manager.getTransaction().begin();
 
-                    auto userRepository = new UserRepository(em);
+                    auto userRepository = new UserRepository(manager);
 
                     userRepository.save(user);
-
-                    auto userRoleRepository = new UserRoleRepository(em);
+                    auto userRoleRepository = new UserRoleRepository(manager);
                     userRoleRepository.saves(user.id, roles);
 
-                    em.getTransaction().commit();
+                    manager.getTransaction().commit();
 
                     return new RedirectResponse("/admincp/system/users");
                 } catch(Exception e) {
 
                     errorMessages ~= "Email already existed.";
 
-                    em.getTransaction().rollback();
+                    manager.getTransaction().rollback();
 
                     kiss.logger.error(e);
                 }
@@ -121,8 +119,18 @@ class UserController : AdminBaseController
 
     @Action string edit()
     {
-        auto repository = new UserRepository;
+        int id = request.get!int("id", 0);
 
+        auto userRepository = new UserRepository;
+        auto user = userRepository.find(id);
+        if(request.method() == "POST")
+        {
+
+
+        }
+        auto userRoleRepository = new UserRoleRepository;
+        view.assign("user", user);
+        view.assign("userRoles", userRoleRepository.getUserRoleIds(id));
         view.assign("roles", (new RoleRepository).findAll());
         return view.render("system/user/edit");
     }
@@ -141,11 +149,9 @@ class UserController : AdminBaseController
         {
             string username = request.post("username" , "");
             string password = request.post("password" , "");
-
+            string salt = generateSalt();
+            password = generateUserPassword(password, salt);
             logInfo(username , password);
-            string temSalt = generateSalt();
-            password = generateUserPassword(password , temSalt);
-            
             auto user = UserInfo.login(username , password);
             if(user !is null)
             {
