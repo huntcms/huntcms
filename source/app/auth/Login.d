@@ -63,13 +63,16 @@ class UserInfo
 			auto acl_user = acl.createUser(cast(int)user.id , user.email);
 			auto acl_per = new AclPermission();
 
+			string permissionStr = "";
 			if (cast(int)user.supered == 1)
 			{
 				auto repository = new PermissionRepository();
 				auto alldata = repository.findAll();
 				int num = cast(int)alldata.length ;
 				for(int i = 0 ; i < num ; i ++){
-					acl_per.addPermission(alldata[i].id , alldata[i].title);				
+					acl_per.addPermission(alldata[i].id , alldata[i].title);
+
+					permissionStr ~= "," ~ alldata[i].id ;				
 				}
 				auto acl_role = acl.createRole(1, "supered", acl_per);  // define the superadministrator with all permissions
 			    acl_user.assignRole(acl_role);
@@ -84,12 +87,17 @@ class UserInfo
 					if(permission.length > 0){
 						foreach(pmn ; permission){							
 							acl_per.addPermission(pmn.id , pmn.title);
+
+							permissionStr ~= "," ~ pmn.id ;	
 						}					
 					}
 					auto acl_role = acl.createRole(role.id , role.name , acl_per);
 					acl_user.assignRole(acl_role);
 				}
 			}	
+
+			auto cache = Application.getInstance().getCache();
+			cache.put("user_permission_cache_" ~ to!string(user.id), permissionStr);
 
 			// writeln(acl_user.can("system.user.list"));
 			// writeln("++++++++++++++++++++++++++++++++");

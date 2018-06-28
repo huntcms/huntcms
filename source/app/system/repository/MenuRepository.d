@@ -34,7 +34,6 @@ class MenuRepository : EntityRepository!(Menu, int)
 
     Menu[] getMenusByPid(int parentId)
     {
-        // TODO
         auto objects = this.newObjects();
 
         auto p1 = objects.builder.equal(objects.root.Menu.pid, parentId);
@@ -45,12 +44,29 @@ class MenuRepository : EntityRepository!(Menu, int)
         return null;
     }
 
-    JSONValue getAllMenus()
+    JSONValue getAllMenus(string getAllMenus)
     {
-        JSONValue data = null;
-        Menu[] allMenus = this.findAll();
-        Menu[] pmenus = this.getMenusByPid(0);      
-        
+        JSONValue data = null;    
+
+        Menu[] allMenus = this.findAll();        
+
+        Menu[] firstLevelMenus = this.getMenusByPid(0);
+        foreach(fmenu ; firstLevelMenus)
+        {
+           string temFid = to!string(fmenu.id); 
+          
+           JSONValue[] allMenusData = null;   
+           foreach(aMenu ; allMenus)
+           {               
+                if(aMenu.pid == fmenu.id && aMenu.status == 1 && getAllMenus.indexOf(aMenu.mca) != -1){                   
+                    allMenusData ~= toJson(["name" :aMenu.name , "user_link" : aMenu.linkUrl ]) ;           
+                } 
+           }
+       
+           data[temFid] = ["name" : JSONValue(fmenu.name) , "icon_class" : JSONValue(fmenu.iconClass) , "menus" :JSONValue(allMenusData) ];
+        }
+      
         return data;
     }
+    
 }

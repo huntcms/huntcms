@@ -115,11 +115,23 @@
         <div class="container-fluid">
             <div id="navigation">
                 <!-- Navigation Menu-->
-                <ul class="navigation-menu">
+                <ul class="navigation-menu">   
+                    {% for k,v in menusJsonData %}
+                        <li class="has-submenu">
+                            <a href="#"><i class="{{v.icon_class}}"></i>{{v.name}}</a>
+                            {% if length(v.menus) > 0 %}
+                            <ul class="submenu">
+                                {% for m in v.menus %}
+                                <li><a href="/admincp{{m.user_link}}">{{m.name}}</a></li>
+                                {% endfor %}                             
+                            </ul> 
+                            {% endif %}                                                    
+                        </li>
+                    {% endfor %}
 
-                    <li class="has-submenu active">
+                    <!-- <li class="has-submenu active">
                         <a href="index.html"><i class="ti-home"></i>Dashboard</a>
-                    </li>
+                    </li>         
 
                     <li class="has-submenu">
                         <a href="#"><i class="ti-widget"></i>Article</a>
@@ -148,7 +160,7 @@
                                 </ul>
                             </li>
                         </ul>
-                    </li>
+                    </li> -->
 
                 </ul>
                 <!-- End navigation menu -->
