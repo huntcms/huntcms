@@ -26,6 +26,8 @@ class User
     // @Column("post_title")
     string name;
 
+    string avatar;
+
     // timestamp
     int created;
 

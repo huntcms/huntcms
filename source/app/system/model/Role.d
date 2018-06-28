@@ -24,4 +24,5 @@ class Role
 
     // 1: enabled, 0: disabled
     short status;
+
 }

@@ -5,27 +5,27 @@ import app.common.controller.AdminBaseController;
 
 import app.system.model.Role;
 import app.system.repository.RoleRepository;
+import app.system.repository.PermissionRepository;
+import app.system.helper.Utils;
 
 class RoleController : AdminBaseController
 {
     mixin MakeController;
- 
-    this()
-    {
-        super();      
-    }
 
     @Action string list()
     {
-        auto repository = new RoleRepository;
-
-        view.assign("permissions", repository.findAll());
+        view.assign("roles", (new RoleRepository).findAll());
 
         return view.render("system/role/list");
     }
 
     @Action string add()
     {
+        if(request.method == "POST"){
+            string name = request.post!string("name", "");
+            int[] permissionIds = Utils.getCheckbox(request.all(), "permissionid");
+        }
+        view.assign("permissions", (new PermissionRepository).findAll());
         return view.render("system/role/add");
     }
 

@@ -100,4 +100,11 @@ class UserInfo
 		return null;
 	}
 
+    static int userId(Request req){
+		auto str = req.session.get("USER");
+		if (str == null)
+            return 0;
+        auto user = unserialize!AclUser(cast(byte[]) str);
+        return user.id;
+    }
 }

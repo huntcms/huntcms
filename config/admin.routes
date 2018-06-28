@@ -14,6 +14,8 @@ POST        /system/user/add            system.user.add
 GET         /system/user/edit           system.user.edit
 POST        /system/user/edit           system.user.edit
 GET         /system/user/del            system.user.del
+GET         /system/user/profile        system.user.profile
+POST        /system/user/profile        system.user.profile
 
 GET         /system/roles               system.role.list
 GET         /system/role/add            system.role.add

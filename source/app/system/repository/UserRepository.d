@@ -23,6 +23,12 @@ class UserRepository : EntityRepository!(User, int)
         _entityManager = manager;
     }
 
+    this(){
+        EntityManager manager = Application.getInstance().getEntityManagerFactory().createEntityManager();
+        super(manager);
+        _entityManager = manager;
+    }
+
     Objects newObjects()
     {
         Objects objects;
@@ -39,6 +45,7 @@ class UserRepository : EntityRepository!(User, int)
         auto objects = this.newObjects();
 
         auto p1 = objects.builder.equal(objects.root.User.email, email);
+
         auto typedQuery = _entityManager.createQuery(objects.criteriaQuery.select(objects.root).where( p1 ));
         User[] users = typedQuery.getResultList();
         if(users.length > 0)

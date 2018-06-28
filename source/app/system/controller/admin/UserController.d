@@ -5,11 +5,15 @@ import hunt.http.RedirectResponse;
 import app.common.controller.AdminBaseController;
 
 import app.system.model.User;
+import app.system.model.Role;
+
 import app.system.repository.UserRepository;
-import app.auth.Login;
 import app.system.repository.RoleRepository;
 import app.system.repository.UserRoleRepository;
 import app.system.helper.Password;
+import app.system.helper.Utils;
+
+import app.auth.Login;
 
 import entity.DefaultEntityManagerFactory;
 
@@ -21,6 +25,7 @@ import std.json;
 
 import database.exception;
 
+import std.algorithm;
 
 class UserController : AdminBaseController
 {
@@ -48,17 +53,8 @@ class UserController : AdminBaseController
             string email = request.post!string("email");
             short status = request.post!short("status");
 
-            int[] roles;
+            int[] roleIds = Utils.getCheckbox(request.all(), "roleid");
 
-            foreach(paramk, paramv; params)
-            {
-                if(indexOf(paramk, "roleid") != -1)
-                {
-                    logInfo(paramv);
-                    roles ~= paramv.to!int();
-                }
-            }
-            logInfo(roles);
             string[] errorMessages;
 
             User user = new User();
@@ -94,7 +90,7 @@ class UserController : AdminBaseController
 
                     userRepository.save(user);
                     auto userRoleRepository = new UserRoleRepository(manager);
-                    userRoleRepository.saves(user.id, roles);
+                    userRoleRepository.saves(user.id, roleIds);
 
                     manager.getTransaction().commit();
 
@@ -117,22 +113,71 @@ class UserController : AdminBaseController
         return request.createResponse().setContent(view.render("system/user/add"));
     }
 
-    @Action string edit()
+    @Action Response edit()
     {
         int id = request.get!int("id", 0);
 
-        auto userRepository = new UserRepository;
-        auto user = userRepository.find(id);
+        auto manager = defaultEntityManagerFactory().createEntityManager();
+        auto userRoleRepository = new UserRoleRepository(manager);
+        auto userRepository = new UserRepository(manager);
+
+        auto findUser = userRepository.find(id);
         if(request.method() == "POST")
         {
+            auto params = request.all();
+            string name = request.post!string("name", "");
+            short status = request.post!short("status", 0);
+            int[] roleIds = Utils.getCheckbox(request.all(), "roleid");
 
+            try {
+                manager.getTransaction().begin();
 
+                auto user = userRepository.find(id);
+                user.name = name;
+                user.status = status;
+                userRepository.save(user);
+
+                userRoleRepository.removes(id);
+                userRoleRepository.saves(id, roleIds);
+                manager.getTransaction().commit();
+                return new RedirectResponse("/admincp/system/users");
+            } catch(Exception e) {
+
+                errorMessages ~= "Email already existed.";
+
+                manager.getTransaction().rollback();
+
+                kiss.logger.error(e);
+            }
+
+            return new RedirectResponse("/admincp/system/user/edit?id="~to!string(id));
         }
-        auto userRoleRepository = new UserRoleRepository;
-        view.assign("user", user);
-        view.assign("userRoles", userRoleRepository.getUserRoleIds(id));
+
+
+        view.assign("user", findUser);
+
+
+        auto roles = (new RoleRepository).findAll();
+        int[] userRoleIds = userRoleRepository.getUserRoleIds(id);
+        class userRoleClass{
+            Role role;
+            string checked;
+        }
+        userRoleClass[] userRoles;
+        foreach(key, role; roles){
+            auto tmp =new userRoleClass;
+            tmp.role = role;
+            if(canFind(userRoleIds, role.id)){
+                tmp.checked ~= "checked";
+            }else{
+                tmp.checked ~= "";
+            }
+            userRoles ~= tmp;
+        }
+        view.assign("userRoles", userRoles);
+
         view.assign("roles", (new RoleRepository).findAll());
-        return view.render("system/user/edit");
+        return request.createResponse().setContent(view.render("system/user/edit"));
     }
 
     @Action string del()
@@ -143,6 +188,35 @@ class UserController : AdminBaseController
         return view.render("system/user/edit");
     }
 
+    @Action string profile()
+    {
+        auto userRepository = new UserRepository;
+        User user = userRepository.find(UserInfo.userId(request));
+
+        if(request.method == "POST"){
+            string name = request.post!string("name", "");
+            string password = request.post!string("password", "");
+            string rpassword = request.post!string("rpassword", "");
+            if(name.length < 1 || name.length > 12){
+                this.errorMessages ~= "Name 1 - 12 Characters";
+            }
+            if(password.length > 0 || rpassword.length > 0){
+                if(password.length <6 || password.length > 32){
+                    this.errorMessages ~= "Password 6 - 32 Characters";
+                }
+                if(password != rpassword){
+                    this.errorMessages ~= "Inconsistency of Password";
+                }
+                user.password = generateUserPassword(password, user.salt);
+            }
+            user.name = name;
+            userRepository.save(user);
+        }
+
+        view.assign("user", user);
+        return view.render("system/user/profile");
+    }
+
     @Action Response login()
     {
         if(request.method() == HttpMethod.Post)
@@ -150,15 +224,18 @@ class UserController : AdminBaseController
             string username = request.post("username" , "");
             string password = request.post("password" , "");
             string salt = generateSalt();
-            password = generateUserPassword(password, salt);
-            logInfo(username , password);
-            auto user = UserInfo.login(username , password);
-            if(user !is null)
-            {
-                UserInfo.put(request , user);
-                
-                return new RedirectResponse("/admincp/system/users");
-            }          
+            auto find = (new UserRepository).findByEmail(username);
+            if(find){
+                auto user = UserInfo.login(username , generateUserPassword(password, find.salt));
+                if(user !is null)
+                {
+                    UserInfo.put(request , user);
+
+                    return new RedirectResponse("/admincp/system/users");
+                }
+            }else{
+                this.errorMessages ~= "Your email has not been found or has been banned";
+            }
         }
         return request.createResponse().setContent(view.render("system/user/login"));
     }
@@ -167,7 +244,7 @@ class UserController : AdminBaseController
     {
         if(request.session.has("USER")){
             request.session.remove("USER");
-        }   
+        }
         return new RedirectResponse("/admincp/login");
     }
 }

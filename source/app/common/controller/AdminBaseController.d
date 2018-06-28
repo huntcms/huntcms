@@ -4,6 +4,7 @@ import hunt;
 
 class AdminBaseController : Controller
 {
+    protected string[] errorMessages;
     this()
     {
      
@@ -11,15 +12,15 @@ class AdminBaseController : Controller
 
     override bool before()
 	{
-        view.assign("menus", "66668888");
-		if (cmp(toUpper(request.method), HttpMethod.Options) == 0)
+        logInfo("---running before----");
+        if (cmp(toUpper(request.method), HttpMethod.Options) == 0)
 			return false;
 		return true;
 	}
 
 	override bool after()
 	{
-		log("---running after----");
+		logInfo("---running after----");
 		return true;
 	}
     

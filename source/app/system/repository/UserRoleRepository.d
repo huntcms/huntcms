@@ -1,5 +1,7 @@
 module app.system.repository.UserRoleRepository;
 
+import hunt;
+
 import entity.repository;
 
 import app.system.model.User;
@@ -11,6 +13,7 @@ import entity.EntityManager;
 
 import kiss.logger;
 
+import std.algorithm;
 class UserRoleRepository : EntityRepository!(UserRole, int)
 {
 
@@ -23,6 +26,12 @@ class UserRoleRepository : EntityRepository!(UserRole, int)
     }
 
     this(EntityManager manager = null) {
+        super(manager);
+        _entityManager = manager;
+    }
+
+    this(){
+        EntityManager manager = Application.getInstance().getEntityManagerFactory().createEntityManager();
         super(manager);
         _entityManager = manager;
     }
@@ -53,8 +62,17 @@ class UserRoleRepository : EntityRepository!(UserRole, int)
             r.role_id = roleId;
             userRole ~= r;
         }
-        logInfo("test");
         this.saveAll(userRole);
+        return true;
+    }
+
+    bool removes(int userId)
+    {
+        auto objects = this.newObjects();
+        auto p1 = objects.builder.equal(objects.root.UserRole.user_id, userId);
+        auto typedQuery = _entityManager.createQuery(objects.criteriaQuery.select(objects.root).where( p1 ));
+        UserRole[] userRoles = typedQuery.getResultList();
+        this.removeAll(userRoles);
         return true;
     }
 

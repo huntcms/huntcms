@@ -29,7 +29,7 @@
                     <div class="row">
                         <div class="col-sm-6">
                             <div class="m-b-30">
-                                <a href="/admincp/system/user/add" id="addToTable"
+                                <a href="/admincp/system/role/add" id="addToTable"
                                    class="btn btn-success waves-effect waves-light">Add <i
                                         class="mdi mdi-plus-circle-outline"></i></a>
                             </div>
@@ -39,8 +39,8 @@
                     <table class="table table-striped add-edit-table" id="datatable-editable">
                         <thead>
                         <tr>
-                            <th>Nickname</th>
-                            <th>Email</th>
+                            <th>Id</th>
+                            <th>Name</th>
                             <th>Updated</th>
                             <th>Created</th>
                             <th>Status</th>
@@ -60,7 +60,7 @@
                                             </select>
                                         </div>
                                         <div class="form-group float-left m-r-5">
-                                            <input id="demo-foo-search" name="keyword" type="text" placeholder="Search Name Or Email"
+                                            <input id="demo-foo-search" name="keyword" type="text" placeholder="Search Role Name"
                                                    class="form-control" autocomplete="on">
                                         </div>
                                         <div class="form-group float-left m-r-5">
@@ -69,7 +69,7 @@
                                                     class="fa fa-search"></i></button>
                                         </div>
                                         <div class="form-group float-left m-r-5">
-                                            <a href="/admincp/system/users"
+                                            <a href="/admincp/system/roles"
                                                class="btn btn-icon waves-effect waves-light btn-success m-b-5"><i
                                                     class="fa fa-refresh"></i></a>
                                         </div>
@@ -79,24 +79,24 @@
                             </div>
                         </div>
                         <tbody>
-                        {% for user in users %}
+                        {% for role in roles %}
                         <tr>
-                            <td>{{user.name}}</td>
-                            <td>{{user.email}}</td>
-                            <td>{{date('Y-m-d H:i:s',user.created)}}</td>
-                            <td>{{date('Y-m-d H:i:s',user.updated)}}</td>
+                            <td>{{role.id}}</td>
+                            <td>{{role.name}}</td>
+                            <td>{{date('Y-m-d H:i:s',role.created)}}</td>
+                            <td>{{date('Y-m-d H:i:s',role.updated)}}</td>
                             <td>
-                                {% if user.status == 0 %}
+                                {% if role.status == 0 %}
                                 <span class="badge label-table badge-danger">Disabled</span>
                                 {% else %}
                                 <span class="badge label-table badge-success">Enabled</span>
                                 {% endif %}
                             </td>
                             <td class="actions">
-                                <a href="/admincp/system/user/edit?id={{ user.id }}" class="on-default edit-row"
+                                <a href="/admincp/system/role/edit?id={{ role.id }}" class="on-default edit-row"
                                    data-toggle="tooltip" data-placement="top" title="" data-original-title="Click Edit"><i
                                         class="fa fa-pencil"></i></a>
-                                <a href="/admincp/system/user/del?id={{ user.id }}" class="on-default remove-row"
+                                <a href="/admincp/system/role/del?id={{ role.id }}" class="on-default remove-row"
                                    data-toggle="tooltip" data-placement="top" title=""
                                    data-original-title="Click Delete"><i class="fa fa-trash-o"></i></a>
                             </td>
