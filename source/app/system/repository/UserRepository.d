@@ -20,11 +20,18 @@ class UserRepository : EntityRepository!(User, int)
 
     this(EntityManager manager = null) {
         super(manager);
+        _entityManager = manager;
     }
 
-    this()
+    Objects newObjects()
     {
-        super(Application.getInstance().getEntityManagerFactory().createEntityManager());
+        Objects objects;
+
+        objects.builder = _entityManager.getCriteriaBuilder();
+        objects.criteriaQuery = objects.builder.createQuery!User;
+        objects.root = objects.criteriaQuery.from();
+
+        return objects;
     }
 
     User findByEmail(string email)
@@ -37,15 +44,5 @@ class UserRepository : EntityRepository!(User, int)
         if(users.length > 0)
             return users[0];
         return null;
-    }
-
-    Objects newObjects()
-    {
-        Objects objects;
-        objects.builder = _entityManager.getCriteriaBuilder();
-        objects.criteriaQuery = objects.builder.createQuery!User;
-        objects.root = objects.criteriaQuery.from();
-
-        return objects;
     }
 }

@@ -149,7 +149,8 @@ class UserController : AdminBaseController
         {
             string username = request.post("username" , "");
             string password = request.post("password" , "");
-
+            string salt = generateSalt();
+            password = generateUserPassword(password, salt);
             logInfo(username , password);
             auto user = UserInfo.login(username , password);
             if(user !is null)
