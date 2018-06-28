@@ -9,7 +9,8 @@ import hunt;
 
 class UserRepository : EntityRepository!(User, int)
 {
-    private EntityManager _entityMnagaer;
+    private EntityManager _entityManager;
+
     struct Objects
     {
         CriteriaBuilder builder;
@@ -19,14 +20,14 @@ class UserRepository : EntityRepository!(User, int)
 
     this(EntityManager manager = null) {
         super(manager);
-        _entityMnagaer = manager;
+        _entityManager = manager;
     }
 
     Objects newObjects()
     {
         Objects objects;
 
-        objects.builder = _entityMnagaer.getCriteriaBuilder();
+        objects.builder = _entityManager.getCriteriaBuilder();
         objects.criteriaQuery = objects.builder.createQuery!User;
         objects.root = objects.criteriaQuery.from();
 
@@ -38,7 +39,7 @@ class UserRepository : EntityRepository!(User, int)
         auto objects = this.newObjects();
 
         auto p1 = objects.builder.equal(objects.root.User.email, email);
-        auto typedQuery = _entityMnagaer.createQuery(objects.criteriaQuery.select(objects.root).where( p1 ));
+        auto typedQuery = _entityManager.createQuery(objects.criteriaQuery.select(objects.root).where( p1 ));
         User[] users = typedQuery.getResultList();
         if(users.length > 0)
             return users[0];

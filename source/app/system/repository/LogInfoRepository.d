@@ -12,6 +12,7 @@ import hunt;
 
 class LogInfoRepository : EntityRepository!(LogInfo, int)
 {
+    private EntityManager _entityManager;
 
     // struct Objects
     // {
@@ -24,6 +25,7 @@ class LogInfoRepository : EntityRepository!(LogInfo, int)
         // if(manager !is null)
         //     manager = Application.getInstance().getEntityManagerFactory().createEntityManager();
         super(manager);
+        _entityManager = manager;
     }
 
 
