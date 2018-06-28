@@ -1,13 +1,19 @@
 module app.system.controller.admin.RoleController;
 
 import hunt;
+import app.common.controller.AdminBaseController;
 
 import app.system.model.Role;
 import app.system.repository.RoleRepository;
 
-class RoleController : Controller
+class RoleController : AdminBaseController
 {
     mixin MakeController;
+ 
+    this()
+    {
+        super();      
+    }
 
     @Action string list()
     {

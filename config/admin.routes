@@ -5,6 +5,7 @@
 GET         /                         system.dashboard.dashboard
 GET         /login                    system.user.login
 POST        /login                    system.user.login
+GET         /logout                   system.user.logout
 
 
 GET         /system/users               system.user.list

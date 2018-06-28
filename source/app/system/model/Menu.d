@@ -11,6 +11,8 @@ class Menu
     @PrimaryKey
     int id;
 
+    int pid;
+
     string name;
 
     @Column("is_action")
@@ -23,6 +25,11 @@ class Menu
     @Column("link_url")
     string linkUrl;
 
+    @Column("icon_class")
+    string iconClass;
+
+    int sort;
+    
     // timestamp
     int created;
 

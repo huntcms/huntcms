@@ -2,6 +2,7 @@ module app.system.controller.admin.UserController;
 
 import hunt;
 import hunt.http.RedirectResponse;
+import app.common.controller.AdminBaseController;
 
 import app.system.model.User;
 import app.system.repository.UserRepository;
@@ -22,9 +23,14 @@ import std.json;
 import database.exception;
 
 
-class UserController : Controller
+class UserController : AdminBaseController
 {
     mixin MakeController;
+
+    this()
+    {
+        super();      
+    }
 
     @Action string list()
     {
@@ -149,5 +155,13 @@ class UserController : Controller
             }          
         }
         return request.createResponse().setContent(view.render("system/user/login"));
+    }
+
+    @Action Response logout()
+    {
+        if(request.session.has("USER")){
+            request.session.remove("USER");
+        }   
+        return new RedirectResponse("/admincp/login");
     }
 }

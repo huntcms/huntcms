@@ -93,7 +93,7 @@ class UserInfo
 
 			// writeln(acl_user.can("system.user.list"));
 			// writeln("++++++++++++++++++++++++++++++++");
-			
+
 			return acl_user;
 		}
 
