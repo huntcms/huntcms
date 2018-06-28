@@ -9,14 +9,16 @@ import kiss.logger;
 import kiss.util.serialize;
 import kiss.datetime;
 import app.system.controller.admin.LogMiddleware;
+import app.common.controller.AdminBaseController;
 
-class PermissionController : Controller
+class PermissionController : AdminBaseController
 {
     mixin MakeController;
 
     this()
     {
-        this.addMiddleware(new LogMiddleware);
+        super();   
+        this.addMiddleware(new LogMiddleware);   
     }
 
     //@Middleware("LogMiddleware")
