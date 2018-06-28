@@ -119,17 +119,16 @@ class UserController : AdminBaseController
 
     @Action string edit()
     {
+        int id = request.get!int("id", 0);
 
         auto userRepository = new UserRepository;
-
         auto user = userRepository.find(id);
         if(request.method() == "POST")
         {
-            int id = request.post!int("id");
+
 
         }
         auto userRoleRepository = new UserRoleRepository;
-        int id = request.get!int("id");
         view.assign("user", user);
         view.assign("userRoles", userRoleRepository.getUserRoleIds(id));
         view.assign("roles", (new RoleRepository).findAll());

@@ -12,6 +12,8 @@ import kiss.logger;
 class FileInfoRepository : EntityRepository!(FileInfo, int)
 {
 
+    private EntityManager _entityManager;
+
     struct Objects
     {
         CriteriaBuilder builder;
@@ -21,6 +23,7 @@ class FileInfoRepository : EntityRepository!(FileInfo, int)
 
     this(EntityManager manager = null) {
         super(manager);
+        _entityManager = manager;
     }
 
 
@@ -28,7 +31,7 @@ class FileInfoRepository : EntityRepository!(FileInfo, int)
     {
         Objects objects;
 
-        objects.builder = getEntityManager().getCriteriaBuilder();
+        objects.builder = _entityManager.getCriteriaBuilder();
         objects.criteriaQuery = objects.builder.createQuery!FileInfo;
         objects.root = objects.criteriaQuery.from();
 

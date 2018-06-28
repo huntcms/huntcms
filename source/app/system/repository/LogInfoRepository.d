@@ -11,6 +11,7 @@ import kiss.logger;
 
 class LogInfoRepository : EntityRepository!(LogInfo, int)
 {
+    private EntityManager _entityManager;
 
     struct Objects
     {
@@ -21,6 +22,7 @@ class LogInfoRepository : EntityRepository!(LogInfo, int)
 
     this(EntityManager manager = null) {
         super(manager);
+        _entityManager = manager;
     }
 
 
@@ -28,7 +30,7 @@ class LogInfoRepository : EntityRepository!(LogInfo, int)
     {
         Objects objects;
 
-        objects.builder = getEntityManager().getCriteriaBuilder();
+        objects.builder = _entityManager.getCriteriaBuilder();
         objects.criteriaQuery = objects.builder.createQuery!LogInfo;
         objects.root = objects.criteriaQuery.from();
 
