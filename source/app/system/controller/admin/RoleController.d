@@ -4,7 +4,9 @@ import hunt;
 
 import app.common.controller.AdminBaseController;
 
+import app.system.model.RolePermission;
 import app.system.model.Role;
+import app.system.model.Permission;
 import app.system.repository.RoleRepository;
 import app.system.repository.PermissionRepository;
 import app.system.repository.RolePermissionRepository;
@@ -13,6 +15,8 @@ import app.system.helper.Utils;
 import kiss.datetime;
 
 import entity.DefaultEntityManagerFactory;
+
+import std.algorithm;
 
 class RoleController : AdminBaseController
 {
@@ -64,12 +68,69 @@ class RoleController : AdminBaseController
 
     }
 
-    @Action string edit()
+    @Action Response edit()
     {
-        auto repository = new RoleRepository;
-        
-        //view.assign("permissions", repository.findById( request.get!int("id", 0) ));
+        int id = request.get!int("id", 0);
 
-        return view.render("system/role/add");
+        auto manager = defaultEntityManagerFactory().createEntityManager();
+        auto rolePermissionRepository = new RolePermissionRepository(manager);
+        auto roleRepository = new RoleRepository(manager);
+
+        auto findRole = roleRepository.find(id);
+        if(request.method() == "POST")
+        {
+            auto params = request.all();
+            string name = request.post!string("name", "");
+            short status = request.post!short("status", 0);
+            string[] permissionIds = Utils.getCheckbox!string(request.all(), "permissionid");
+
+            try {
+                manager.getTransaction().begin();
+
+                auto role = findRole;
+                role.name = name;
+                role.status = status;
+                roleRepository.save(role);
+
+                rolePermissionRepository.removes(id);
+                rolePermissionRepository.saves(id, permissionIds);
+                manager.getTransaction().commit();
+                return new RedirectResponse("/admincp/system/roles");
+            } catch(Exception e) {
+
+                errorMessages ~= "error.";
+
+                manager.getTransaction().rollback();
+
+                kiss.logger.error(e);
+            }
+
+            return new RedirectResponse("/admincp/system/role/edit?id="~to!string(id));
+        }
+
+
+        view.assign("role", findRole);
+
+
+        auto permissions = (new PermissionRepository).findAll();
+        string[] rolePermissionIds = rolePermissionRepository.getRolePermissionIds(id);
+        class rolePermissionClass{
+            Permission permission;
+            string checked;
+        }
+        rolePermissionClass[] rolePermissions;
+        foreach(key, permission; permissions){
+            auto tmp =new rolePermissionClass;
+            tmp.permission = permission;
+            if(canFind(rolePermissionIds, permission.id)){
+                tmp.checked ~= "checked";
+            }else{
+                tmp.checked ~= "";
+            }
+            rolePermissions ~= tmp;
+        }
+        view.assign("rolePermissions", rolePermissions);
+
+        return request.createResponse().setContent(view.render("system/role/edit"));
     }
 }
