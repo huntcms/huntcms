@@ -16,7 +16,7 @@ class AdminBaseController : Controller
     override bool before()
 	{
 		auto repository = new MenuRepository;
-		auto cache = Application.getInstance().getCache();
+		auto cache = Application.getInstance().cache();
 		
 		auto userInfo = UserInfo.get(request);
 

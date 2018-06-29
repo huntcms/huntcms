@@ -19,15 +19,8 @@ class RolePermissionRepository : EntityRepository!(RolePermission, int)
 
     this(EntityManager manager = null) {
         super(manager);
-        _entityManager = manager;
+        _entityManager = manager is null ? createEntityManager() : manager;
     }
-
-    this(){
-        EntityManager manager = Application.getInstance().getEntityManagerFactory().createEntityManager();
-        super(manager);
-        _entityManager = manager;
-    }
-
 
     Permission[] getRolePermissions(int roleId)
     {

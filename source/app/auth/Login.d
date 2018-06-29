@@ -59,7 +59,7 @@ class UserInfo
 				return null;
 			}
 
-			auto acl = Application.getInstance().getAccessManager();
+			auto acl = Application.getInstance().accessManager();
 			auto acl_user = acl.createUser(cast(int)user.id , user.name);
 			auto acl_per = new AclPermission();
 
@@ -96,7 +96,7 @@ class UserInfo
 				}
 			}	
 
-			auto cache = Application.getInstance().getCache();
+			auto cache = Application.getInstance().cache();
 			cache.put("user_permission_cache_" ~ to!string(user.id), permissionStr);
 
 			// writeln(acl_user.can("system.user.list"));

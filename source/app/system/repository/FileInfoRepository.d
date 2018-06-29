@@ -21,8 +21,6 @@ class FileInfoRepository : EntityRepository!(FileInfo, int)
     // }
 
     this(EntityManager manager = null) {
-        // if(manager is null)
-        //     manager = Application.getInstance().getEntityManagerFactory().createEntityManager();
         super(manager);
     }
 

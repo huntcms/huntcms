@@ -20,13 +20,7 @@ class UserRepository : EntityRepository!(User, int)
 
     this(EntityManager manager = null) {
         super(manager);
-        _entityManager = manager;
-    }
-
-    this(){
-        EntityManager manager = Application.getInstance().getEntityManagerFactory().createEntityManager();
-        super(manager);
-        _entityManager = manager;
+        _entityManager = manager is null ? createEntityManager() : manager;
     }
 
     Objects newObjects()

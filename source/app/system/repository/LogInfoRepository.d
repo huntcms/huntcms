@@ -22,8 +22,6 @@ class LogInfoRepository : EntityRepository!(LogInfo, int)
     // }
 
     this(EntityManager manager = null) {
-        // if(manager !is null)
-        //     manager = Application.getInstance().getEntityManagerFactory().createEntityManager();
         super(manager);
         _entityManager = manager;
     }

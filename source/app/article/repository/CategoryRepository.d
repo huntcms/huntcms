@@ -7,8 +7,8 @@ import hunt;
 
 class CategoryRepository : EntityRepository!(Category, int)
 {
-    this()
+    this(EntityManager manager = null)
     {
-        super(Application.getInstance().getEntityManagerFactory().createEntityManager());
+        super(manager);
     }
 }

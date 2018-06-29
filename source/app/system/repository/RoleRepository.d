@@ -23,15 +23,9 @@ class RoleRepository : EntityRepository!(Role, int)
         _entityManager = manager;
     }
 
-    this(){
-        EntityManager manager = Application.getInstance().getEntityManagerFactory().createEntityManager();
-        super(manager);
-        _entityManager = manager;
-    }
-
     Role[] getUserRoles(int userId)
     {
-        return this.findAllById((new UserRoleRepository(Application.getInstance().getEntityManagerFactory().createEntityManager())).getUserRoleIds(userId));
+        return this.findAllById(new UserRoleRepository().getUserRoleIds(userId));
     }
 
 

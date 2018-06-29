@@ -7,8 +7,8 @@ import hunt;
 
 class ArticleRepository : EntityRepository!(Article, int)
 {
-    this()
+    this(EntityManager manager = null)
     {
-        super(Application.getInstance().getEntityManagerFactory().createEntityManager());
+        super(manager);
     }
 }

@@ -15,9 +15,9 @@ class MenuRepository : EntityRepository!(Menu, int)
         Root!Menu root;
     }
 
-    this()
+    this(EntityManager manager = null)
     {
-         _entityMnagaer = Application.getInstance().getEntityManagerFactory().createEntityManager();
+         _entityMnagaer = manager is null ? createEntityManager() : manager;
         super(_entityMnagaer);
     }
 

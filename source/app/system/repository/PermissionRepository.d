@@ -9,8 +9,8 @@ import hunt;
 
 class PermissionRepository : EntityRepository!(Permission, string)
 {
-    this()
+    this(EntityManager manager = null)
     {
-        super(Application.getInstance().getEntityManagerFactory().createEntityManager());
+        super(manager);
     }
 }

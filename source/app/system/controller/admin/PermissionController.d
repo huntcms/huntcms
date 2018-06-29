@@ -22,10 +22,9 @@ class PermissionController : AdminBaseController
     this()
     {
         super();   
-        //this.addMiddleware(new LogMiddleware);   
+        this.addMiddleware(new LogMiddleware);   
     }
 
-    //@Middleware("LogMiddleware")
     @Action string list()
     {
         uint page = request.get!uint("page" , 0);
