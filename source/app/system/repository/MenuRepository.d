@@ -62,8 +62,9 @@ class MenuRepository : EntityRepository!(Menu, int)
                     allMenusData ~= toJson(["name" :aMenu.name , "user_link" : aMenu.linkUrl ]) ;           
                 } 
            }
-       
-           data[temFid] = ["name" : JSONValue(fmenu.name) , "icon_class" : JSONValue(fmenu.iconClass) , "menus" :JSONValue(allMenusData) ];
+
+           string userUrl = Application.getInstance().router().createUrl(fmenu.mca);
+           data[temFid] = ["name" : JSONValue(fmenu.name) , "icon_class" : JSONValue(fmenu.iconClass) , "menus" :JSONValue(allMenusData), "user_link" : JSONValue(userUrl) ];
         }
       
         return data;

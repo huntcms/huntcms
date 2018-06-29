@@ -8,7 +8,7 @@ import hunt;
 
 class RolePermissionRepository : EntityRepository!(RolePermission, int)
 {
-    private EntityManager _entityMnagaer;
+    private EntityManager _entityManager;
 
     struct Objects
     {
@@ -16,18 +16,24 @@ class RolePermissionRepository : EntityRepository!(RolePermission, int)
         CriteriaQuery!RolePermission criteriaQuery;
         Root!RolePermission root;
     }
-  
-    this()
-    {
-         _entityMnagaer = Application.getInstance().getEntityManagerFactory().createEntityManager();
-        super(_entityMnagaer);
+
+    this(EntityManager manager = null) {
+        super(manager);
+        _entityManager = manager;
     }
+
+    this(){
+        EntityManager manager = Application.getInstance().getEntityManagerFactory().createEntityManager();
+        super(manager);
+        _entityManager = manager;
+    }
+
 
     Permission[] getRolePermissions(int roleId)
     {
         auto objects = this.newObjects();
         auto p1 = objects.builder.equal(objects.root.RolePermission.role_id, roleId);
-        auto typedQuery = _entityMnagaer.createQuery(objects.criteriaQuery.select(objects.root).where( p1 ));
+        auto typedQuery = _entityManager.createQuery(objects.criteriaQuery.select(objects.root).where( p1 ));
         RolePermission[] rolePermissions = typedQuery.getResultList();
 
         Permission[] permissions;
@@ -41,11 +47,24 @@ class RolePermissionRepository : EntityRepository!(RolePermission, int)
         return permissions;
     }
 
+    bool saves(int roleId, string[] permissionIds)
+    {
+        RolePermission[] rolePermission;
+        foreach(permissionId; permissionIds){
+            RolePermission r = new RolePermission();
+            r.role_id = roleId;
+            r.permission_id = permissionId;
+            rolePermission ~= r;
+        }
+        this.saveAll(rolePermission);
+        return true;
+    }
+
     Objects newObjects()
     {
         Objects objects;
 
-        objects.builder = _entityMnagaer.getCriteriaBuilder();
+        objects.builder = _entityManager.getCriteriaBuilder();
         objects.criteriaQuery = objects.builder.createQuery!RolePermission;
         objects.root = objects.criteriaQuery.from();
         return objects;

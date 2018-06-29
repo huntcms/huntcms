@@ -9,9 +9,24 @@ import hunt;
 
 class RoleRepository : EntityRepository!(Role, int)
 {
-    this()
+    private EntityManager _entityManager;
+
+    struct Objects
     {
-        super(Application.getInstance().getEntityManagerFactory().createEntityManager());
+        CriteriaBuilder builder;
+        CriteriaQuery!Role criteriaQuery;
+        Root!Role root;
+    }
+
+    this(EntityManager manager = null) {
+        super(manager);
+        _entityManager = manager;
+    }
+
+    this(){
+        EntityManager manager = Application.getInstance().getEntityManagerFactory().createEntityManager();
+        super(manager);
+        _entityManager = manager;
     }
 
     Role[] getUserRoles(int userId)

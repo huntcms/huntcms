@@ -41,18 +41,19 @@ public:
     }
 
 public:
-    static int[] getCheckbox(string[string] requestParams, string keyword)
+    static T[] getCheckbox(T)(string[string] requestParams, string keyword)
     {
-        int[] resultIds;
+        T[] resultIds;
 
         foreach(key, value; requestParams)
         {
             if(indexOf(key, keyword) != -1)
             {
-                resultIds ~= value.to!int();
+                resultIds ~= value.to!T();
             }
         }
         return resultIds;
     }
+
 
 }

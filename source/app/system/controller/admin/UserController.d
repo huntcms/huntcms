@@ -53,7 +53,7 @@ class UserController : AdminBaseController
             string email = request.post!string("email");
             short status = request.post!short("status");
 
-            int[] roleIds = Utils.getCheckbox(request.all(), "roleid");
+            int[] roleIds = Utils.getCheckbox!int(request.all(), "roleid");
 
             string[] errorMessages;
 
@@ -127,7 +127,7 @@ class UserController : AdminBaseController
             auto params = request.all();
             string name = request.post!string("name", "");
             short status = request.post!short("status", 0);
-            int[] roleIds = Utils.getCheckbox(request.all(), "roleid");
+            int[] roleIds = Utils.getCheckbox!int(request.all(), "roleid");
 
             try {
                 manager.getTransaction().begin();
