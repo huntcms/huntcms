@@ -60,7 +60,7 @@ class UserInfo
 			}
 
 			auto acl = Application.getInstance().getAccessManager();
-			auto acl_user = acl.createUser(cast(int)user.id , user.email);
+			auto acl_user = acl.createUser(cast(int)user.id , user.name);
 			auto acl_per = new AclPermission();
 
 			string permissionStr = "";

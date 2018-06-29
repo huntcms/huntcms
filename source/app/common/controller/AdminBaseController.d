@@ -26,6 +26,7 @@ class AdminBaseController : Controller
 			string permission = cache.get("user_permission_cache_" ~ to!string(userInfo.id()) );
 			JSONValue menuData = repository.getAllMenus(permission); 
 			view.assign("menusJsonData", menuData);
+			view.assign("userName", userInfo.name());
 		 }
 		if (cmp(toUpper(request.method), HttpMethod.Options) == 0)
 			return false;
