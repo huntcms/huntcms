@@ -2,4 +2,4 @@
 # method    path                      module.controller.action
 #
 
-GET         /                         system.portal.index
+GET         /                         portal.portal.index
