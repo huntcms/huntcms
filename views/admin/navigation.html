@@ -116,7 +116,7 @@
             <div id="navigation">
                 <!-- Navigation Menu-->
                 <ul class="navigation-menu">   
-                    {% for k,v in menusJsonData %}
+                    {% for v in menusJsonData %}
                         <li class="has-submenu">
                             <a href="/admincp{{v.user_link}}"><i class="{{v.icon_class}}"></i>{{v.name}}</a>
                             {% if length(v.menus) > 0 %}

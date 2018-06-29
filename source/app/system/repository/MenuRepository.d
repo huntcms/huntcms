@@ -28,6 +28,7 @@ class MenuRepository : EntityRepository!(Menu, int)
         objects.builder = _entityMnagaer.getCriteriaBuilder();
         objects.criteriaQuery = objects.builder.createQuery!Menu;
         objects.root = objects.criteriaQuery.from();
+        objects.criteriaQuery.orderBy(objects.builder.asc(objects.root.Menu.sort));
 
         return objects;
     }
@@ -36,7 +37,7 @@ class MenuRepository : EntityRepository!(Menu, int)
     {
         auto objects = this.newObjects();
 
-        auto p1 = objects.builder.equal(objects.root.Menu.pid, parentId);
+        auto p1 = objects.builder.equal(objects.root.Menu.pid, parentId);        
         auto typedQuery = _entityMnagaer.createQuery(objects.criteriaQuery.select(objects.root).where( p1 ));
         Menu[] menus = typedQuery.getResultList();
         if(menus.length > 0)
@@ -44,9 +45,9 @@ class MenuRepository : EntityRepository!(Menu, int)
         return null;
     }
 
-    JSONValue getAllMenus(string getAllMenus)
+    JSONValue[] getAllMenus(string getAllMenus)
     {
-        JSONValue data = null;    
+        JSONValue[] data = null;    
 
         Menu[] allMenus = this.findAll();        
 
@@ -64,9 +65,10 @@ class MenuRepository : EntityRepository!(Menu, int)
            }
 
            string userUrl = Application.getInstance().router().createUrl(fmenu.mca);
-           data[temFid] = ["name" : JSONValue(fmenu.name) , "icon_class" : JSONValue(fmenu.iconClass) , "menus" :JSONValue(allMenusData), "user_link" : JSONValue(userUrl) ];
+           JSONValue temInfo = ["name" : JSONValue(fmenu.name) , "icon_class" : JSONValue(fmenu.iconClass) , "menus" :JSONValue(allMenusData), "user_link" : JSONValue(userUrl) ];
+           data ~= temInfo;
         }
-      
+       
         return data;
     }
     
