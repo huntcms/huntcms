@@ -8,8 +8,8 @@ class PortalController : Controller
 
     @Action string index()
     {
-        import hunt.routing.router;
         string url = createUrl("system.dashboard.dashboard", null, "admin");
+
         return "<a href='" ~ url ~ "'>Go to AdminCP!</a>";
     }
 }
