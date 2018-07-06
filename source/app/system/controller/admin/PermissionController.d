@@ -13,7 +13,7 @@ import app.common.controller.AdminBaseController;
 import app.system.helper.Utils;
 
 import entity.domain;
-
+import app.system.helper.Paginate;
 
 class PermissionController : AdminBaseController
 {
@@ -27,11 +27,16 @@ class PermissionController : AdminBaseController
 
     @Action string list()
     {
-        uint page = request.get!uint("page" , 0);
+        uint page = request.get!uint("page" , 1);
         auto repository = new PermissionRepository();
-        auto alldata = pageToJson!Permission(repository.findAll(new Pageable(page , 20)));
+        int limit = 20 ;  // 每页显示多少条
+        JSONValue alldata = pageToJson!Permission(repository.findAll(new Pageable((page-1 < 0 ? 0 : page-1 ) , limit)));
         logDebug("permissions : ",alldata);
         view.assign("permissions", alldata);
+
+        int totalPages = cast(int)alldata["totalPages"].integer ;
+        Paginate temPage = new Paginate("/admincp/system/permissions?page={page}" , (cast(int) page <= 0 ? 1 : cast(int) page) , totalPages);
+        view.assign("pageView", temPage.showPages());
 
         return view.render("system/permission/list");
     }

@@ -13,7 +13,7 @@ static JSONValue pageToJson(T)(Page!T pageObj)
 	int cur = pageObj.getNumber();
 	page["cur"] = cur;
 	page["total"] = pageObj.getTotalElements();
-	page["totalPages"] = pageObj.getTotalPages() -1;
+	page["totalPages"] = pageObj.getTotalPages();
 	page["size"] = pageObj.getSize();
 	page["prev"] = cur - 1;
 	page["next"] = cur + 1;
