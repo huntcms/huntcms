@@ -118,11 +118,11 @@
                 <ul class="navigation-menu">   
                     {% for v in menusJsonData %}
                         <li class="has-submenu">
-                            <a href="/admincp{{v.user_link}}"><i class="{{v.icon_class}}"></i>{{v.name}}</a>
+                            <a href="{{v.user_link}}"><i class="{{v.icon_class}}"></i>{{v.name}}</a>
                             {% if length(v.menus) > 0 %}
                                 <ul class="submenu">
                                     {% for m in v.menus %}
-                                    <li><a href="/admincp{{m.user_link}}">{{m.name}}</a></li>
+                                    <li><a href="{{m.user_link}}">{{m.name}}</a></li>
                                     {% endfor %}
                                 </ul>
                             {% endif %}                                                    

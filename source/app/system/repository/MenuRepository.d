@@ -59,12 +59,24 @@ class MenuRepository : EntityRepository!(Menu, int)
            JSONValue[] allMenusData = null;   
            foreach(aMenu ; allMenus)
            {               
-                if(aMenu.pid == fmenu.id && aMenu.status == 1 && getAllMenus.indexOf(aMenu.mca) != -1){                   
-                    allMenusData ~= toJson(["name" :aMenu.name , "user_link" : aMenu.linkUrl ]) ;           
+                if(aMenu.pid == fmenu.id && aMenu.status == 1 && getAllMenus.indexOf(aMenu.mca) != -1){
+                    string temLink = "";
+                    if(aMenu.isAction == 1){
+                        temLink = Application.getInstance().router().createUrl(aMenu.mca);   
+                    }else{
+                        temLink = aMenu.linkUrl ;   
+                    }                                    
+                    allMenusData ~= toJson(["name" :aMenu.name , "user_link" : temLink ]) ;           
                 } 
            }
 
-           string userUrl = Application.getInstance().router().createUrl(fmenu.mca);
+           string userUrl = "";
+           if(fmenu.isAction == 1){
+               userUrl = Application.getInstance().router().createUrl(fmenu.mca);
+           }else{
+               userUrl = fmenu.linkUrl ;
+           }
+                     
            JSONValue temInfo = ["name" : JSONValue(fmenu.name) , "icon_class" : JSONValue(fmenu.iconClass) , "menus" :JSONValue(allMenusData), "user_link" : JSONValue(userUrl) ];
            data ~= temInfo;
         }
