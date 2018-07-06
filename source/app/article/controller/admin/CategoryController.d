@@ -66,7 +66,11 @@ class CategoryController : AdminBaseController
 
     @Action Response del(int id)
     {
-        (new CategoryRepository).removeById(id);
+        CategoryRepository cr = new CategoryRepository;
+        auto exsit_data = cr.findById(id);      
+        exsit_data.status = 0; 
+        cr.save(exsit_data);
+
         return new RedirectResponse("/admincp/article/categories");
     } 
 }

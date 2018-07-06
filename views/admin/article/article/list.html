@@ -28,7 +28,7 @@
                     <div class="row">
                         <div class="col-sm-6">
                             <div class="m-b-30">
-                                <a href="/admincp/article/article/add" id="addToTable" class="btn btn-success waves-effect waves-light">Add <i class="mdi mdi-plus-circle-outline"></i></a>
+                                <a href="{{ url('article.article.add','') }}" id="addToTable" class="btn btn-success waves-effect waves-light">Add <i class="mdi mdi-plus-circle-outline"></i></a>
                             </div>
                         </div>
                     </div>
@@ -82,11 +82,11 @@
                                         {% endif %}
                                     </span></td>
                                     <td class="actions">
-                                        <a href="/admincp/article/article/edit?id={{article.id}}" class="on-default edit-row" data-toggle="tooltip" data-placement="top"
+                                        <a href="{{ url('article.article.edit', "")}}?id={{article.id}} " class="on-default edit-row" data-toggle="tooltip" data-placement="top"
                                             title="" data-original-title="Click Edit">
                                             <i class="fa fa-pencil"></i>
                                         </a>
-                                        <a href="/admincp/article/article/del?id={{article.id}}"  onclick="javascript:if(!confirm('确定删除？'))return false;" class="on-default remove-row" data-toggle="tooltip" data-placement="top"
+                                        <a href="{{ url('article.article.del', "")}}?id={{article.id}} "  onclick="javascript:if(!confirm('确定删除？'))return false;" class="on-default remove-row" data-toggle="tooltip" data-placement="top"
                                             title="" data-original-title="Click Delete">
                                             <i class="fa fa-trash-o"></i>
                                         </a>                                       

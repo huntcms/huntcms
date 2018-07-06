@@ -62,7 +62,7 @@ class MenuRepository : EntityRepository!(Menu, int)
                 if(aMenu.pid == fmenu.id && aMenu.status == 1 && getAllMenus.indexOf(aMenu.mca) != -1){
                     string temLink = "";
                     if(aMenu.isAction == 1){
-                        temLink = Application.getInstance().router().createUrl(aMenu.mca);   
+                        temLink = createUrl(aMenu.mca);   
                     }else{
                         temLink = aMenu.linkUrl ;   
                     }                                    
@@ -72,7 +72,7 @@ class MenuRepository : EntityRepository!(Menu, int)
 
            string userUrl = "";
            if(fmenu.isAction == 1){
-               userUrl = Application.getInstance().router().createUrl(fmenu.mca);
+               userUrl = createUrl(fmenu.mca);
            }else{
                userUrl = fmenu.linkUrl ;
            }
