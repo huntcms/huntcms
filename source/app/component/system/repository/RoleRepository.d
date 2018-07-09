@@ -37,7 +37,6 @@ class RoleRepository : EntityRepository!(Role, int)
         {
             if(indexOf(key, "roleid") != -1)
             {
-                logInfo(key);
                 roleIds ~= value.to!int();
             }
         }
