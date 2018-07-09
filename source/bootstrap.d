@@ -1,6 +1,6 @@
 
 import hunt;
-import app.auth.AdminIdentity;
+import app.identity.AdminIdentity;
 
 void main()
 {
