@@ -1,18 +1,20 @@
 module app.lib.controller.AdminBaseController;
 
 import hunt;
-import app.component.system.repository.MenuRepository;
+
 import app.component.system.model.Menu;
-import app.auth.Login;
-import app.component.system.repository.UserRepository;
 import app.component.system.model.User;
+
+import app.component.system.repository.MenuRepository;
+import app.component.system.repository.UserRepository;
+
+import app.auth.Login;
 
 class AdminBaseController : Controller
 {
     protected string[] errorMessages;
     this()
     {
-     
     }
 
     override bool before()
@@ -43,5 +45,4 @@ class AdminBaseController : Controller
 		view.assign("errorMessages", this.errorMessages);
 		return true;
 	}
-    
 }

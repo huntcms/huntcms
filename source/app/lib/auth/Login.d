@@ -4,20 +4,20 @@ import app.component.system.model.User;
 import app.component.system.model.Permission;
 import app.component.system.model.Menu;
 import app.component.system.model.Role;
+
 import app.component.system.repository.UserRepository;
 import app.component.system.repository.PermissionRepository;
 import app.component.system.repository.RoleRepository;
 import app.component.system.repository.RolePermissionRepository;
-import kiss.logger;
 
-import entity.repository;
-import entity.domain;
+import entity;
+
+import hunt;
 import hunt.security.acl.User;
 import hunt.security.acl.permission.Permission;
-import hunt;
-import kiss.util.serialize;
 
-import entity.DefaultEntityManagerFactory;
+import kiss.logger;
+import kiss.util.serialize;
 
 alias AclUser = hunt.security.acl.User.User;
 alias AclPermission = hunt.security.acl.permission.Permission.Permission;
@@ -108,10 +108,12 @@ class UserInfo
 		return null;
 	}
 
-    static int userId(Request req){
+    static int userId(Request req)
+	{
 		auto str = req.session.get("USER");
 		if (str == null)
             return 0;
+
         auto user = unserialize!AclUser(cast(byte[]) str);
         return user.id;
     }
