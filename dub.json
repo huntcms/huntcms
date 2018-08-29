@@ -6,6 +6,6 @@
     "license": "Apache-2.0",
     "targetType": "executable",
     "dependencies": {
-        "hunt": {"path" : "../hunt"}
+        "hunt-framework": {"path" : "../hunt-framework"}
     }
 }
