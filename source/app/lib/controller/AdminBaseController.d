@@ -23,11 +23,12 @@ class AdminBaseController : Controller
 		auto cache = Application.getInstance().cache();
 		
 		auto userInfo = UserInfo.get(request);
-
+		logInfo(userInfo);
 		 if (userInfo !is null)
 		 {	
 			request.session.get("USER");
 			string permission = cache.get("user_permission_cache_" ~ to!string(userInfo.id()) );
+			//logInfo(permission);
 			JSONValue[] menuData = repository.getAllMenus(permission); 	
 			view.assign("menusJsonData", menuData);
 

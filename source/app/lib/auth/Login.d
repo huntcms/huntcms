@@ -47,8 +47,8 @@ class UserInfo
 		CriteriaQuery!(app.component.system.model.User.User) criteriaQuery = builder.createQuery!(
 				app.component.system.model.User.User);
 		Root!(app.component.system.model.User.User) root = criteriaQuery.from();
-		Predicate p1 = builder.equal(root.User.email, username);
-		Predicate p2 = builder.equal(root.User.password, password);
+		Predicate p1 = builder.equal(root.User.email, '"'~username~'"');
+		Predicate p2 = builder.equal(root.User.password, '"'~password~'"');
 		TypedQuery!(app.component.system.model.User.User) typedQuery = em.createQuery(
 				criteriaQuery.select(root).where(p1, p2));
 		auto user = cast(app.component.system.model.User.User) typedQuery.getSingleResult();
