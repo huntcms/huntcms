@@ -1,4 +1,5 @@
 huntcms
+core
 .dub
 .DS_Store
 docs.json
