@@ -1,6 +1,6 @@
 module app.component.system.controller.admin.DashboardController;
 
-import hunt;
+import hunt.framework;
 import app.lib.controller.AdminBaseController;
 
 class DashboardController : AdminBaseController

@@ -1,6 +1,6 @@
 module app.component.system.controller.admin.RoleController;
 
-import hunt;
+import hunt.framework;
 
 import app.lib.controller.AdminBaseController;
 
@@ -14,7 +14,7 @@ import app.component.system.helper.Utils;
 
 import kiss.datetime;
 
-import entity.DefaultEntityManagerFactory;
+import hunt.entity.DefaultEntityManagerFactory;
 
 import std.algorithm;
 

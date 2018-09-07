@@ -5,10 +5,10 @@ import std.json;
 import app.component.system.repository.LogInfoRepository;
 import app.component.system.repository.UserRepository;
 import app.component.system.model.LogInfo;
-import hunt;
+import hunt.framework;
 import kiss.datetime;
 import app.auth.Login;
-import entity.DefaultEntityManagerFactory;
+import hunt.entity.DefaultEntityManagerFactory;
 
 
 class LogMiddleware : MiddlewareInterface

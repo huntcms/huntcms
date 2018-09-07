@@ -10,17 +10,18 @@ import app.component.system.repository.PermissionRepository;
 import app.component.system.repository.RoleRepository;
 import app.component.system.repository.RolePermissionRepository;
 
-import entity;
+import hunt.entity;
+import hunt.entity.DefaultEntityManagerFactory;
 
-import hunt;
-import hunt.security.acl.User;
-import hunt.security.acl.permission.Permission;
+import hunt.framework;
+import hunt.framework.security.acl.User;
+import hunt.framework.security.acl.permission.Permission;
 
 import kiss.logger;
 import kiss.util.serialize;
 
-alias AclUser = hunt.security.acl.User.User;
-alias AclPermission = hunt.security.acl.permission.Permission.Permission;
+alias AclUser = hunt.framework.security.acl.User.User;
+alias AclPermission = hunt.framework.security.acl.permission.Permission.Permission;
 
 class UserInfo
 {

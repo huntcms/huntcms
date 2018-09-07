@@ -1,5 +1,5 @@
 
-import hunt;
+import hunt.framework;
 import app.identity.AdminIdentity;
 
 void main()

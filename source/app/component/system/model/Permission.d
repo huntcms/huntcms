@@ -1,6 +1,6 @@
 module app.component.system.model.Permission;
 
-import entity;
+import hunt.entity;
 
 @Table("system_permission")
 class Permission 

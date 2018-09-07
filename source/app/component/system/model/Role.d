@@ -1,6 +1,6 @@
 module app.component.system.model.Role;
 
-import entity;
+import hunt.entity;
 
 @Table("system_role")
 class Role

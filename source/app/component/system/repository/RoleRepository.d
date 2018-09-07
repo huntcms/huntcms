@@ -1,7 +1,7 @@
 module app.component.system.repository.RoleRepository;
 
-import entity;
-import entity.repository;
+import hunt.entity;
+import hunt.entity.repository;
 
 import app.component.system.model.Role;
 import app.component.system.repository.UserRoleRepository;

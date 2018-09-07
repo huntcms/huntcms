@@ -1,14 +1,14 @@
 module app.component.system.repository.LogInfoRepository;
 
-import entity.repository;
+import hunt.entity.repository;
 
 import app.component.system.model.LogInfo;
 
-import entity;
-import entity.EntityManager;
+import hunt.entity;
+import hunt.entity.EntityManager;
 
 import kiss.logger;
-import hunt;
+import hunt.framework;
 
 class LogInfoRepository : EntityRepository!(LogInfo, int)
 {

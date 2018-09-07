@@ -1,6 +1,6 @@
 module app.component.system.model.FileInfo;
 
-import entity;
+import hunt.entity;
 import app.component.system.model.User;
 
 @Table("system_file_info")

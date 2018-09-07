@@ -1,7 +1,7 @@
 module app.component.system.repository.PermissionRepository;
 
-import entity.repository;
-import entity.EntityManager;
+import hunt.entity.repository;
+import hunt.entity.EntityManager;
 
 import app.component.system.model.Permission;
 

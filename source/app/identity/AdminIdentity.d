@@ -1,8 +1,8 @@
 ﻿module app.identity.AdminIdentity;
 
-import hunt.security.acl.Identity;
-import hunt.http.request;
-import hunt.security.acl.User;
+import hunt.framework.security.acl.Identity;
+import hunt.framework.http.request;
+import hunt.framework.security.acl.User;
 
 import app.auth.Login;
 

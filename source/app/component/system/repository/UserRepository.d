@@ -1,7 +1,7 @@
 module app.component.system.repository.UserRepository;
 
-import entity;
-import entity.repository;
+import hunt.entity;
+import hunt.entity.repository;
 
 import app.component.system.model.User;
 

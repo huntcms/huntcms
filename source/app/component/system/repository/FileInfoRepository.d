@@ -1,14 +1,14 @@
 module app.component.system.repository.FileInfoRepository;
 
-import entity.repository;
+import hunt.entity.repository;
 
 import app.component.system.model.FileInfo;
 
-import entity;
-import entity.EntityManager;
+import hunt.entity;
+import hunt.entity.EntityManager;
 
 import kiss.logger;
-import hunt;
+import hunt.framework;
 
 class FileInfoRepository : EntityRepository!(FileInfo, int)
 {

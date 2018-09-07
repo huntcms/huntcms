@@ -1,6 +1,6 @@
 module app.component.system.model.Menu;
 
-import entity;
+import hunt.entity;
 
 @Table("system_menu")
 class Menu

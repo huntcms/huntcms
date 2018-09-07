@@ -1,7 +1,7 @@
 module app.component.system.controller.admin.UserController;
 
-import hunt;
-import hunt.http.RedirectResponse;
+import hunt.framework;
+import hunt.framework.http.RedirectResponse;
 import app.lib.controller.AdminBaseController;
 
 import app.component.system.model.User;
@@ -15,7 +15,7 @@ import app.component.system.helper.Utils;
 
 import app.auth.Login;
 
-import entity.DefaultEntityManagerFactory;
+import hunt.entity.DefaultEntityManagerFactory;
 
 import kiss.logger;
 import kiss.datetime;
@@ -23,7 +23,7 @@ import kiss.datetime;
 import std.string;
 import std.json;
 
-import database.exception;
+import hunt.database.exception;
 
 import std.algorithm;
 

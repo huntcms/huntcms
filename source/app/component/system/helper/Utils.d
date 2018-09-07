@@ -1,9 +1,9 @@
 module app.component.system.helper.Utils;
 import std.digest.sha;
-import hunt;
+import hunt.framework;
 
 import std.json;
-import entity.domain;
+import hunt.entity.domain;
 
 import kiss.util.serialize;
 

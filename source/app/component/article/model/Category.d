@@ -1,6 +1,6 @@
 module app.component.article.model.Category;
 
-import entity;
+import hunt.entity;
 
 
 @Table("components_category")

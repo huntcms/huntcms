@@ -1,15 +1,15 @@
 module app.component.system.repository.UserRoleRepository;
 
-import hunt;
+import hunt.framework;
 
-import entity.repository;
+import hunt.entity.repository;
 
 import app.component.system.model.User;
 import app.component.system.model.Role;
 import app.component.system.model.UserRole;
 
-import entity;
-import entity.EntityManager;
+import hunt.entity;
+import hunt.entity.EntityManager;
 
 import kiss.logger;
 

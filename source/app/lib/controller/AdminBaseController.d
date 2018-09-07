@@ -1,6 +1,6 @@
 module app.lib.controller.AdminBaseController;
 
-import hunt;
+import hunt.framework;
 
 import app.component.system.model.Menu;
 import app.component.system.model.User;

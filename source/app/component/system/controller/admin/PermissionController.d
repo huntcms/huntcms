@@ -1,6 +1,6 @@
 module app.component.system.controller.admin.PermissionController;
 
-import hunt;
+import hunt.framework;
 
 import app.component.system.model.Permission;
 import app.component.system.repository.PermissionRepository;
@@ -12,7 +12,7 @@ import app.component.system.controller.admin.LogMiddleware;
 import app.lib.controller.AdminBaseController;
 import app.component.system.helper.Utils;
 
-import entity.domain;
+import hunt.entity.domain;
 import app.component.system.helper.Paginate;
 
 class PermissionController : AdminBaseController

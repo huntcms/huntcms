@@ -1,6 +1,6 @@
 module app.component.portal.controller.PortalController;
 
-import hunt;
+import hunt.framework;
 
 class PortalController : Controller
 {

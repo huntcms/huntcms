@@ -1,6 +1,6 @@
 module app.component.system.controller.admin.MenuController;
 
-import hunt;
+import hunt.framework;
 
 import app.component.system.model.Menu;
 import app.component.system.repository.MenuRepository;
@@ -11,7 +11,7 @@ import kiss.util.serialize;
 import kiss.datetime;
 import app.component.system.helper.Utils;
 
-import entity.domain;
+import hunt.entity.domain;
 
 class MenuController : AdminBaseController
 {

@@ -1,6 +1,6 @@
 module app.component.article.controller.admin.CategoryController;
 
-import hunt;
+import hunt.framework;
 import app.component.article.repository.CategoryRepository;
 import app.component.article.model.Category;
 import kiss.datetime;

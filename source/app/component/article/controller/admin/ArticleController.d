@@ -1,7 +1,7 @@
 module app.component.article.controller.admin.ArticleController;
 
 
-import hunt;
+import hunt.framework;
 import app.component.article.repository.ArticleRepository;
 import kiss.datetime;
 import app.component.article.model.Article;

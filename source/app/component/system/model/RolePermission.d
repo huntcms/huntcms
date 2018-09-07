@@ -1,6 +1,6 @@
 module app.component.system.model.RolePermission;
 
-import entity;
+import hunt.entity;
 
 @Table("system_role_permission")
 class RolePermission

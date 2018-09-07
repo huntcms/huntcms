@@ -1,6 +1,6 @@
 module app.component.system.controller.api.VersionController;
 
-import hunt;
+import hunt.framework;
 
 import kiss.util.serialize;
 

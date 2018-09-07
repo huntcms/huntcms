@@ -1,6 +1,6 @@
 module app.component.system.model.LogInfo;
 
-import entity;
+import hunt.entity;
 import app.component.system.model.User;
 
 @Table("system_log_info")

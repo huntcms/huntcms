@@ -1,6 +1,6 @@
 module app.component.system.model.User;
 
-import entity;
+import hunt.entity;
 
 public import app.component.system.model.UserRole;
 

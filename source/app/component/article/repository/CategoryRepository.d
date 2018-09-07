@@ -1,9 +1,9 @@
 module app.component.article.repository.CategoryRepository;
 
 
-import entity.repository;
+import hunt.entity.repository;
 import app.component.article.model.Category;
-import hunt;
+import hunt.framework;
 
 class CategoryRepository : EntityRepository!(Category, int)
 {

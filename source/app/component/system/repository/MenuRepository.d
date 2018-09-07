@@ -1,8 +1,8 @@
 module app.component.system.repository.MenuRepository;
 
-import entity.repository;
+import hunt.entity.repository;
 import app.component.system.model.Menu;
-import hunt;
+import hunt.framework;
 import std.json;
 
 class MenuRepository : EntityRepository!(Menu, int)

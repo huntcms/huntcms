@@ -1,6 +1,6 @@
 module app.component.system.controller.admin.LogController;
 
-import hunt;
+import hunt.framework;
 
 import app.component.system.model.LogInfo;
 import app.component.system.repository.LogInfoRepository;
@@ -12,7 +12,7 @@ import app.component.system.controller.admin.LogMiddleware;
 import app.lib.controller.AdminBaseController;
 import app.component.system.helper.Utils;
 
-import entity.domain;
+import hunt.entity.domain;
 
 class LogController : AdminBaseController
 {

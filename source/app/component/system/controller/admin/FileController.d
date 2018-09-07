@@ -1,6 +1,6 @@
 module app.component.system.controller.admin.FileController;
 
-import hunt;
+import hunt.framework;
 import app.component.system.model.FileInfo;
 import app.component.system.repository.FileInfoRepository;
 import std.json;
@@ -12,7 +12,7 @@ import app.component.system.helper.Utils;
 import app.auth.Login;
 
 import app.component.system.repository.UserRepository;
-import entity.DefaultEntityManagerFactory;
+import hunt.entity.DefaultEntityManagerFactory;
 
 class FileController : Controller
 {
