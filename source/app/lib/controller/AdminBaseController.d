@@ -21,7 +21,7 @@ class AdminBaseController : Controller
 	{
 		auto repository = new MenuRepository;
 		auto cache = Application.getInstance().cache();
-		
+		logInfo(123412341234);
 		auto userInfo = UserInfo.get(request);
 		logInfo(userInfo);
 		 if (userInfo !is null)

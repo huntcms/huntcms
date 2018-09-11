@@ -1,13 +1,7 @@
-#
-# method    path                        module.controller.action
-#
-
 GET         /                         system.dashboard.dashboard
 GET         /login                    system.user.login
 POST        /login                    system.user.login
 GET         /logout                   system.user.logout
-
-
 GET         /system/users               system.user.list
 GET         /system/user/add            system.user.add
 POST        /system/user/add            system.user.add
@@ -16,57 +10,47 @@ POST        /system/user/edit           system.user.edit
 GET         /system/user/del            system.user.del
 GET         /system/user/profile        system.user.profile
 POST        /system/user/profile        system.user.profile
-
 GET         /system/roles               system.role.list
 GET         /system/role/add            system.role.add
 POST        /system/role/add            system.role.add
 GET         /system/role/edit           system.role.edit
 POST        /system/role/edit           system.role.edit
 GET         /system/role/del            system.role.del
-
 GET         /system/permissions         system.permission.list
 GET         /system/permission/add      system.permission.add
 POST        /system/permission/add      system.permission.add
 GET         /system/permission/edit     system.permission.edit
 POST        /system/permission/edit     system.permission.edit
 GET         /system/permission/del      system.permission.del
-
 GET         /system/menus               system.menu.list
 GET         /system/menu/add            system.menu.add
 POST        /system/menu/add            system.menu.add
 GET         /system/menu/edit           system.menu.edit
 POST        /system/menu/edit           system.menu.edit
 GET         /system/menu/del            system.menu.del
-
 GET         /article/articles           article.article.list
 GET         /article/article/add        article.article.add
 POST        /article/article/add        article.article.add
 GET         /article/article/edit       article.article.edit
 GET         /article/article/del        article.article.del
-
 GET         /article/categories         article.category.list
 GET         /article/category/add       article.category.add
 POST        /article/category/add       article.category.add
 GET         /article/category/edit      article.category.edit
 GET         /article/category/del       article.category.del
-
 POST        /system/file/upload         system.file.upload
-
 GET         /system/logs                system.log.list
 GET         /system/log/del             system.log.del
-
 GET         /system/tags                system.tag.list
 GET         /system/tag/add             system.tag.add
 POST        /system/tag/add             system.tag.add
 GET         /system/tag/edit            system.tag.edit
 POST        /system/tag/edit            system.tag.edit
-
 GET         /system/banners             system.banner.list
 GET         /system/banner/add          system.banner.add
 POST        /system/banner/add          system.banner.add
 GET         /system/banner/edit         system.banner.edit
 POST        /system/banner/edit         system.banner.edit
-
 GET         /system/frontmenus          system.frontmenu.list
 GET         /system/frontmenu/add       system.frontmenu.add
 POST        /system/frontmenu/add       system.frontmenu.add

@@ -39,7 +39,6 @@ class UserController : AdminBaseController
     @Action string list()
     {
         auto repository = new UserRepository;
-
         view.assign("users", repository.findAll());
         return view.render("system/user/list");
     }

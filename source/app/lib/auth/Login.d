@@ -23,17 +23,30 @@ import kiss.util.serialize;
 alias AclUser = hunt.framework.security.acl.User.User;
 alias AclPermission = hunt.framework.security.acl.permission.Permission.Permission;
 
+
+import std.utf : byChar;
+
 class UserInfo
 {
 	static void put(Request req, AclUser user)
 	{
-		req.session.set("USER", cast(string) serialize!AclUser(user));
+		//req.session.set("USER", cast(string) serialize!AclUser(user));
+
+
+
+
+		std.file.write("/tmp/tmpsession", cast(string) serialize!AclUser(user)); // deleteme is the name of a temporary file
 	}
 
 	static AclUser get(Request req)
 	{
-		auto str = req.session.get("USER");
-		if (str == null)
+		// auto str = req.session.get("USER");
+		// if (str == null)
+		// 	return null;
+		// return unserialize!AclUser(cast(byte[]) str);
+
+		auto str = read("/tmp/tmpsession");
+		if (str == "")
 			return null;
 		return unserialize!AclUser(cast(byte[]) str);
 
