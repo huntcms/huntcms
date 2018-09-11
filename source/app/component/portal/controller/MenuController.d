@@ -1,17 +1,17 @@
-module app.component.system.controller.admin.FrontmenuController;
+module app.component.portal.controller.admin.MenuController;
 
 import hunt.framework;
-import app.component.system.model.Frontmenu;
-import app.component.system.repository.FrontmenuRepository;
+import app.component.portal.model.Menu;
+import app.component.portal.repository.MenuRepository;
 import app.lib.controller.AdminBaseController;
 import kiss.logger;
 import kiss.util.serialize;
 import kiss.datetime;
-import app.component.system.helper.Utils;
+import app.component.portal.helper.Utils;
 
 import hunt.entity.domain;
 
-class FrontmenuController : AdminBaseController
+class MenuController : AdminBaseController
 {
     mixin MakeController;
   
@@ -23,12 +23,12 @@ class FrontmenuController : AdminBaseController
     @Action string list()
     {
         uint page = request.get!uint("page" , 0);
-        auto repository = new FrontmenuRepository();
-        auto alldata = pageToJson!Frontmenu(repository.findAll(new Pageable(page , 20)));
+        auto repository = new MenuRepository();
+        auto alldata = pageToJson!Menu(repository.findAll(new Pageable(page , 20)));
         logDebug("menus : ", alldata);
         view.assign("menus", alldata);
 
-        return view.render("system/frontmenu/list");
+        return view.render("portal/menu/list");
     }
 
     @Action Response add()
@@ -36,8 +36,8 @@ class FrontmenuController : AdminBaseController
         if (request.method() == HttpMethod.Post)
         {
             int now = cast(int) time();
-            auto mr = new FrontmenuRepository;
-            Frontmenu mn = new Frontmenu;
+            auto mr = new MenuRepository;
+            Menu mn = new Menu;
             mn.pid = request.post("pid" , 0);
             mn.name = request.post("name");
             mn.mca = request.post("mca");
@@ -60,31 +60,31 @@ class FrontmenuController : AdminBaseController
 
             auto saveRes = mr.save(mn);
             if (saveRes !is null)
-                return new RedirectResponse("/admincp/system/frontmenus");
+                return new RedirectResponse("/admincp/portal/menus");
         }
-        auto repository = new FrontmenuRepository;
+        auto repository = new MenuRepository;
         view.assign("firstLevelMenus", repository.getMenusByPid(0));
         view.assign("routes", routes());
 
-        return request.createResponse().setContent(view.render("system/frontmenu/add"));
+        return request.createResponse().setContent(view.render("portal/menu/add"));
     }
 
     @Action string edit(int id)
     {
         logDebug(" edit id : ", id, "  get id : ", request.get("id"));
-        auto repository = new FrontmenuRepository;
+        auto repository = new MenuRepository;
         view.assign("menu", repository.find(id));
         view.assign("firstLevelMenus", repository.getMenusByPid(0));
         view.assign("routes", routes());
 
-        return view.render("system/frontmenu/edit");
+        return view.render("portal/menu/edit");
     }
 
     
     @Action Response del(int id)
     {
-        (new FrontmenuRepository).removeById(id);
-        return new RedirectResponse("/admincp/system/frontmenus");
+        (new MenuRepository).removeById(id);
+        return new RedirectResponse("/admincp/portal/menus");
     }
 
     @Action string[] routes()

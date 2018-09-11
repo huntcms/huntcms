@@ -3,3 +3,17 @@
 #
 
 GET         /                         portal.portal.index
+
+GET         /portal/banners             portal.banner.list
+GET         /portal/banner/add          portal.banner.add
+POST        /portal/banner/add          portal.banner.add
+GET         /portal/banner/edit         portal.banner.edit
+POST        /portal/banner/edit         portal.banner.edit
+
+GET         /portal/menus          portal.menu.list
+GET         /portal/menu/add       portal.menu.add
+POST        /portal/menu/add       portal.menu.add
+GET         /portal/menu/edit      portal.menu.edit
+POST        /portal/menu/edit      portal.menu.edit
+GET         /portal/menu/del       portal.menu.del
+GET         /portal/menu/routes       portal.menu.routes

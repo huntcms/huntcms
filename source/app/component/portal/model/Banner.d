@@ -1,9 +1,9 @@
-module app.component.system.model.Tag;
+module app.component.portal.model.Banner;
 
 import hunt.entity;
 
-@Table("tags")
-class Tag
+@Table("portal_banner")
+class Banner
 {
     mixin MakeEntity;
 
@@ -11,9 +11,17 @@ class Tag
     @PrimaryKey
     int id;
 
-    string name;
+    string title;
+
+    string subtitle;
+
+    string picurl;
+
+    string url;
 
     int sort;
+
+    int pid;
     
     // timestamp
     int created;
@@ -21,6 +29,11 @@ class Tag
     // timestamp
     int updated;
 
+    //timestamp
+    int deleted;
+
     // 1: enabled, 0: disabled
     short status;
+
+    string group;
 }

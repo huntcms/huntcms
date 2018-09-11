@@ -1,9 +1,9 @@
-module app.component.system.model.Frontmenu;
+module app.component.portal.model.Menu;
 
 import hunt.entity;
 
-@Table("frontmenu")
-class Frontmenu
+@Table("portal_menu")
+class Menu
 {
     mixin MakeEntity;
 

@@ -1,10 +1,10 @@
-module app.component.system.controller.admin.TagController;
+module app.component.tag.controller.admin.TagController;
 
 import hunt.framework;
-import app.component.system.repository.TagRepository;
-import app.component.system.model.Tag;
+import app.component.tag.repository.TagRepository;
+import app.component.tag.model.Tag;
 import app.lib.controller.AdminBaseController;
-import app.component.system.helper.Utils;
+import app.component.tag.helper.Utils;
 
 
 class TagController : AdminBaseController
@@ -18,7 +18,7 @@ class TagController : AdminBaseController
         logDebug("tags : ", alldata);
         view.assign("tags", alldata);
 
-        return view.render("system/tag/list");
+        return view.render("tag/tag/list");
     }
 
     @Action Response add()
@@ -44,11 +44,11 @@ class TagController : AdminBaseController
 
             auto saveRes = tr.save(tag);
             if (saveRes !is null)
-                return new RedirectResponse("/admincp/system/tags");
+                return new RedirectResponse("/admincp/tag/tags");
         }
         auto repository = new TagRepository;
          
-        return request.createResponse().setContent(view.render("system/tag/add"));
+        return request.createResponse().setContent(view.render("tag/tag/add"));
     }
 
     @Action string edit(int id)
@@ -57,12 +57,12 @@ class TagController : AdminBaseController
         auto repository = new TagRepository;
         view.assign("tag", repository.find(id));
 
-        return view.render("system/tag/edit");
+        return view.render("tag/tag/edit");
     }
 
     @Action Response del(int id)
     {
         (new TagRepository).removeById(id);
-        return new RedirectResponse("/admincp/system/tags");
+        return new RedirectResponse("/admincp/tag/tags");
     }
 }

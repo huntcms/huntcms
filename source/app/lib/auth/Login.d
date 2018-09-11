@@ -30,25 +30,25 @@ class UserInfo
 {
 	static void put(Request req, AclUser user)
 	{
-		//req.session.set("USER", cast(string) serialize!AclUser(user));
+		req.session.set("USER", cast(string) serialize!AclUser(user));
 
 
 
 
-		std.file.write("/tmp/tmpsession", cast(string) serialize!AclUser(user)); // deleteme is the name of a temporary file
+		//std.file.write("/tmp/tmpsession", cast(string) serialize!AclUser(user)); // deleteme is the name of a temporary file
 	}
 
 	static AclUser get(Request req)
 	{
-		// auto str = req.session.get("USER");
-		// if (str == null)
-		// 	return null;
-		// return unserialize!AclUser(cast(byte[]) str);
-
-		auto str = read("/tmp/tmpsession");
-		if (str == "")
+		auto str = req.session.get("USER");
+		if (str == null)
 			return null;
 		return unserialize!AclUser(cast(byte[]) str);
+
+		// auto str = read("/tmp/tmpsession");
+		// if (str == "")
+		// 	return null;
+		// return unserialize!AclUser(cast(byte[]) str);
 
 	}
 	static AclUser login(string username, string password)

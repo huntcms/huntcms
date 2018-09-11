@@ -1,7 +1,7 @@
-module app.component.system.repository.TagRepository;
+module app.component.tag.repository.TagRepository;
 
 import hunt.entity.repository;
-import app.component.system.model.Tag;
+import app.component.tag.model.Tag;
 import hunt.framework;
 import std.json;
 
