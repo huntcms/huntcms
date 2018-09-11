@@ -1,4 +1,4 @@
-﻿module app.auth.Login;
+﻿module app.auth.UserAuth;
 
 import app.component.system.model.User;
 import app.component.system.model.Permission;
@@ -26,31 +26,22 @@ alias AclPermission = hunt.framework.security.acl.permission.Permission.Permissi
 
 import std.utf : byChar;
 
-class UserInfo
+class UserAuth
 {
 	static void put(Request req, AclUser user)
 	{
-		//req.session.set("USER", cast(string) serialize!AclUser(user));
-
-
-
-
-		std.file.write("/tmp/tmpsession", cast(string) serialize!AclUser(user)); // deleteme is the name of a temporary file
+		req.session.set("USER", cast(string) serialize!AclUser(user));
+		logInfo(req.session.get("USER"));
 	}
 
 	static AclUser get(Request req)
 	{
-		// auto str = req.session.get("USER");
-		// if (str == null)
-		// 	return null;
-		// return unserialize!AclUser(cast(byte[]) str);
-
-		auto str = read("/tmp/tmpsession");
-		if (str == "")
-			return null;
-		return unserialize!AclUser(cast(byte[]) str);
-
+		 auto str = req.session.get("USER");
+		 if (str == null)
+		 	return null;
+		 return unserialize!AclUser(cast(byte[]) str);
 	}
+
 	static AclUser login(string username, string password)
 	{
 		auto em = defaultEntityManagerFactory.createEntityManager(); 

@@ -7,7 +7,7 @@ import app.component.system.repository.UserRepository;
 import app.component.system.model.LogInfo;
 import hunt.framework;
 import kiss.datetime;
-import app.auth.Login;
+import app.auth.UserAuth;
 import hunt.entity.DefaultEntityManagerFactory;
 
 
@@ -23,7 +23,7 @@ class LogMiddleware : MiddlewareInterface
     {
         try
         {
-            auto user = UserInfo.get(req);
+            auto user = UserAuth.get(req);
             if(user is null)
             {
                 logError("no user info");

@@ -4,7 +4,7 @@ import hunt.framework.security.acl.Identity;
 import hunt.framework.http.request;
 import hunt.framework.security.acl.User;
 
-import app.auth.Login;
+import app.auth.UserAuth;
 
 import kiss.logger;
 
@@ -36,7 +36,7 @@ class AdminIdentity : Identity
 
 	User login(Request req)
 	{
-		auto user = UserInfo.get(req);
+		auto user = UserAuth.get(req);
 		logInfo(req.session.get("USER"));
 		import std.stdio;
 		import kiss.util.serialize;

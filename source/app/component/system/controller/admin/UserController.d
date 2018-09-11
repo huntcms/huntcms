@@ -13,7 +13,7 @@ import app.component.system.repository.UserRoleRepository;
 import app.component.system.helper.Password;
 import app.component.system.helper.Utils;
 
-import app.auth.Login;
+import app.auth.UserAuth;
 
 import hunt.entity.DefaultEntityManagerFactory;
 
@@ -190,7 +190,7 @@ class UserController : AdminBaseController
     @Action string profile()
     {
         auto userRepository = new UserRepository;
-        User user = userRepository.find(UserInfo.userId(request));
+        User user = userRepository.find(UserAuth.userId(request));
 
         if(request.method == "POST"){
             string name = request.post!string("name", "");
@@ -227,10 +227,10 @@ class UserController : AdminBaseController
             string salt = generateSalt();
             auto find = (new UserRepository).findByEmail(username);
             if(find){
-                auto user = UserInfo.login(username , generateUserPassword(password, find.salt));
+                auto user = UserAuth.login(username , generateUserPassword(password, find.salt));
                 if(user !is null)
                 {
-                    UserInfo.put(request , user);
+                    UserAuth.put(request , user);
 
                     return new RedirectResponse("/admincp/system/users");
                 }

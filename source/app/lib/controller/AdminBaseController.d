@@ -8,7 +8,7 @@ import app.component.system.model.User;
 import app.component.system.repository.MenuRepository;
 import app.component.system.repository.UserRepository;
 
-import app.auth.Login;
+import app.auth.UserAuth;
 
 class AdminBaseController : Controller
 {
@@ -22,7 +22,7 @@ class AdminBaseController : Controller
 		auto repository = new MenuRepository;
 		auto cache = Application.getInstance().cache();
 		logInfo(123412341234);
-		auto userInfo = UserInfo.get(request);
+		auto userInfo = UserAuth.get(request);
 		logInfo(userInfo);
 		 if (userInfo !is null)
 		 {	
