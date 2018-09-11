@@ -7,8 +7,8 @@ hunt.application.secret = AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 hunt.application.encoding = UTF-8
 hunt.application.staticFileCacheMinutes = 30
 
-#hunt.route.groups = admin:domain:local-admin-huntcms.ptdev.cn, api:domain:local-api-huntcms.ptdev.cn
-hunt.route.groups = admin:directory:admincp, api:domain:local-api-huntcms.ptdev.cn
+#hunt.route.groups = admin:domain:local-admin-huntcms.site.cn, api:domain:local-api-huntcms.site.cn
+hunt.route.groups = admin:directory:admincp, api:domain:local-api-huntcms.site.cn
 
 hunt.session.storage = redis
 hunt.session.prefix = huntsession_
@@ -63,7 +63,7 @@ hunt.date.format=yyyy-mm-dd
 hunt.date.timeZone=Asia/Shanghai
 
 hunt.database.default.driver=mysql
-hunt.database.default.host=10.1.11.167
+hunt.database.default.host=127.0.0.1
 hunt.database.default.port=3306
 hunt.database.default.database=huntcms
 hunt.database.default.username=root

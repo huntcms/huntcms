@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="rocksdb-0.0.7">
+    <CLASSES>
+      <root url="file://$USER_HOME$/AppData/Local/dub/packages/rocksdb-0.0.7/rocksdb/src" />
+    </CLASSES>
+    <JAVADOC />
+    <LIBRARY_FILE />
+    <SOURCES />
+  </library>
+</component>
