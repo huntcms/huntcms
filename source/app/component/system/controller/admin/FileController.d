@@ -9,7 +9,7 @@ import std.file;
 import kiss.util.configuration;
 import kiss.datetime;
 import app.component.system.helper.Utils;
-import app.auth.Login;
+import app.auth.UserAuth;
 
 import app.component.system.repository.UserRepository;
 import hunt.entity.DefaultEntityManagerFactory;
@@ -47,7 +47,7 @@ class FileController : Controller
 
                 auto userRepository = new UserRepository(manager);
 
-                auto user = UserInfo.get(request);
+                auto user = UserAuth.get(request);
                 if(user is null)
                 {
                     res["error_code"] = 30001;

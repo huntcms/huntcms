@@ -1,4 +1,4 @@
-﻿module app.auth.Login;
+﻿module app.auth.UserAuth;
 
 import app.component.system.model.User;
 import app.component.system.model.Permission;
@@ -26,7 +26,7 @@ alias AclPermission = hunt.framework.security.acl.permission.Permission.Permissi
 
 import std.utf : byChar;
 
-class UserInfo
+class UserAuth
 {
 	static void put(Request req, AclUser user)
 	{
@@ -51,6 +51,7 @@ class UserInfo
 		// return unserialize!AclUser(cast(byte[]) str);
 
 	}
+
 	static AclUser login(string username, string password)
 	{
 		auto em = defaultEntityManagerFactory.createEntityManager(); 
