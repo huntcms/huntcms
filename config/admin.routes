@@ -74,3 +74,27 @@ GET         /system/frontmenu/edit      system.frontmenu.edit
 POST        /system/frontmenu/edit      system.frontmenu.edit
 GET         /system/frontmenu/del       system.frontmenu.del
 GET         /system/frontmenu/routes       system.frontmenu.routes
+
+GET         /shop/types                 shop.type.list
+GET         /shop/type/add              shop.type.add
+POST        /shop/type/add              shop.type.add
+GET         /shop/type/edit             shop.type.edit
+GET         /shop/type/del              shop.type.del
+
+GET         /shop/properties                shop.property.list
+GET         /shop/property/add              shop.property.add
+POST        /shop/property/add              shop.property.add
+GET         /shop/property/edit             shop.property.edit
+GET         /shop/property/del              shop.property.del
+
+GET         /shop/propertyoptions                 shop.propertyoption.list
+GET         /shop/propertyoption/add              shop.propertyoption.add
+POST        /shop/propertyoption/add              shop.propertyoption.add
+GET         /shop/propertyoption/edit             shop.propertyoption.edit
+GET         /shop/propertyoption/del              shop.propertyoption.del
+
+GET         /shop/typeproperties                shop.typerelationproperty.list
+GET         /shop/typeproperty/add              shop.typerelationproperty.add
+POST        /shop/typeproperty/add              shop.typerelationproperty.add
+GET         /shop/typeproperty/edit             shop.typerelationproperty.edit
+GET         /shop/typeproperty/del              shop.typerelationproperty.del
