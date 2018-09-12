@@ -5,7 +5,10 @@ import hunt.framework;
 import app.component.article.repository.ArticleRepository;
 import kiss.datetime;
 import app.component.article.model.Article;
+import app.component.article.model.TagArticle;
 import app.component.article.repository.CategoryRepository;
+import app.component.tag.repository.TagRepository;
+import app.component.article.repository.TagArticleRepository;
 import app.lib.controller.AdminBaseController;
 
 
@@ -42,7 +45,19 @@ class ArticleController : AdminBaseController
             art.author = request.post("author" , ""); 
             art.content = request.post("content" , "");           
             art.status = to!short(request.post("customRadio","0"));  
-
+            auto tr = new TagRepository;
+            auto tags = tr.findAll();
+            int[] tagarr;
+            tagarr.length = tags.length; 
+            foreach(key,tag; tags)
+            {
+                string tag_id = tag.id.to!string;
+                if(request.post("tag"~tag_id , "") != null)
+                tagarr[key] = request.post("tag"~tag_id , "").to!int;
+            }
+            foreach(tag;tagarr){
+                logInfo(tag);
+            }
             auto id = request.post("id");
             if(id.length != 0)
             {
@@ -58,13 +73,29 @@ class ArticleController : AdminBaseController
 
             art.updated = now;
 
-            are.save(art);
+            int article_id = (are.save(art)).id;
 
+            auto tae = new TagArticleRepository;
+            if(id.length != 0)
+            {
+                tae.removes(id.to!int);    
+            }
+            TagArticle tar = new TagArticle;
+            foreach(tag; tagarr)
+            {
+                tar.article_id = article_id;
+                tar.tag_id = tag;
+                tar.created = now;
+                tae.insert(tar);
+            }
             return new RedirectResponse("/admincp/article/articles");
         }
-        auto repository = new CategoryRepository;
-        auto categories = repository.findAll();
+        auto cr = new CategoryRepository;
+        auto categories = cr.findAll();
+        auto tr = new TagRepository;
+        auto tags = tr.findAll();
         view.assign("categories", categories);
+        view.assign("tags", tags);
 
         return request.createResponse().setContent(view.render("article/article/add"));
     }
@@ -73,10 +104,16 @@ class ArticleController : AdminBaseController
     {   
         auto article = new ArticleRepository;
         view.assign("article", article.find(id));
-        auto repository = new CategoryRepository;
-        auto categories = repository.findAll();
+        auto cr = new CategoryRepository;
+        auto categories = cr.findAll();
+        auto tr = new TagRepository;
+        auto tags = tr.findAll();
+        auto tar  = new TagArticleRepository;
+
         view.assign("categories", categories);      
-  
+        view.assign("tags", tags);
+        view.assign("tagarticles", tar.getTagArticle(id));
+
         return view.render("article/article/edit");
     }   
 

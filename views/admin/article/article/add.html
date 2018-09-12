@@ -63,6 +63,17 @@
                                         </div>
                                     </div>
                                     <div class="form-group row">
+                                        <label class="col-2 col-form-label">Tag</label>
+                                        <div class="col-10">
+                                            {% for tag in tags %}
+                                            <div class="checkbox checkbox-success form-check-inline checkbox-circle">
+                                                    <input type="checkbox" name="tag{{tag.id}}" value="{{tag.id}}">
+                                                    <label for="inlineCheckbox21"> {{tag.name}} </label>
+                                            </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
                                         <label class="col-2 col-form-label">Content</label>
                                         <div class="col-10">
                                             <textarea class="form-control" id="summernote" name="content"></textarea>
