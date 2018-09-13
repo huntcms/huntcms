@@ -8,16 +8,16 @@
             <div class="col-sm-12">
                 <div class="page-title-box">
                     <div class="btn-group pull-right">
-                        <h4 class="page-title">Add Frontmenu</h4>
+                        <h4 class="page-title">Edit Banner</h4>
                     </div>
                     <ol class="breadcrumb hide-phone p-0 m-0">
                         <li class="breadcrumb-item">
                             <a href="#">HuntCMS</a>
                         </li>
                         <li class="breadcrumb-item">
-                            <a href="#">Frontmenu</a>
+                            <a href="#">Banner</a>
                         </li>
-                        <li class="breadcrumb-item active">Add Frontmenu</li>
+                        <li class="breadcrumb-item active">Edit Banner</li>
                     </ol>
                 </div>
             </div>
@@ -27,72 +27,56 @@
         <div class="row">
             <div class="col-12">
                 <div class="card-box">
-                    <h4 class="m-t-0 header-title">Add Frontmenu</h4>
+                    <h4 class="m-t-0 header-title">Edit Banner</h4>
                     <p class="text-muted m-b-30 font-14">
-                        User can add Frontmenu.
+                        User can Edit Banner.
                     </p>
 
                     <div class="row">
                         <div class="col-12">
                             <div class="p-20">
-                                <form class="form-horizontal" role="form" action="" method="post">
-                                    <div class="form-group row">
-                                        <label class="col-2 col-form-label">First level menu</label>
+                                <form class="form-horizontal" role="form" action="{{ url('portal.banner.add', "")}}" method="post">
+                                    <div class="form-group row hide">
+                                        <label class="col-2 col-form-label">Id</label>
                                         <div class="col-10">
-                                            <select class="form-control" name="pid">
-                                                <option value=""></option>
-                                                {% for firstLevelMenu in firstLevelMenus %}
-                                                <option value="{{firstLevelMenu.id}}">{{firstLevelMenu.name}}</option>                                               
-                                                {% endfor %}                                              
-                                            </select>
+                                            <input type="text" class="form-control" required id="id" name="id" placeholder="Some text value..." value="{{ banner.id }}">
+                                        </div>
+                                    </div>
+  
+                                    <div class="form-group row">
+                                        <label class="col-2 col-form-label">Title</label>
+                                        <div class="col-10">
+                                            <input type="text" class="form-control" value="{{banner.title}}" required id="name" name="title" placeholder="Some text value...">
                                         </div>
                                     </div>
                                     <div class="form-group row">
-                                        <label class="col-2 col-form-label">Name</label>
+                                        <label class="col-2 col-form-label">Subtitle</label>
                                         <div class="col-10">
-                                            <input type="text" class="form-control" required id="name" name="name" placeholder="Some text value...">
+                                            <input type="text" class="form-control" required id="name"  value="{{banner.subtitle}}" name="subtitle" placeholder="Some text value...">
                                         </div>
                                     </div>
                                     <div class="form-group row">
-                                        <label class="col-2 col-form-label">Mca</label>
+                                            <label class="col-2 col-form-label">Keyword</label>
+                                            <div class="col-10">
+                                                <input type="text" class="form-control" required id="keyword"  value="{{banner.keyword}}" name="keyword" placeholder="Some text value...">
+                                            </div>
+                                        </div>
+                                    <div class="form-group row">
+                                        <label class="col-2 col-form-label">Picurl</label>
                                         <div class="col-10">
-                                            <!--<input type="text" class="form-control" required id="mca" name="mca" placeholder="module.controller.action">-->
-                                            <select>
-                                                {% for route in routes %}
-                                                <option value="{{route}}">{{route}}</option>
-                                                {% endfor %}
-                                            </select>
+                                            <input name="picurl" class="form-control" type="text"  value="{{banner.picurl}}" placeholder="picture url..."/>
                                         </div>
                                     </div>
                                     <div class="form-group row">
                                         <label class="col-2 col-form-label">LinkUrl</label>
                                         <div class="col-10">
-                                            <input type="text" class="form-control" required id="linkUrl" name="linkUrl" placeholder="Some text value...">
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label class="col-2 col-form-label">IconClass</label>
-                                        <div class="col-10">
-                                            <input type="text" class="form-control" id="iconClass" name="iconClass" placeholder="Some text value...">
+                                            <input type="text" class="form-control" required id="linkUrl"  value="{{banner.url}}" name="url" placeholder="Some text value...">
                                         </div>
                                     </div>
                                     <div class="form-group row">
                                         <label class="col-2 col-form-label">Sort</label>
                                         <div class="col-10">
-                                            <input type="number" class="form-control" id="sort" name="sort" placeholder="Some text value..." value="">
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label class="col-2 col-form-label">isAction</label>
-                                        <div class="col-10">
-                                            <div class="custom-control custom-radio">
-                                                <input type="radio" id="actionRadio1" name="actionRadio" class="custom-control-input" value="1" checked>
-                                                <label class="custom-control-label" for="actionRadio1">YES</label>
-                                            </div>
-                                            <div class="custom-control custom-radio">
-                                                <input type="radio" id="actionRadio2" name="actionRadio" class="custom-control-input" value="0">
-                                                <label class="custom-control-label" for="actionRadio2">NO</label>
-                                            </div>
+                                            <input type="number" class="form-control" id="sort"  value="{{banner.sort}}" name="sort" placeholder="Some text value..." value="">
                                         </div>
                                     </div>
                                     <div class="form-group row">

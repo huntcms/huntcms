@@ -36,10 +36,12 @@
                         <div class="col-12">
                             <div class="p-20">
                                 <form class="form-horizontal" role="form" action="{{ url('system.permission.add', "")}}" method="post">
+                                    <input type="hidden" class="form-control" id="id" name="id" value="{{ permission.id }}">
+
                                     <div class="form-group row">
-                                        <label class="col-2 col-form-label">Id</label>
+                                        <label class="col-2 col-form-label">MCA</label>
                                         <div class="col-10">
-                                            <input type="text" class="form-control" required id="id" name="id" placeholder="Some text value..." value="{{ permission.id }}">
+                                            <input type="text" class="form-control" required id="id" name="mca" placeholder="Some text value..." value="{{ permission.mca }}">
                                         </div>
                                     </div>
                                     <div class="form-group row">

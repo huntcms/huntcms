@@ -2,10 +2,10 @@
 # method    path                        module.controller.action
 #
 
-GET         /                         system.dashboard.dashboard
-GET         /login                    system.user.login
-POST        /login                    system.user.login
-GET         /logout                   system.user.logout
+GET         /                           system.dashboard.dashboard
+GET         /login                      system.user.login
+POST        /login                      system.user.login
+GET         /logout                     system.user.logout
 
 GET         /system/users               system.user.list
 GET         /system/user/add            system.user.add
@@ -42,6 +42,7 @@ GET         /article/article/add        article.article.add
 POST        /article/article/add        article.article.add
 GET         /article/article/edit       article.article.edit
 GET         /article/article/del        article.article.del
+POST        /article/article/uploadimg  article.article.uploadimg
 
 GET         /article/categories         article.category.list
 GET         /article/category/add       article.category.add
@@ -55,17 +56,19 @@ GET         /system/file/token          system.file.token
 GET         /system/logs                system.log.list
 GET         /system/log/del             system.log.del
 
-GET         /system/tags                system.tag.list
-GET         /system/tag/add             system.tag.add
-POST        /system/tag/add             system.tag.add
-GET         /system/tag/edit            system.tag.edit
-POST        /system/tag/edit            system.tag.edit
+GET         /tag/tags                   tag.tag.list
+GET         /tag/tag/add                tag.tag.add
+POST        /tag/tag/add                tag.tag.add
+GET         /tag/tag/edit               tag.tag.edit
+POST        /tag/tag/edit               tag.tag.edit
+GET         /tag/tag/del                tag.tag.del
 
-GET         /system/banners             system.banner.list
-GET         /system/banner/add          system.banner.add
-POST        /system/banner/add          system.banner.add
-GET         /system/banner/edit         system.banner.edit
-POST        /system/banner/edit         system.banner.edit
+GET         /portal/banners             portal.banner.list
+GET         /portal/banner/add          portal.banner.add
+POST        /portal/banner/add          portal.banner.add
+GET         /portal/banner/edit         portal.banner.edit
+POST        /portal/banner/edit         portal.banner.edit
+GET         /portal/banner/del          portal.banner.del
 
 GET         /system/frontmenus          system.frontmenu.list
 GET         /system/frontmenu/add       system.frontmenu.add
@@ -88,3 +91,11 @@ POST        /shop/productcategory/add           shop.productcategory.add
 GET         /shop/productcategory/edit          shop.productcategory.edit
 POST        /shop/productcategory/edit          shop.productcategory.edit
 GET         /shop/productcategory/del           shop.productcategory.del
+
+GET         /portal/menus               portal.menu.list
+GET         /portal/menu/add            portal.menu.add
+POST        /portal/menu/add            portal.menu.add
+GET         /portal/menu/edit           portal.menu.edit
+POST        /portal/menu/edit           portal.menu.edit
+GET         /portal/menu/del            portal.menu.del
+GET         /portal/menu/routes         portal.menu.routes

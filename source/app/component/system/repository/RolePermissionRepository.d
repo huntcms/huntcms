@@ -41,7 +41,7 @@ class RolePermissionRepository : EntityRepository!(RolePermission, int)
         return permissions;
     }
 
-    string[] getRolePermissionIds(int roleId)
+    int[] getRolePermissionIds(int roleId)
     {
         auto objects = this.newObjects();
 
@@ -49,7 +49,7 @@ class RolePermissionRepository : EntityRepository!(RolePermission, int)
         auto typedQuery = _entityManager.createQuery(objects.criteriaQuery.select(objects.root).where( p1 ));
         RolePermission[] rolePermissions = typedQuery.getResultList();
 
-        string[] ids;
+        int[] ids;
         foreach (rolePermission; rolePermissions)
         {
             ids ~= rolePermission.permission_id;
@@ -58,7 +58,7 @@ class RolePermissionRepository : EntityRepository!(RolePermission, int)
         return ids;
     }
 
-    bool saves(int roleId, string[] permissionIds)
+    bool saves(int roleId, int[] permissionIds)
     {
         RolePermission[] rolePermission;
         foreach(permissionId; permissionIds){
