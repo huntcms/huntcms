@@ -132,28 +132,4 @@ class ArticleController : AdminBaseController
         return new RedirectResponse("/admincp/article/articles");
     }
 
-    @Action string uploadimg()
-    {
-        auto f = request.postForm.getFileValue("imageFile");
-        if (f)
-            {
-                ubyte[] file_data;
-                auto filesize = f.fileSize;
-                f.read(filesize, (const(ubyte[]) data) { file_data ~= data; });
-                logDebug("file content :  ",cast(string)file_data);
-                ConfigBuilder con = Config.config("hunt");
-                auto saveName = "aaa.png";
-                std.file.write(con.file.path.value ~ saveName, file_data);
-                //res["filename"] = saveName;
-                return con.file.path.value ~ saveName;
-
-            }
-        logInfo(f);
-       // ConfigBuilder con = Config.config("hunt");
-        //auto saveName = "aaa.png";
-        //std.file.write(con.file.path.value ~ saveName, file_data);
-                //logInfo(con.file.path.value ~ saveName);
-
-        return "aa";
-    }
 }

@@ -32,7 +32,7 @@
                     <div class="row">
                         <div class="col-12">
                             <div class="p-20">
-                                <form class="form-horizontal" method="POST" action="{{ url('article.article.add','') }}" role="form">
+                                <form class="form-horizontal" method="POST"  enctype="multipart/form-data" action="{{ url('article.article.add','') }}" role="form">
                                     <div class="form-group row">
                                         <label class="col-2 col-form-label">Category</label>
                                         <div class="col-10">
@@ -72,7 +72,7 @@
                                             <label class="col-2 col-form-label">Tag</label>
                                             <div class="col-10">
                                                 {% for tag in tags %}
-                                                <div class="checkbox checkbox-success form-check-inline checkbox-circle">
+                                                <div class="checkbox checkbox-success form-check-inline">
                                                         <input type="checkbox" name="tag{{tag.id}}" value="{{tag.id}}" {% for tagarticle in tagarticles %}{% if tagarticle.tag_id == tag.id %} checked {% endif %}{% endfor %}>
                                                         <label for="inlineCheckbox21"> {{tag.name}} </label>
                                                 </div>
