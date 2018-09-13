@@ -7,7 +7,6 @@ GET         /login                    system.user.login
 POST        /login                    system.user.login
 GET         /logout                   system.user.logout
 
-
 GET         /system/users               system.user.list
 GET         /system/user/add            system.user.add
 POST        /system/user/add            system.user.add
@@ -51,6 +50,7 @@ GET         /article/category/edit      article.category.edit
 GET         /article/category/del       article.category.del
 
 POST        /system/file/upload         system.file.upload
+GET         /system/file/token          system.file.token
 
 GET         /system/logs                system.log.list
 GET         /system/log/del             system.log.del
@@ -73,4 +73,18 @@ POST        /system/frontmenu/add       system.frontmenu.add
 GET         /system/frontmenu/edit      system.frontmenu.edit
 POST        /system/frontmenu/edit      system.frontmenu.edit
 GET         /system/frontmenu/del       system.frontmenu.del
-GET         /system/frontmenu/routes       system.frontmenu.routes
+GET         /system/frontmenu/routes    system.frontmenu.routes
+
+GET         /shop/products              shop.product.list
+GET         /shop/product/add           shop.product.add
+POST        /shop/product/add           shop.product.add
+GET         /shop/product/edit          shop.product.edit
+POST        /shop/product/edit          shop.product.edit
+GET         /shop/product/del           shop.product.del
+
+GET         /shop/productcategorys              shop.productcategory.list
+GET         /shop/productcategory/add           shop.productcategory.add
+POST        /shop/productcategory/add           shop.productcategory.add
+GET         /shop/productcategory/edit          shop.productcategory.edit
+POST        /shop/productcategory/edit          shop.productcategory.edit
+GET         /shop/productcategory/del           shop.productcategory.del

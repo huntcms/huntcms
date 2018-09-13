@@ -31,7 +31,6 @@ class UserAuth
 	static void put(Request req, AclUser user)
 	{
 		req.session.set("USER", cast(string) serialize!AclUser(user));
-		logInfo(req.session.get("USER"));
 	}
 
 	static AclUser get(Request req)
