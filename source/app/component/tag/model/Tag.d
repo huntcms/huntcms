@@ -1,6 +1,7 @@
 module app.component.tag.model.Tag;
 
 import hunt.entity;
+public import app.component.article.model.TagArticle;
 
 @Table("tag_tags")
 class Tag

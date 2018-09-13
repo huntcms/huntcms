@@ -27,7 +27,7 @@ class MenuController : AdminBaseController
         uint page = request.get!uint("page" , 0);
         auto repository = new MenuRepository();
         auto alldata = pageToJson!Menu(repository.findAll(new Pageable(page , 20)));
-        logDebug("menus : ", alldata);
+        //logDebug("menus : ", alldata);
         view.assign("menus", alldata);
 
         return view.render("system/menu/list");

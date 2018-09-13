@@ -5,7 +5,7 @@ import hunt.entity.EntityManager;
 
 import app.component.system.model.Permission;
 
-class PermissionRepository : EntityRepository!(Permission, string)
+class PermissionRepository : EntityRepository!(Permission, int)
 {
     this(EntityManager manager = null)
     {

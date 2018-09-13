@@ -5,7 +5,9 @@ import app.component.portal.repository.BannerRepository;
 import app.component.portal.model.Banner;
 import app.lib.controller.AdminBaseController;
 import app.component.portal.helper.Utils;
-
+import std.digest.sha;
+import std.file;
+import kiss.util.configuration;
 
 
 class BannerController : AdminBaseController
@@ -33,9 +35,18 @@ class BannerController : AdminBaseController
             banner.subtitle = request.post("subtitle");
             banner.sort = request.post("sort").to!int;
             banner.url = request.post("url");
-            banner.picurl = request.post("picurl");
-            banner.pid    = request.post("pid").to!int;
-            banner.group  = br.findById(banner.pid.to!int).title;
+            banner.keyword = request.post("keyword");
+            // auto f = request.postForm.getFileValue("imageFile");
+            // ubyte[] file_data;
+            // auto filesize = f.fileSize;
+            // f.read(filesize, (const(ubyte[]) data) { file_data ~= data; });
+            // ConfigBuilder con = Config.config("hunt");
+            // auto saveName = "aaa";
+            // std.file.write(con.file.path.value ~ saveName, file_data);
+            banner.picurl = request.post("imageFile");
+
+            //banner.pid    = request.post("pid").to!int;
+            //banner.group  = br.findById(banner.pid.to!int).title;
             auto id = request.post("id");
             if(id.length != 0)
             {
@@ -53,7 +64,7 @@ class BannerController : AdminBaseController
                 return new RedirectResponse("/admincp/portal/banners");
         }
         auto repository = new BannerRepository;
-        view.assign("groups", repository.getBannersByPid(0));
+        view.assign("groups", repository.getBannersByPid(1));
 
         return request.createResponse().setContent(view.render("portal/banner/add"));
     }
@@ -63,7 +74,7 @@ class BannerController : AdminBaseController
         logDebug(" edit id : ", id, "  get id : ", request.get("id"));
         auto repository = new BannerRepository;
         view.assign("banner", repository.find(id));
-        view.assign("groups", repository.getBannersByPid(0));
+        //view.assign("groups", repository.getBannersByPid(1));
 
         return view.render("portal/banner/edit");
     }

@@ -16,7 +16,9 @@ class TagArticle
     int article_id;
 
     int tag_id;
-
+    // @OneToOne()
+    // @JoinColumn("tag_id")
+    // Tag tag;
     // timestamp
     int created;
 

@@ -10,7 +10,9 @@ import app.component.article.repository.CategoryRepository;
 import app.component.tag.repository.TagRepository;
 import app.component.article.repository.TagArticleRepository;
 import app.lib.controller.AdminBaseController;
-
+import std.digest.sha;
+import std.file;
+import kiss.util.configuration;
 
 class ArticleController : AdminBaseController
 {
@@ -24,11 +26,17 @@ class ArticleController : AdminBaseController
     @Action string list()
     {    
         auto repository = new ArticleRepository;
+        auto tae = new TagArticleRepository;
+        auto tr  = new TagRepository;
         auto alldata = repository.findAll();
-        logDebug("articles : ", toJSON(alldata).toString);
+        auto tagarticles = tae.findAll();
+        auto tags = tr.findAll();
+        //logDebug("articles : ", toJSON(alldata).toString);
         view.assign("articles", alldata);
+        view.assign("tagarticles", tagarticles);
+        view.assign("tags", tags);
 
-       return view.render("article/article/list");
+        return view.render("article/article/list");
     }
 
     @Action Response add()
@@ -45,6 +53,7 @@ class ArticleController : AdminBaseController
             art.author = request.post("author" , ""); 
             art.content = request.post("content" , "");           
             art.status = to!short(request.post("customRadio","0"));  
+
             auto tr = new TagRepository;
             auto tags = tr.findAll();
             int[] tagarr;
@@ -121,5 +130,30 @@ class ArticleController : AdminBaseController
     {
         (new ArticleRepository).removeById(id);
         return new RedirectResponse("/admincp/article/articles");
+    }
+
+    @Action string uploadimg()
+    {
+        auto f = request.postForm.getFileValue("imageFile");
+        if (f)
+            {
+                ubyte[] file_data;
+                auto filesize = f.fileSize;
+                f.read(filesize, (const(ubyte[]) data) { file_data ~= data; });
+                logDebug("file content :  ",cast(string)file_data);
+                ConfigBuilder con = Config.config("hunt");
+                auto saveName = "aaa.png";
+                std.file.write(con.file.path.value ~ saveName, file_data);
+                //res["filename"] = saveName;
+                return con.file.path.value ~ saveName;
+
+            }
+        logInfo(f);
+       // ConfigBuilder con = Config.config("hunt");
+        //auto saveName = "aaa.png";
+        //std.file.write(con.file.path.value ~ saveName, file_data);
+                //logInfo(con.file.path.value ~ saveName);
+
+        return "aa";
     }
 }

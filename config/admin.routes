@@ -43,6 +43,7 @@ GET         /article/article/add        article.article.add
 POST        /article/article/add        article.article.add
 GET         /article/article/edit       article.article.edit
 GET         /article/article/del        article.article.del
+POST        /article/article/uploadimg  article.article.uploadimg
 
 GET         /article/categories         article.category.list
 GET         /article/category/add       article.category.add

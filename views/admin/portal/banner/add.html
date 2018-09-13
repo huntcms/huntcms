@@ -36,7 +36,7 @@
                         <div class="col-12">
                             <div class="p-20">
                                 <form class="form-horizontal" role="form" action="" method="post">
-                                    <div class="form-group row">
+                                    <!--<div class="form-group row">
                                         <label class="col-2 col-form-label">Group</label>
                                         <div class="col-10">
                                             <select class="form-control" name="pid">
@@ -45,7 +45,7 @@
                                                 {% endfor %}                                              
                                             </select>
                                         </div>
-                                    </div>
+                                    </div>-->
                                     <div class="form-group row">
                                         <label class="col-2 col-form-label">Title</label>
                                         <div class="col-10">
@@ -59,9 +59,15 @@
                                         </div>
                                     </div>
                                     <div class="form-group row">
+                                            <label class="col-2 col-form-label">Keyword</label>
+                                            <div class="col-10">
+                                                <input type="text" class="form-control" required id="keyword" name="keyword" placeholder="Some text value...">
+                                            </div>
+                                    </div>
+                                    <div class="form-group row">
                                         <label class="col-2 col-form-label">Picurl</label>
                                         <div class="col-10">
-                                            <input name="picurl" class="form-control" type="text"  placeholder="picture url..."/>
+                                            <input name="imageFile" class="form-control" type="file"  placeholder="picture url..."/>
                                         </div>
                                     </div>
                                     <div class="form-group row">

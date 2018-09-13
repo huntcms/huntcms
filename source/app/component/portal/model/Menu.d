@@ -28,6 +28,8 @@ class Menu
     @Column("icon_class")
     string iconClass;
 
+    string picture;
+    
     int sort;
     
     // timestamp

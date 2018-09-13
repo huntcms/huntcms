@@ -8,9 +8,11 @@ class Permission
     mixin MakeEntity;
 
     @PrimaryKey
-    string id;
+    int id;
 
     string title;
+
+    string mca;
 
     @Column("is_action")
     short isAction;

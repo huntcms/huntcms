@@ -42,16 +42,7 @@
                                             <input type="text" class="form-control" required id="id" name="id" placeholder="Some text value..." value="{{ banner.id }}">
                                         </div>
                                     </div>
-                                    <div class="form-group row">
-                                        <label class="col-2 col-form-label">Group</label>
-                                        <div class="col-10">
-                                            <select class="form-control" name="pid">
-                                                {% for group in groups %}
-                                                <option value="{{group.id}}">{{group.title}}</option>                                               
-                                                {% endfor %}                                              
-                                            </select>
-                                        </div>
-                                    </div>
+  
                                     <div class="form-group row">
                                         <label class="col-2 col-form-label">Title</label>
                                         <div class="col-10">
@@ -64,6 +55,12 @@
                                             <input type="text" class="form-control" required id="name"  value="{{banner.subtitle}}" name="subtitle" placeholder="Some text value...">
                                         </div>
                                     </div>
+                                    <div class="form-group row">
+                                            <label class="col-2 col-form-label">Keyword</label>
+                                            <div class="col-10">
+                                                <input type="text" class="form-control" required id="keyword"  value="{{banner.keyword}}" name="keyword" placeholder="Some text value...">
+                                            </div>
+                                        </div>
                                     <div class="form-group row">
                                         <label class="col-2 col-form-label">Picurl</label>
                                         <div class="col-10">

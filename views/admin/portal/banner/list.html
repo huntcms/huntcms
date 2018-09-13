@@ -9,12 +9,12 @@
             <div class="col-sm-12">
                 <div class="page-title-box">
                     <div class="btn-group pull-right">
-                        <h4 class="page-title">Foo Tables</h4>
+                        <h4 class="page-title">Banners</h4>
                     </div>
                     <ol class="breadcrumb hide-phone p-0 m-0">
                         <li class="breadcrumb-item"><a href="#">HuntCMS</a></li>
-                        <li class="breadcrumb-item"><a href="#">Tables</a></li>
-                        <li class="breadcrumb-item active">Foo Tables</li>
+                        <li class="breadcrumb-item"><a href="#">Banners</a></li>
+                        <li class="breadcrumb-item active">Banner List</li>
                     </ol>
                 </div>
             </div>
@@ -39,7 +39,8 @@
                             <th data-toggle="true">Id</th>
                             <th data-toggle="true">Title</th>
                             <th data-toggle="true">Subtitle</th>
-                            <th data-toggle="true">Group</th>
+                            <!--<th data-toggle="true">Group</th>-->
+                            <th data-toggle="true">Keyword</th>
                             <th data-toggle="true">Picurl</th>
                             <th data-toggle="true">Url</th>
                             <th data-toggle="true">Sort</th>
@@ -76,7 +77,8 @@
                                     <td>{{ banner.id }}</td>
                                     <td>{{ banner.title }}</td>
                                     <td>{{ banner.subtitle }}</td>
-                                    <td>{{ banner.group }}</td>
+                                    <td>{{ banner.keyword }}</td>
+                                    <!--<td>{{ banner.group }}</td>-->
                                     <td><img src="{{ banner.picurl }}" style="height:40px"></td>
                                     <td>{{ banner.url }}</td>
                                     <td>{{ banner.sort }}</td>

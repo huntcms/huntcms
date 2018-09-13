@@ -36,4 +36,6 @@ class Banner
     short status;
 
     string group;
+
+    string keyword;
 }

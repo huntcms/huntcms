@@ -13,6 +13,7 @@ import app.auth.UserAuth;
 
 import app.component.system.repository.UserRepository;
 import hunt.entity.DefaultEntityManagerFactory;
+import app.lib.yun.YunUpLoad;
 
 class FileController : Controller
 {
@@ -64,8 +65,15 @@ class FileController : Controller
                 }
                 ConfigBuilder con = Config.config("hunt");
                 auto saveName = fi.sha1 ~ "." ~ Utils.fileExt(fi.filename);
-                std.file.write(con.file.path.value ~ saveName, file_data);
+                auto upload = new YunUpLoad("1004",
+                "http://upload.putaocloud.com",
+                "0d87e77f509a419285db58f985836901", 
+                "2fa77ec72e6a4c338515bfef98b97c42");
+
+                auto json = parseJSON( upload.doUpload(cast(byte[])file_data , saveName));
+                //std.file.write(con.file.path.value ~ saveName, file_data);
                 res["filename"] = saveName;
+                res["picurl"] = "https://mall-file.putaocdn.com/largefile/" ~ json["hash"].str ~ "_nodown.png";
             }
             else
             {

@@ -17,3 +17,5 @@ GET         /portal/menu/edit      portal.menu.edit
 POST        /portal/menu/edit      portal.menu.edit
 GET         /portal/menu/del       portal.menu.del
 GET         /portal/menu/routes       portal.menu.routes
+
+*           /file                     staticDir:file
