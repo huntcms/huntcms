@@ -32,10 +32,10 @@ class SettingUtil
     }
 }
 
-SettingObject setting()
+SettingObject setting(bool force = false)
 {
     auto settingUtil = new SettingUtil;
-    if (_huntcmsSetting is null)
+    if (_huntcmsSetting is null || force)
     {
         Setting[string] settings;
         foreach (s; (new SettingRepository).findAll())
