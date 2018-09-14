@@ -25,6 +25,10 @@ class Article
 
     string content;   
 
+    string picture;
+
+    string video;
+
     // timestamp
     int created;
 

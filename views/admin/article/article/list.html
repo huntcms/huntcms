@@ -39,6 +39,8 @@
                             <th>Title</th>
                             <th>Author</th>
                             <th>Tag</th>
+                            <th data-hide="phone">Picture</th>
+                            <th data-hide="phone">Video</th>
                             <th data-hide="phone">Created</th>
                             <th data-hide="phone, tablet">Updated</th>
                             <th data-hide="phone, tablet">Status</th>
@@ -82,6 +84,8 @@
                                             {% endif %}
                                         {% endfor %}
                                     </td>
+                                    <td><img style="height:40px" src="{{article.picture}}"></td>
+                                    <td><video src="movie.ogg" style="height:40px"></video></td>
                                     <td>{{ date('Y-m-d H:i:s',article.created) }}</td>
                                     <td>{{ date('Y-m-d H:i:s',article.updated) }}</td>
                                     <td><span class="badge label-table badge-success">

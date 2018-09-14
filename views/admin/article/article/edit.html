@@ -69,23 +69,35 @@
                                         </div>
                                     </div>
                                     <div class="form-group row">
-                                            <label class="col-2 col-form-label">Tag</label>
-                                            <div class="col-10">
-                                                {% for tag in tags %}
-                                                <div class="checkbox checkbox-success form-check-inline">
-                                                        <input type="checkbox" name="tag{{tag.id}}" value="{{tag.id}}" {% for tagarticle in tagarticles %}{% if tagarticle.tag_id == tag.id %} checked {% endif %}{% endfor %}>
-                                                        <label for="inlineCheckbox21"> {{tag.name}} </label>
-                                                </div>
-                                                {% endfor %}
+                                        <label class="col-2 col-form-label">Tag</label>
+                                        <div class="col-10">
+                                            {% for tag in tags %}
+                                            <div class="checkbox checkbox-success form-check-inline">
+                                                    <input type="checkbox" name="tag{{tag.id}}" value="{{tag.id}}" {% for tagarticle in tagarticles %}{% if tagarticle.tag_id == tag.id %} checked {% endif %}{% endfor %}>
+                                                    <label for="inlineCheckbox21"> {{tag.name}} </label>
                                             </div>
+                                            {% endfor %}
                                         </div>
+                                    </div>
                                     <div class="form-group row">
                                         <label class="col-2 col-form-label">Content</label>
                                         <div class="col-10">
                                             <textarea class="form-control" id="summernote" name="content">{{article.content}}</textarea>
                                         </div>
                                     </div>                                   
-
+                                    <div class="form-group row">
+                                        <label class="col-2 col-form-label">Picture</label>
+                                        <div class="col-10">
+                                            <input name="imageFile" class="form-control" type="file"  placeholder="picture url..."/>
+                                            <input type="hidden" class="form-control" name="currentpic" value="{{ article.picture }}">
+                                        </div>
+                                    </div>                             
+                                    <div class="form-group row">
+                                        <label class="col-2 col-form-label">Video</label>
+                                        <div class="col-10">
+                                            <input type="text" name="video" class="form-control" value="{{article.video}}" placeholder="video url..">
+                                        </div>
+                                    </div> 
                                     <div class="form-group row">
                                         <label class="col-2 col-form-label">Status</label>
                                         <div class="col-10">

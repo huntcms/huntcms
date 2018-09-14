@@ -53,6 +53,7 @@
                             <th data-toggle="true">商品名称</th>
                             <th data-hide="phone">商品编码</th>
                             <th data-hide="phone">价格区间</th>
+                            <th data-hide="phone">标签</th>
                             <th data-hide="phone, tablet">状态</th>
                             <th data-hide="phone, tablet">更新时间</th>
                             <th data-hide="phone, tablet">创建时间</th>
@@ -68,6 +69,17 @@
                             <td>{{ product.title }}</td>
                             <td>{{ product.code }}</td>
                             <td><span class="price">{{ product.min_price }}</span> ~ <span class="price">{{ product.max_price }}</span>
+                            </td>
+                            <td>
+                                {% for tagproduct in tagproducts %}
+                                    {% if product.id == tagproduct.product_id %}
+                                        {% for tag in tags %}
+                                            {% if tag.id == tagproduct.tag_id %}
+                                                {{tag.name}}
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% endif %}
+                                {% endfor %}
                             </td>
                             {% if product.status == 1 %}
                             <td><span class="badge label-table badge-success">

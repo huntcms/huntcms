@@ -10,6 +10,8 @@ import app.component.article.repository.CategoryRepository;
 import app.component.tag.repository.TagRepository;
 import app.component.article.repository.TagArticleRepository;
 import app.lib.controller.AdminBaseController;
+import app.component.system.helper.Utils;
+import app.lib.yun.YunUpLoad;
 import std.digest.sha;
 import std.file;
 import kiss.util.configuration;
@@ -51,8 +53,29 @@ class ArticleController : AdminBaseController
             art.title = request.post("title" , "");      
             art.summary = request.post("summary" , "");   
             art.author = request.post("author" , ""); 
-            art.content = request.post("content" , "");           
+            art.content = request.post("content" , ""); 
+            art.video = request.post("video" , "");           
             art.status = to!short(request.post("customRadio","0"));  
+
+            auto f = request.postForm.getFileValue("imageFile");
+
+            if (f)
+            {
+                ubyte[] file_data;
+                auto filesize = f.fileSize;
+                f.read(filesize, (const(ubyte[]) data) { file_data ~= data; });
+                auto sha1 = toHexString(sha1Of(file_data));
+                auto saveName = sha1 ~ "." ~ Utils.fileExt(f.fileName);
+                auto upload = new YunUpLoad("1004",
+                "http://upload.putaocloud.com",
+                "0d87e77f509a419285db58f985836901", 
+                "2fa77ec72e6a4c338515bfef98b97c42");
+
+                auto json = parseJSON( upload.doUpload(cast(byte[])file_data , cast(string)saveName));
+                logInfo(json);
+                art.picture = "https://mall-file.putaocdn.com/largefile/" ~ json["hash"].str ~ "_nodown.png"; 
+            }else
+                art.picture = request.post("currentpic");
 
             auto tr = new TagRepository;
             auto tags = tr.findAll();
@@ -129,6 +152,8 @@ class ArticleController : AdminBaseController
     @Action Response del(int id)
     {
         (new ArticleRepository).removeById(id);
+        auto tar = new TagArticleRepository;
+        tar.removes(id.to!int);  
         return new RedirectResponse("/admincp/article/articles");
     }
 

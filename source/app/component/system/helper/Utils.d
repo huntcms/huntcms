@@ -27,6 +27,7 @@ static JSONValue pageToJson(T)(Page!T pageObj)
 	return page;
 }
 
+
 class Utils
 {
 public:

@@ -13,6 +13,7 @@ import std.digest.hmac;
 import std.base64;
 import std.conv;
 import std.string;
+//import kiss.util.configuration;
 
 
 import std.experimental.allocator.mallocator;
@@ -20,10 +21,21 @@ import core.stdc.time;
 
 alias YunStatusCallBack = void delegate(YunUpLoad,UpLoadStuts);
 alias YunUpPeocess = void delegate(size_t, size_t);
-
-
+                
+//ConfigBuilder con = Config.config("hunt");
+//auto upload = new YunUpLoad(con.file.cloud.appid, con.file.cloud.write, con.file.cloud.access_key, con.file.cloud.secret);
 enum SliceLength =  4 * 1024 * 1024;
+// static string uploadImg(request.postForm.File f)
+// {
+// 	ubyte[] file_data;
+// 	auto filesize = f.fileSize;
+// 	f.read(filesize, (const(ubyte[]) data) { file_data ~= data; });
+// 	auto sha1 = toHexString(sha1Of(file_data));
+// 	auto saveName = sha1 ~ "." ~ Utils.fileExt(f.fileName);
+// 	auto json = parseJSON( upload.doUpload(cast(byte[])file_data , cast(string)saveName));
 
+// 	return con.file.cloud.read ~ json["hash"].str ~ "_nodown.png";
+// }
 class YunUpLoad
 {
 	this(string appid , string baseurl , string publickey , string signkey)

@@ -67,27 +67,70 @@
                                         </div>
                                     </div>
                                     <div class="form-group row">
+                                        <label class="col-2 col-form-label">Tag</label>
+                                        <div class="col-10">
+                                            {% for tag in tags %}
+                                            <div class="checkbox checkbox-success form-check-inline">
+                                                    <input type="checkbox" name="tag{{tag.id}}" value="{{tag.id}}" {% for tagproduct in tagproducts %}{% if tagproduct.tag_id == tag.id %} checked {% endif %}{% endfor %}>
+                                                    <label for="inlineCheckbox21"> {{tag.name}} </label>
+                                            </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
                                         <label class="col-2 col-form-label">PC主图</label>
                                         <div class="col-10">
                                             <input type="file" name="pc_picurl" value="" class="form-control">
+                                            <input type="hidden" class="form-control" name="currentpcpic" value="{{ data.pc_picurl }}">
+
                                         </div>
                                     </div>
                                     <div class="form-group row">
                                         <label class="col-2 col-form-label">APP主图</label>
                                         <div class="col-10">
                                             <input type="file" name="app_picurl" value="" class="form-control">
+                                            <input type="hidden" class="form-control" name="currentapppic" value="{{ data.app_picurl }}">
+
                                         </div>
                                     </div>
                                     <div class="form-group row">
                                         <label class="col-2 col-form-label">WAP主图</label>
                                         <div class="col-10">
                                             <input type="file" name="wap_picurl" value="" class="form-control">
+                                            <input type="hidden" class="form-control" name="currentwappic" value="{{ data.wap_picurl }}">
+
+                                        </div>
+                                    </div>
+                                    <input type="hidden" class="form-control" name="currentpicurls" value="{{ data.picurls }}">
+
+                                    <div class="form-group row">
+                                        <label class="col-2 col-form-label">预览图1</label>
+                                        <div class="col-10">
+                                            <input type="file" multiple name="picurls1" value="" class="form-control">
                                         </div>
                                     </div>
                                     <div class="form-group row">
-                                        <label class="col-2 col-form-label">多图</label>
+                                        <label class="col-2 col-form-label">预览图2</label>
                                         <div class="col-10">
-                                            <input type="file" multiple name="picurls" value="" class="form-control">
+                                            <input type="file" multiple name="picurls2" value="" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-2 col-form-label">预览图3</label>
+                                        <div class="col-10">
+                                            <input type="file" multiple name="picurls3" value="" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-2 col-form-label">预览图4</label>
+                                        <div class="col-10">
+                                            <input type="file" multiple name="picurls4" value="" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-2 col-form-label">预览图5</label>
+                                        <div class="col-10">
+                                            <input type="file" multiple name="picurls5" value="" class="form-control">
                                         </div>
                                     </div>
                                     <div class="form-group row">
