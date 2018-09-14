@@ -13,6 +13,6 @@ class RolePermission
 
     int role_id;
 
-    string permission_id;
+    int permission_id;
   
 }

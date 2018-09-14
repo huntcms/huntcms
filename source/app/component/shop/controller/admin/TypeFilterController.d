@@ -27,10 +27,10 @@ class TypeFilterController : AdminBaseController
         int[] optionIds;
         foreach( o ; alldata["data"].array)
         {
-            auto ar = parseJSON(o["property_options"].str);
-            foreach(id ; ar.array)
+            auto ar = o["property_options"].str.split(',');
+            foreach(id ; ar)
             {
-                optionIds ~= cast(int)id.integer;
+                optionIds ~= to!int(id);
             }
         }
 
@@ -38,19 +38,19 @@ class TypeFilterController : AdminBaseController
         auto properties = repo_property.findAllByIds(optionIds);
         for( size_t i = 0 ; i < alldata["data"].array.length ; i++)
         {
-            auto ar = parseJSON(alldata["data"][i]["property_options"].str);
+            auto ar = alldata["data"][i]["property_options"].str.split(',');
             string[] titles;
-            foreach(id ; ar.array)
+            foreach(id ; ar)
             {
                 import std.algorithm.searching;
-                auto list = find!("a.id == b")(properties , id.integer);
+                auto list = find!("a.id == b")(properties , to!int(id));
                 if( list !is null)
                     titles ~= list[0].title;
             }
             alldata["data"][i]["property_options_desc"] = titles.join(" ");
         }
     }
- 
+
     @Action string list()
     {    
         uint page = request.get!uint("page" , 1);
@@ -65,11 +65,11 @@ class TypeFilterController : AdminBaseController
         PropertyOptionController.add_title!(ShopProductTypeRepository , "type_id" , "type_title")(alldata);
         add_option_title(alldata);
         view.assign("types", alldata);
-        Paginate temPage = new Paginate("/admincp/shop/propertyoption?page={page}" ,
+        Paginate temPage = new Paginate("/admincp/shop/typefilters?page={page}" ,
          page , pageData.getTotalPages());
         view.assign("pageView", temPage.showPages());
 
-         return view.render("shop/propertyoption/list");
+         return view.render("shop/typefilter/list");
     }
 
     @Action Response add()
@@ -88,36 +88,37 @@ class TypeFilterController : AdminBaseController
             }
             property.title = request.post("title");
             property.type_id = request.post!int("type_id");
-            property.property_options = request.post("property_options");
+            property.property_options = request.post("property_options") ;
             property.sort = request.post!int("sort");
+            logInfo(property.property_options);
             property.updated = now;
             if(isNew)
                 repo.insert(property);
             else
                 repo.update(property);
 
-            return new RedirectResponse("/admincp/shop/propertyoptions");
+            return new RedirectResponse("/admincp/shop/typefilters");
         }
-        auto repo_property = new ShopPropertyRepository();
-        auto properties = repo_property.findAll();
-        view.assign("properties", properties);
-        return request.createResponse().setContent(view.render("shop/propertyoption/add"));
+        auto repo_type = new ShopProductTypeRepository();
+        auto types = repo_type.findAll();
+        view.assign("types", types);
+        return request.createResponse().setContent(view.render("shop/typefilter/add"));
     }
 
 
     @Action string edit(int id)
     {
-        auto repository = new PropertyOptionRepository();
+        auto repository = new TypePropertyFilterRepository();
         view.assign("type", repository.findById(id));
-        auto repo_property = new ShopPropertyRepository();
-        auto properties = repo_property.findAll();
-        view.assign("properties", properties);
-        return view.render("shop/propertyoption/edit");
+        auto repo_type = new ShopProductTypeRepository();
+        auto types = repo_type.findAll();
+        view.assign("types", types);
+        return view.render("shop/typefilter/edit");
     }
 
     @Action Response del(int id)
     {
-        (new PropertyOptionRepository()).removeById(id);
-        return new RedirectResponse("/admincp/shop/propertyoptions");
+        (new TypePropertyFilterRepository()).removeById(id);
+        return new RedirectResponse("/admincp/shop/typefilters");
     } 
 }

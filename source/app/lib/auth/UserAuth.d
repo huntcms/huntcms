@@ -31,15 +31,14 @@ class UserAuth
 	static void put(Request req, AclUser user)
 	{
 		req.session.set("USER", cast(string) serialize!AclUser(user));
-		logInfo(req.session.get("USER"));
 	}
 
 	static AclUser get(Request req)
 	{
-		 auto str = req.session.get("USER");
-		 if (str == null)
-		 	return null;
-		 return unserialize!AclUser(cast(byte[]) str);
+		auto str = req.session.get("USER");
+		if (str == null)
+			return null;
+		return unserialize!AclUser(cast(byte[]) str);
 	}
 
 	static AclUser login(string username, string password)
@@ -75,9 +74,9 @@ class UserAuth
 				auto alldata = repository.findAll();
 				int num = cast(int)alldata.length ;
 				for(int i = 0 ; i < num ; i ++){
-					acl_per.addPermission(alldata[i].id , alldata[i].title);
+					acl_per.addPermission(alldata[i].mca , alldata[i].title);
 
-					permissionStr ~= "," ~ alldata[i].id ;				
+					permissionStr ~= "," ~ alldata[i].mca ;				
 				}
 				auto acl_role = acl.createRole(1, "supered", acl_per);  // define the superadministrator with all permissions
 			    acl_user.assignRole(acl_role);
@@ -91,9 +90,9 @@ class UserAuth
 					auto permission = rolePermission.getRolePermissions(role.id);
 					if(permission.length > 0){
 						foreach(pmn ; permission){							
-							acl_per.addPermission(pmn.id , pmn.title);
+							acl_per.addPermission(pmn.mca , pmn.title);
 
-							permissionStr ~= "," ~ pmn.id ;	
+							permissionStr ~= "," ~ pmn.mca ;
 						}					
 					}
 					auto acl_role = acl.createRole(role.id , role.name , acl_per);

@@ -221,7 +221,6 @@ class UserController : AdminBaseController
         session.set("test" , "test");
         if(request.method() == HttpMethod.Post)
         {
-            logInfo("abadfa");
             string username = request.post("username" , "");
             string password = request.post("password" , "");
             string salt = generateSalt();

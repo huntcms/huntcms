@@ -7,7 +7,6 @@ GET         /login                    system.user.login
 POST        /login                    system.user.login
 GET         /logout                   system.user.logout
 
-
 GET         /system/users               system.user.list
 GET         /system/user/add            system.user.add
 POST        /system/user/add            system.user.add
@@ -43,6 +42,7 @@ GET         /article/article/add        article.article.add
 POST        /article/article/add        article.article.add
 GET         /article/article/edit       article.article.edit
 GET         /article/article/del        article.article.del
+POST        /article/article/uploadimg  article.article.uploadimg
 
 GET         /article/categories         article.category.list
 GET         /article/category/add       article.category.add
@@ -51,6 +51,7 @@ GET         /article/category/edit      article.category.edit
 GET         /article/category/del       article.category.del
 
 POST        /system/file/upload         system.file.upload
+GET         /system/file/token          system.file.token
 
 GET         /system/logs                system.log.list
 GET         /system/log/del             system.log.del
@@ -66,6 +67,19 @@ GET         /system/banner/add          system.banner.add
 POST        /system/banner/add          system.banner.add
 GET         /system/banner/edit         system.banner.edit
 POST        /system/banner/edit         system.banner.edit
+GET         /tag/tags                   tag.tag.list
+GET         /tag/tag/add                tag.tag.add
+POST        /tag/tag/add                tag.tag.add
+GET         /tag/tag/edit               tag.tag.edit
+POST        /tag/tag/edit               tag.tag.edit
+GET         /tag/tag/del                tag.tag.del
+
+GET         /portal/banners             portal.banner.list
+GET         /portal/banner/add          portal.banner.add
+POST        /portal/banner/add          portal.banner.add
+GET         /portal/banner/edit         portal.banner.edit
+POST        /portal/banner/edit         portal.banner.edit
+GET         /portal/banner/del          portal.banner.del
 
 GET         /system/frontmenus          system.frontmenu.list
 GET         /system/frontmenu/add       system.frontmenu.add
@@ -73,7 +87,29 @@ POST        /system/frontmenu/add       system.frontmenu.add
 GET         /system/frontmenu/edit      system.frontmenu.edit
 POST        /system/frontmenu/edit      system.frontmenu.edit
 GET         /system/frontmenu/del       system.frontmenu.del
-GET         /system/frontmenu/routes       system.frontmenu.routes
+GET         /system/frontmenu/routes    system.frontmenu.routes
+
+GET         /shop/products              shop.product.list
+GET         /shop/product/add           shop.product.add
+POST        /shop/product/add           shop.product.add
+GET         /shop/product/edit          shop.product.edit
+POST        /shop/product/edit          shop.product.edit
+GET         /shop/product/del           shop.product.del
+
+GET         /shop/productcategorys              shop.productcategory.list
+GET         /shop/productcategory/add           shop.productcategory.add
+POST        /shop/productcategory/add           shop.productcategory.add
+GET         /shop/productcategory/edit          shop.productcategory.edit
+POST        /shop/productcategory/edit          shop.productcategory.edit
+GET         /shop/productcategory/del           shop.productcategory.del
+
+GET         /portal/menus               portal.menu.list
+GET         /portal/menu/add            portal.menu.add
+POST        /portal/menu/add            portal.menu.add
+GET         /portal/menu/edit           portal.menu.edit
+POST        /portal/menu/edit           portal.menu.edit
+GET         /portal/menu/del            portal.menu.del
+GET         /portal/menu/routes         portal.menu.routes
 
 GET         /shop/types                 shop.type.list
 GET         /shop/type/add              shop.type.add

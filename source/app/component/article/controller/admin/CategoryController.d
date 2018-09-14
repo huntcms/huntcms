@@ -20,7 +20,7 @@ class CategoryController : AdminBaseController
     {      
        auto repository = new CategoryRepository;
        auto alldata = repository.findAll();
-       logDebug("categories : ", toJSON(alldata).toString);
+       //logDebug("categories : ", toJSON(alldata).toString);
        view.assign("categories", alldata); 
        return view.render("article/category/list");
     }

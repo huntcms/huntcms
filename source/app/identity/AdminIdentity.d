@@ -37,7 +37,6 @@ class AdminIdentity : Identity
 	User login(Request req)
 	{
 		auto user = UserAuth.get(req);
-		logInfo(req.session.get("USER"));
 		import std.stdio;
 		import kiss.util.serialize;
 		return user;

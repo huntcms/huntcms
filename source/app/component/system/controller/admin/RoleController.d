@@ -35,7 +35,7 @@ class RoleController : AdminBaseController
             string name = request.post!string("name", "");
             short status = request.post!short("status");
             int time = cast(int)time();
-            string[] permissionIds = Utils.getCheckbox!string(request.all(), "permissionid");
+            int[] permissionIds = Utils.getCheckbox!int(request.all(), "permissionid");
 
             auto manager = defaultEntityManagerFactory().createEntityManager();
             try {
@@ -82,7 +82,7 @@ class RoleController : AdminBaseController
             auto params = request.all();
             string name = request.post!string("name", "");
             short status = request.post!short("status", 0);
-            string[] permissionIds = Utils.getCheckbox!string(request.all(), "permissionid");
+            int[] permissionIds = Utils.getCheckbox!int(request.all(), "permissionid");
 
             try {
                 manager.getTransaction().begin();
@@ -113,7 +113,7 @@ class RoleController : AdminBaseController
 
 
         auto permissions = (new PermissionRepository).findAll();
-        string[] rolePermissionIds = rolePermissionRepository.getRolePermissionIds(id);
+        int[] rolePermissionIds = rolePermissionRepository.getRolePermissionIds(id);
         class rolePermissionClass{
             Permission permission;
             string checked;
@@ -122,7 +122,7 @@ class RoleController : AdminBaseController
         foreach(key, permission; permissions){
             auto tmp =new rolePermissionClass;
             tmp.permission = permission;
-            if(canFind(rolePermissionIds, permission.id)){
+            if(canFind(rolePermissionIds, permission.mca)){
                 tmp.checked ~= "checked";
             }else{
                 tmp.checked ~= "";

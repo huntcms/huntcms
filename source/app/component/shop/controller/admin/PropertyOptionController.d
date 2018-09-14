@@ -7,6 +7,7 @@ import app.component.shop.model.ShopProperty;
 import app.component.shop.model.ShopPropertyOption;
 import app.component.shop.repository.PropertyOptionRepository;
 import app.component.shop.repository.ShopPropertyRepository;
+import app.component.shop.repository.ShopProductTypeRepository;
 import app.lib.controller.AdminBaseController;
 import app.component.system.helper.Paginate;
 import app.component.system.helper.Utils;
@@ -35,7 +36,9 @@ class PropertyOptionController : AdminBaseController
                 alldata["data"][i][TITLE] = list[0].title;
         }
     }
- 
+    
+  
+
     @Action string list()
     {    
         uint page = request.get!uint("page" , 1);

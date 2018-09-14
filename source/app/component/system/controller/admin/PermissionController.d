@@ -31,7 +31,7 @@ class PermissionController : AdminBaseController
         auto repository = new PermissionRepository();
         int limit = 20 ;  // 每页显示多少条
         JSONValue alldata = pageToJson!Permission(repository.findAll(new Pageable((page-1 < 0 ? 0 : page-1 ) , limit)));
-        logDebug("permissions : ",alldata);
+        //logDebug("permissions : ",alldata);
         view.assign("permissions", alldata);
 
         int totalPages = cast(int)alldata["totalPages"].integer ;
@@ -48,13 +48,16 @@ class PermissionController : AdminBaseController
             int now = time();
             auto pr = new PermissionRepository();
             Permission pm = new Permission;
-            pm.id = request.post("id");
+            pm.title = request.post("mca");
             pm.title = request.post("title");
             pm.isAction = request.post("actionRadio").to!short;
             pm.status = request.post("statusRadio").to!short;
-            auto exsit_data = pr.findById(request.post("id"));
+            auto exsit_data = pr.findById(request.post("id").to!int);
             if(exsit_data !is null)
+            {
+                pm.id = request.post("id").to!int;
                 pm.created = exsit_data.created;
+            }
             else
                 pm.created = now;
             pm.updated = now;
@@ -68,18 +71,18 @@ class PermissionController : AdminBaseController
     }
 
 
-    @Action string edit(string id)
+    @Action string edit(int id)
     {
         logDebug(" edit id : ", id, "  get id : ", request.get("id"));
         auto repository = new PermissionRepository();
-        view.assign("permission", repository.find(id));
+        view.assign("permission", repository.find(request.get("id").to!int));
 
         return view.render("system/permission/edit");
     }
 
-    @Action Response del(string id)
+    @Action Response del(int id)
     {
-        (new PermissionRepository()).removeById(id);
+        (new PermissionRepository()).removeById(request.get("id").to!int);
         return new RedirectResponse("/admincp/system/permissions");
     }
 }

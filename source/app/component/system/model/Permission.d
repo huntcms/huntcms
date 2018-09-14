@@ -8,7 +8,9 @@ class Permission
     mixin MakeEntity;
 
     @PrimaryKey
-    string id;
+    int id;
+
+    string mca;
 
     string title;
 

@@ -31,6 +31,7 @@ class TypeController : AdminBaseController
          return view.render("shop/type/list");
     }
 
+
     @Action Response add()
     {
         if (request.method() == HttpMethod.Post)

@@ -9,7 +9,7 @@ import app.component.shop.model.ShopProductTypeRelationProperty;
 import app.component.shop.repository.ShopProductTypeRepository;
 import app.component.shop.repository.TypeRelationPropertyRepository;
 import app.component.shop.repository.ShopPropertyRepository;
-
+import app.component.shop.repository.PropertyOptionRepository;
 
 import app.lib.controller.AdminBaseController;
 import app.component.system.helper.Paginate;
@@ -45,7 +45,22 @@ class TypeRelationPropertyController : AdminBaseController
          return view.render("shop/type_property/list");
     }
 
-    @Action Response add()
+    @Action string listByType(int type_id)
+    {
+        auto type_repo = new  TypeRelationPropertyRepository();
+        auto typeRaltionproperties = type_repo.findAllByType(type_id);
+        int[] property_ids;
+        foreach( t ; typeRaltionproperties)
+        {
+            property_ids ~= t.property_id;
+        }
+
+        auto option_repo = new PropertyOptionRepository();
+        auto options = option_repo.findAllByPropertyIds(property_ids);
+        return toJson(options).toString;
+    }
+
+    @Action string add()
     {
         if (request.method() == HttpMethod.Post)
         {
@@ -68,7 +83,7 @@ class TypeRelationPropertyController : AdminBaseController
             else
                 repo.update(type);
 
-            return new RedirectResponse("/admincp/shop/typeproperties");
+            return "ok";
         }
         auto repo_property = new ShopPropertyRepository();
         auto properties = repo_property.findAll();
@@ -76,7 +91,7 @@ class TypeRelationPropertyController : AdminBaseController
         auto repo_type = new ShopProductTypeRepository();
         auto types = repo_type.findAll();
         view.assign("types", types);
-        return request.createResponse().setContent(view.render("shop/type_property/add"));
+        return view.render("shop/type_property/add");
     }
 
 

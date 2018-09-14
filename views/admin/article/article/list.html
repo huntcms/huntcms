@@ -9,12 +9,12 @@
             <div class="col-sm-12">
                 <div class="page-title-box">
                     <div class="btn-group pull-right">
-                        <h4 class="page-title">Foo Tables</h4>
+                        <h4 class="page-title">Article List</h4>
                     </div>
                     <ol class="breadcrumb hide-phone p-0 m-0">
                         <li class="breadcrumb-item"><a href="#">HuntCMS</a></li>
-                        <li class="breadcrumb-item"><a href="#">Tables</a></li>
-                        <li class="breadcrumb-item active">Foo Tables</li>
+                        <li class="breadcrumb-item"><a href="#">Articles</a></li>
+                        <li class="breadcrumb-item active">Article List</li>
                     </ol>
                 </div>
             </div>
@@ -38,6 +38,7 @@
                             <th data-toggle="true">Category</th>
                             <th>Title</th>
                             <th>Author</th>
+                            <th>Tag</th>
                             <th data-hide="phone">Created</th>
                             <th data-hide="phone, tablet">Updated</th>
                             <th data-hide="phone, tablet">Status</th>
@@ -70,6 +71,17 @@
                                     <td>{{ article.category.name }}</td>
                                     <td>{{ article.title }}</td>
                                     <td>{{ article.author }}</td>
+                                    <td>
+                                        {% for tagarticle in tagarticles %}
+                                            {% if article.id == tagarticle.article_id %}
+                                                {% for tag in tags %}
+                                                    {% if tag.id == tagarticle.tag_id %}
+                                                        {{tag.name}}
+                                                    {% endif %}
+                                                {% endfor %}
+                                            {% endif %}
+                                        {% endfor %}
+                                    </td>
                                     <td>{{ date('Y-m-d H:i:s',article.created) }}</td>
                                     <td>{{ date('Y-m-d H:i:s',article.updated) }}</td>
                                     <td><span class="badge label-table badge-success">
