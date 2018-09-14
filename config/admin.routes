@@ -2,10 +2,10 @@
 # method    path                        module.controller.action
 #
 
-GET         /                           system.dashboard.dashboard
-GET         /login                      system.user.login
-POST        /login                      system.user.login
-GET         /logout                     system.user.logout
+GET         /                         system.dashboard.dashboard
+GET         /login                    system.user.login
+POST        /login                    system.user.login
+GET         /logout                   system.user.logout
 
 GET         /system/users               system.user.list
 GET         /system/user/add            system.user.add
@@ -56,6 +56,17 @@ GET         /system/file/token          system.file.token
 GET         /system/logs                system.log.list
 GET         /system/log/del             system.log.del
 
+GET         /system/tags                system.tag.list
+GET         /system/tag/add             system.tag.add
+POST        /system/tag/add             system.tag.add
+GET         /system/tag/edit            system.tag.edit
+POST        /system/tag/edit            system.tag.edit
+
+GET         /system/banners             system.banner.list
+GET         /system/banner/add          system.banner.add
+POST        /system/banner/add          system.banner.add
+GET         /system/banner/edit         system.banner.edit
+POST        /system/banner/edit         system.banner.edit
 GET         /tag/tags                   tag.tag.list
 GET         /tag/tag/add                tag.tag.add
 POST        /tag/tag/add                tag.tag.add
@@ -99,3 +110,35 @@ GET         /portal/menu/edit           portal.menu.edit
 POST        /portal/menu/edit           portal.menu.edit
 GET         /portal/menu/del            portal.menu.del
 GET         /portal/menu/routes         portal.menu.routes
+
+GET         /shop/types                 shop.type.list
+GET         /shop/type/add              shop.type.add
+POST        /shop/type/add              shop.type.add
+GET         /shop/type/edit             shop.type.edit
+GET         /shop/type/del              shop.type.del
+
+GET         /shop/properties                shop.property.list
+GET         /shop/property/add              shop.property.add
+POST        /shop/property/add              shop.property.add
+GET         /shop/property/edit             shop.property.edit
+GET         /shop/property/del              shop.property.del
+
+GET         /shop/propertyoptions                 shop.propertyoption.list
+GET         /shop/propertyoption/add              shop.propertyoption.add
+POST        /shop/propertyoption/add              shop.propertyoption.add
+GET         /shop/propertyoption/edit             shop.propertyoption.edit
+GET         /shop/propertyoption/del              shop.propertyoption.del
+
+GET         /shop/typeproperties                shop.typerelationproperty.list
+GET         /shop/typeproperty/add              shop.typerelationproperty.add
+POST        /shop/typeproperty/add              shop.typerelationproperty.add
+GET         /shop/typeproperty/edit             shop.typerelationproperty.edit
+GET         /shop/typeproperty/del              shop.typerelationproperty.del
+GET         /shop/typeproperty/list/{type_id}              shop.typerelationproperty.listByType
+
+
+GET         /shop/typefilters                 shop.typefilter.list
+GET         /shop/typefilter/add              shop.typefilter.add
+POST        /shop/typefilter/add              shop.typefilter.add
+GET         /shop/typefilter/edit             shop.typefilter.edit
+GET         /shop/typefilter/del              shop.typefilter.del

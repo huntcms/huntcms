@@ -2,7 +2,7 @@ module app.component.shop.model.ShopProductTypePropertyFilter;
 
 import hunt.entity;
 
-@Table("shop_type_property_filter")
+@Table("shop_property_filter")
 class ShopProductTypePropertyFilter
 {
    mixin MakeEntity;

@@ -19,6 +19,10 @@
 <script src="/assets/admin/js/jquery.slimscroll.js"></script>
 <script src="/assets/admin/js/jquery.scrollTo.min.js"></script>
 
+<script src="/assets/admin/js/jqueryui.js"></script>
+<script src="/assets/admin/js/index.js"></script>
+<script src="/assets/admin/js/selectize.js"></script>
+
 <!-- bootstrap -->
 <script src="/assets/vendor/bootstrap/js/bootstrap.min.js"></script>
 
@@ -43,17 +47,6 @@
         </script>
     {% endfor %}
 {% endif %}
-<script>
-    $(function () {
-        $(".price").each(function(i){
-            var price = parseFloat(parseInt($(this).text()) / 100);
-            if($(this).prop("nodeName") == "input"){
-                $(this).val(price);
-            }else{
-                $(this).text(price);
-            }
-        });
-    })
-</script>
+
 </body>
 </html>

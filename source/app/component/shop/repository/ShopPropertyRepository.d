@@ -11,6 +11,6 @@ class ShopPropertyRepository:EntityRepository!(ShopProperty ,int)
     {
         string strIds = to!string(ids);
         strIds = strIds[1 .. $ - 1];
-        return findAll(new Condition(" %s in ( %s ) order by field(%s , %s)" , Field.id , strIds));
+        return findAll(new Condition(" %s in ( %s ) order by field(%s , %s)" , Field.id,strIds , Field.id , strIds));
     }
 }
