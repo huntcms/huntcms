@@ -1,4 +1,4 @@
-module app.component.portal.controller.PortalController;
+module app.component.portal.controller.admin.PortalController;
 
 import hunt.framework;
 

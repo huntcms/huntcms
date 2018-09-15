@@ -1,0 +1,125 @@
+{% include "../../header.html" %}
+{% include "../../navigation.html" %}
+<link href="/assets/vendor/summernote/summernote-bs4.css" rel="stylesheet" />
+
+<div class="wrapper">
+    <div class="container-fluid">
+
+        <!-- Page-Title -->
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="page-title-box">
+                    <div class="btn-group pull-right">
+                        <h4 class="page-title">Edit Product Property</h4>
+                    </div>
+                    <ol class="breadcrumb hide-phone p-0 m-0">
+                        <li class="breadcrumb-item"><a href="#">HuntCMS</a></li>
+                        <li class="breadcrumb-item"><a href="#">Shop</a></li>
+                        <li class="breadcrumb-item active">Edit Product Property</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+        <!-- end page title end breadcrumb -->
+
+        <div class="row">
+            <div class="col-12">
+                <div class="card-box">
+                    <h4 class="m-t-0 header-title">Edit Product Property</h4>
+
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="p-20">
+                                <form class="form-horizontal" role="form" action="" method="post" enctype="application/x-www-form-urlencoded">
+                                    <div class="form-group row">
+                                        <label class="col-2 col-form-label">所属分类</label>
+                                        <div class="col-10">
+                                            <div class="mt-3">
+                                                <input type="text" value="{{ category.title }}" class="form-control" disabled >
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-2 col-form-label">商品名称</label>
+                                        <div class="col-10">
+                                            <input type="text" class="form-control" disabled
+                                                   value="{{ data.title }}" required
+                                                   placeholder="Please enter your title">
+                                        </div>
+                                    </div>
+                                    <div class="">
+                                        <h4 class="m-t-0 header-title">商品属性</h4>
+                                        <div class="form-row">
+                                            {% for property in propertys %}
+                                            <div class="form-group col-md-6">
+                                                <label class="col-2 col-form-label">
+                                                    {{ property.title }}
+                                                    {% if property.is_require == 1 %}
+                                                    <span class="text-danger">*</span>
+                                                    {% endif %}
+                                                </label>
+                                                {% if property.option_type == 0 %}
+                                                    <input type="text" name="propertys[{{property.id}}]" class="form-control" value="{% for productPropertyInput in productPropertyInputs %}{% if productPropertyInput.property_id == property.id %}{{ productPropertyInput.property_input }}{% endif %}{% endfor %}" {% if property.is_require == 1 %} required {% endif %} placeholder="Please enter your title">
+                                                {% endif %}
+                                                {% if property.option_type == 1 %}
+                                                <select class="form-control" name="propertys[{{property.id}}]">
+                                                    <option value="">请选择（单选）</option>
+                                                    {% for propertyOption in propertyOptions %}
+                                                        {% if propertyOption.property_id == property.id %}
+                                                            <option value="{{ propertyOption.id }}" {% if propertyOption.is_checked == 1 %} selected {% endif %}>{{ propertyOption.title }}</option>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </select>
+                                                {% endif %}
+                                                {% if property.option_type == 2 %}
+                                                    <select name="propertys[{{property.id}}]" id="property_options" multiple {% if property.is_require == 1 %} required {% endif %} placeholder="Pick a tool...">
+                                                        <option value="">请选择（多选）</option>
+                                                        {% for propertyOption in propertyOptions %}
+                                                            {% if propertyOption.property_id == property.id %}
+                                                                <option value="{{ propertyOption.id }}" {% if propertyOption.is_checked == 1 %} selected {% endif %} >{{ propertyOption.title }}</option>
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    </select>
+                                                {% endif %}
+                                            </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group mb-0 justify-content-end row">
+                                        <div class="col-md-10">
+                                            <button type="submit" class="btn btn-info waves-effect waves-light">保存
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                </form>
+                            </div>
+                        </div>
+                        <!-- end row -->
+
+                    </div> <!-- end card-box -->
+                </div><!-- end col -->
+            </div>
+            <!-- end row -->
+        </div>
+    </div> <!-- end container -->
+</div>
+<!-- end wrapper -->
+
+{% include "../../footer.html" %}
+<!-- Parsleyjs -->
+<script type="text/javascript" src="/assets/vendor/parsleyjs/dist/parsley.min.js"></script>
+<script src="/assets/vendor/summernote/summernote-bs4.min.js"></script>
+<script>
+    jQuery(document).ready(function(){
+        $('form').parsley();
+        $('#property_options').selectize({
+            maxItems: null,
+            valueField: 'id',
+            labelField: 'title',
+            searchField: 'title',
+            create: false
+        });
+    });
+</script>

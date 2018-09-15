@@ -94,6 +94,8 @@
                             <td>{{ date('Y-m-d H:i:s',product.created) }}</td>
 
                             <td class="actions">
+                                <a href="{{ url('shop.product.edit', '')}}?id={{ product.id }}&action=property" class="on-default
+                                edit-row" data-toggle="tooltip" data-placement="top" title="" data-original-title="商品属性"><i class="fa fa-pencil"></i></a>
                                 <a href="{{ url('shop.product.edit', '')}}?id={{ product.id }}" class="on-default
                                 edit-row" data-toggle="tooltip" data-placement="top" title="" data-original-title="Click
                                 Edit"><i class="fa fa-pencil"></i></a>

@@ -134,7 +134,7 @@ GET         /shop/typeproperty/add              shop.typerelationproperty.add
 POST        /shop/typeproperty/add              shop.typerelationproperty.add
 GET         /shop/typeproperty/edit             shop.typerelationproperty.edit
 GET         /shop/typeproperty/del              shop.typerelationproperty.del
-GET         /shop/typeproperty/list/{type_id}              shop.typerelationproperty.listByType
+    GET         /shop/typeproperty/list/{type_id}              shop.typerelationproperty.listByType
 
 
 GET         /shop/typefilters                 shop.typefilter.list

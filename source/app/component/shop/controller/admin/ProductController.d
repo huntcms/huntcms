@@ -4,6 +4,7 @@ import hunt.framework;
 import hunt.framework.simplify;
 import hunt.framework.http.RedirectResponse;
 import std.uri;
+import std.digest.sha;
 import kiss.logger;
 import kiss.datetime.format;
 import app.lib.controller.AdminBaseController;
@@ -16,10 +17,12 @@ import app.component.shop.repository.TagProductRepository;
 import app.lib.other.Paginate;
 import app.lib.yun.YunUpLoad;
 import app.component.system.helper.Utils;
-import std.digest.sha;
-
-
-
+import app.component.shop.repository.TypeRelationPropertyRepository;
+import app.component.shop.repository.ShopPropertyRepository;
+import app.component.shop.repository.PropertyOptionRepository;
+import app.component.shop.repository.ProductRelationPropertyRepository;
+import app.component.shop.model.ProductRelationProperty;
+import std.array;
 class ProductController : AdminBaseController
 {
     mixin MakeController;
@@ -78,7 +81,8 @@ class ProductController : AdminBaseController
             auto picurls2 = request.postForm.getFileValue("picurls2");
             auto picurls3 = request.postForm.getFileValue("picurls3");
             auto picurls4 = request.postForm.getFileValue("picurls4");
-            auto picurls5 = request.postForm.getFileValue("picurls5");            productModel.category_id = request.post("category_id").to!int;
+            auto picurls5 = request.postForm.getFileValue("picurls5");
+            productModel.category_id = request.post("category_id").to!int;
             productModel.title = decodeComponent(request.post("title"));
             productModel.code = request.post("code");
             productModel.introduction = decodeComponent(request.post("introduction"));
@@ -237,133 +241,190 @@ class ProductController : AdminBaseController
         return request.createResponse().setContent(view.render("shop/product/add"));
     }
 
-    @Action Response edit(int id)
+    @Action Response edit(int id, string action)
     {
         auto productRepository = new ProductRepository();
-        if (request.method == "POST")
+        auto productCategory = new ProductCategoryRepository();
+        auto productModel = productRepository.find(id);
+        auto productCategoryModel = productCategory.find(productModel.category_id);
+        if(action == "property")
         {
-            auto productModel = productRepository.find(id);
-            productModel.title = request.post("title");
-            productModel.code = request.post("code");
-            productModel.introduction = request.post("introduction");
-            productModel.min_price = cast(int) (request.post("min_price").to!float * 100);
-            productModel.max_price = cast(int) (request.post("max_price").to!float * 100);
-            productModel.content = request.post("content");
-            //productModel.sort = request.post("sort").to!int;
-            productModel.status = request.post("status").to!short;
-            auto pcPicurl = request.postForm.getFileValue("pc_picurl");
-            auto appPicurl = request.postForm.getFileValue("app_picurl");
-            auto wapPicurl = request.postForm.getFileValue("wap_picurl");
-            auto picurls1 = request.postForm.getFileValue("picurls1");
-            auto picurls2 = request.postForm.getFileValue("picurls2");
-            auto picurls3 = request.postForm.getFileValue("picurls3");
-            auto picurls4 = request.postForm.getFileValue("picurls4");
-            auto picurls5 = request.postForm.getFileValue("picurls5");
+            if (request.method == "POST")
+            {
 
-            productModel.updated = time();
+                ProductRelationProperty[] productRelationPropertys;
+                auto productRelationPropertyRepository = new ProductRelationPropertyRepository();
+                auto params = request.postForm.formMap();
+                int time = time();
+                logInfo(id);
+                foreach(key,param; params)
+                {
 
-            auto upload = new YunUpLoad(
+                    string tmpPropertyIdStr = key;
+                    tmpPropertyIdStr = tmpPropertyIdStr.replace("propertys", "");
+                    tmpPropertyIdStr = tmpPropertyIdStr.replace("%5B", "");
+                    tmpPropertyIdStr = tmpPropertyIdStr.replace("%5D", "");
+                    tmpPropertyIdStr = tmpPropertyIdStr.replace("]", "");
+                    if(isNumeric(tmpPropertyIdStr)){
+                        int tmpPropertyId = tmpPropertyIdStr.to!int;
+                        foreach(value; param)
+                        {
+                            logInfo(value);
+                            auto tmp = new ProductRelationProperty();
+                            tmp.product_id = id;
+                            tmp.property_id = tmpPropertyId.to!int;
+                            if(isNumeric(value))
+                            {
+                                tmp.property_option_id = value.to!int;
+                            }else{
+                                tmp.property_input = value;
+                            }
+                            tmp.updated = time;
+                            tmp.created = time;
+                            productRelationPropertys ~= tmp;
+                        }
+                    }
+                }
+                if(productRelationPropertys)
+                {
+                    productRelationPropertyRepository.removeAllByProductId(id);
+                    productRelationPropertyRepository.saveAll(productRelationPropertys);
+                }
+            }
+            auto propertyIds = (new TypeRelationPropertyRepository).findAllByPropertyIds(productCategoryModel.type_id);
+            auto propertys = (new ShopPropertyRepository).findAllByIds(propertyIds);
+            auto propertyOptions = (new PropertyOptionRepository).findAllByPropertyIds(propertyIds);
+            view.assign("productPropertyInputs",  (new ProductRelationPropertyRepository).findInputsByProductId(id));
+            view.assign("propertys",  propertys);
+            view.assign("propertyOptions",  (new ProductRelationPropertyRepository).findChecked(id, propertyOptions));
+            view.assign("category",  productCategoryModel);
+            view.assign("data",  productModel);
+            return request.createResponse().setContent(view.render("shop/product/property"));
+        }else{
+            if (request.method == "POST")
+            {
+                productModel.title = request.post("title");
+                productModel.code = request.post("code");
+                productModel.introduction = request.post("introduction");
+                productModel.min_price = cast(int) (request.post("min_price").to!float * 100);
+                productModel.max_price = cast(int) (request.post("max_price").to!float * 100);
+                productModel.content = request.post("content");
+                //productModel.sort = request.post("sort").to!int;
+                productModel.status = request.post("status").to!short;
+                auto pcPicurl = request.postForm.getFileValue("pc_picurl");
+                auto appPicurl = request.postForm.getFileValue("app_picurl");
+                auto wapPicurl = request.postForm.getFileValue("wap_picurl");
+                auto picurls1 = request.postForm.getFileValue("picurls1");
+                auto picurls2 = request.postForm.getFileValue("picurls2");
+                auto picurls3 = request.postForm.getFileValue("picurls3");
+                auto picurls4 = request.postForm.getFileValue("picurls4");
+                auto picurls5 = request.postForm.getFileValue("picurls5");
+
+                productModel.updated = time();
+
+                auto upload = new YunUpLoad(
                 "1004",
                 "http://upload.putaocloud.com",
-                "0d87e77f509a419285db58f985836901", 
+                "0d87e77f509a419285db58f985836901",
                 "2fa77ec72e6a4c338515bfef98b97c42"
                 );
-            if (pcPicurl)
-            {
-                ubyte[] file_data;
-                auto filesize = pcPicurl.fileSize;
-                pcPicurl.read(filesize, (const(ubyte[]) data) { file_data ~= data; });
-                auto sha1 = toHexString(sha1Of(file_data));
-                auto saveName = sha1 ~ "." ~ Utils.fileExt(pcPicurl.fileName);
-                auto json = parseJSON( upload.doUpload(cast(byte[])file_data , cast(string)saveName));
-                productModel.pc_picurl = "https://mall-file.putaocdn.com/largefile/" ~ json["hash"].str ~ "_nodown.png"; 
-            }else
-                productModel.pc_picurl = request.post("currentpcpic");
+                if (pcPicurl)
+                {
+                    ubyte[] file_data;
+                    auto filesize = pcPicurl.fileSize;
+                    pcPicurl.read(filesize, (const(ubyte[]) data) { file_data ~= data; });
+                    auto sha1 = toHexString(sha1Of(file_data));
+                    auto saveName = sha1 ~ "." ~ Utils.fileExt(pcPicurl.fileName);
+                    auto json = parseJSON( upload.doUpload(cast(byte[])file_data , cast(string)saveName));
+                    productModel.pc_picurl = "https://mall-file.putaocdn.com/largefile/" ~ json["hash"].str ~ "_nodown.png";
+                }else
+                    productModel.pc_picurl = request.post("currentpcpic");
 
-            if (appPicurl)
-            {
-                ubyte[] file_data;
-                auto filesize = appPicurl.fileSize;
-                appPicurl.read(filesize, (const(ubyte[]) data) { file_data ~= data; });
-                auto sha1 = toHexString(sha1Of(file_data));
-                auto saveName = sha1 ~ "." ~ Utils.fileExt(appPicurl.fileName);
-                auto json = parseJSON( upload.doUpload(cast(byte[])file_data , cast(string)saveName));
-                productModel.pc_picurl = "https://mall-file.putaocdn.com/largefile/" ~ json["hash"].str ~ "_nodown.png"; 
-            }else
-                productModel.app_picurl = request.post("currentapppic");
+                if (appPicurl)
+                {
+                    ubyte[] file_data;
+                    auto filesize = appPicurl.fileSize;
+                    appPicurl.read(filesize, (const(ubyte[]) data) { file_data ~= data; });
+                    auto sha1 = toHexString(sha1Of(file_data));
+                    auto saveName = sha1 ~ "." ~ Utils.fileExt(appPicurl.fileName);
+                    auto json = parseJSON( upload.doUpload(cast(byte[])file_data , cast(string)saveName));
+                    productModel.pc_picurl = "https://mall-file.putaocdn.com/largefile/" ~ json["hash"].str ~ "_nodown.png";
+                }else
+                    productModel.app_picurl = request.post("currentapppic");
 
-            if (wapPicurl)
-            {
-                ubyte[] file_data;
-                auto filesize = wapPicurl.fileSize;
-                wapPicurl.read(filesize, (const(ubyte[]) data) { file_data ~= data; });
-                auto sha1 = toHexString(sha1Of(file_data));
-                auto saveName = sha1 ~ "." ~ Utils.fileExt(wapPicurl.fileName);
-                auto json = parseJSON( upload.doUpload(cast(byte[])file_data , cast(string)saveName));
-                productModel.wap_picurl = "https://mall-file.putaocdn.com/largefile/" ~ json["hash"].str ~ "_nodown.png"; 
-            }else
-                productModel.wap_picurl = request.post("currentwappic"); 
+                if (wapPicurl)
+                {
+                    ubyte[] file_data;
+                    auto filesize = wapPicurl.fileSize;
+                    wapPicurl.read(filesize, (const(ubyte[]) data) { file_data ~= data; });
+                    auto sha1 = toHexString(sha1Of(file_data));
+                    auto saveName = sha1 ~ "." ~ Utils.fileExt(wapPicurl.fileName);
+                    auto json = parseJSON( upload.doUpload(cast(byte[])file_data , cast(string)saveName));
+                    productModel.wap_picurl = "https://mall-file.putaocdn.com/largefile/" ~ json["hash"].str ~ "_nodown.png";
+                }else
+                    productModel.wap_picurl = request.post("currentwappic");
 
-            // if (picurls1||picurls2||picurls3||picurls4||picurls5)
-            // {
-            //     string[] picurlarr;
-            //     picurlarr.length = picurls.length;
-            //     foreach(key,picurl;picurls)
-            //     {
-            //         ubyte[] file_data;
-            //         auto filesize = picurl.fileSize;
-            //         picurl.read(filesize, (const(ubyte[]) data) { file_data ~= data; });
-            //         auto sha1 = toHexString(sha1Of(file_data));
-            //         auto saveName = sha1 ~ "." ~ Utils.fileExt(picurl.fileName);
-            //         auto json = parseJSON( upload.doUpload(cast(byte[])file_data , cast(string)saveName));
-            //         picurlarr[key] = "https://mall-file.putaocdn.com/largefile/" ~ json["hash"].str ~ "_nodown.png";
+                // if (picurls1||picurls2||picurls3||picurls4||picurls5)
+                // {
+                //     string[] picurlarr;
+                //     picurlarr.length = picurls.length;
+                //     foreach(key,picurl;picurls)
+                //     {
+                //         ubyte[] file_data;
+                //         auto filesize = picurl.fileSize;
+                //         picurl.read(filesize, (const(ubyte[]) data) { file_data ~= data; });
+                //         auto sha1 = toHexString(sha1Of(file_data));
+                //         auto saveName = sha1 ~ "." ~ Utils.fileExt(picurl.fileName);
+                //         auto json = parseJSON( upload.doUpload(cast(byte[])file_data , cast(string)saveName));
+                //         picurlarr[key] = "https://mall-file.putaocdn.com/largefile/" ~ json["hash"].str ~ "_nodown.png";
 
-            //     }
-            //     productModel.picurls = JSONValue(picurlarr);
-                 
-            // }else
-            //     productModel.picurls = request.post("currentpicurls"); 
+                //     }
+                //     productModel.picurls = JSONValue(picurlarr);
 
+                // }else
+                //     productModel.picurls = request.post("currentpicurls");
+
+                auto tr = new TagRepository;
+                auto tags = tr.findAll();
+                int[] tagarr;
+                tagarr.length = tags.length;
+                foreach(key,tag; tags)
+                {
+                    string tag_id = tag.id.to!string;
+                    if(request.post("tag"~tag_id , "") != null)
+                        tagarr[key] = request.post("tag"~tag_id , "").to!int;
+                }
+
+                auto tpr = new TagProductRepository;
+                TagProduct tp = new TagProduct;
+                tpr.removes(id.to!int);
+
+
+                auto save = productRepository.save(productModel);
+                if (save !is null)
+                {
+                    foreach(tag; tagarr)
+                    {
+                        tp.product_id = save.id;
+                        tp.tag_id = tag;
+                        tp.created = time();
+                        tpr.insert(tp);
+                    }
+                    return new RedirectResponse(createUrl("shop.product.list"));
+                }else {
+                    view.assign("errorMessages", ["操作失败"]);
+                }
+            }
             auto tr = new TagRepository;
             auto tags = tr.findAll();
-            int[] tagarr;
-            tagarr.length = tags.length; 
-            foreach(key,tag; tags)
-            {
-                string tag_id = tag.id.to!string;
-                if(request.post("tag"~tag_id , "") != null)
-                tagarr[key] = request.post("tag"~tag_id , "").to!int;
-            }
+            auto tpr  = new TagProductRepository;
 
-            auto tpr = new TagProductRepository;
-            TagProduct tp = new TagProduct;
-            tpr.removes(id.to!int);    
-
-
-            auto save = productRepository.save(productModel);
-            if (save !is null)
-            {
-                foreach(tag; tagarr)
-                {
-                    tp.product_id = save.id;
-                    tp.tag_id = tag;
-                    tp.created = time();
-                    tpr.insert(tp);
-                }
-                return new RedirectResponse(createUrl("shop.product.list"));
-            }else {
-                view.assign("errorMessages", ["操作失败"]);
-            }
+            view.assign("tags", tags);
+            view.assign("tagproducts", tpr.getTagProduct(id));
+            view.assign("category",  productCategoryModel);
+            view.assign("data",  productModel);
+            return request.createResponse().setContent(view.render("shop/product/edit"));
         }
-        auto tr = new TagRepository;
-        auto tags = tr.findAll();
-        auto tpr  = new TagProductRepository;
-
-        view.assign("tags", tags);
-        view.assign("tagproducts", tpr.getTagProduct(id));
-        view.assign("categorys",  (new ProductCategoryRepository()).all());
-        view.assign("data",  productRepository.find(id));
-        return request.createResponse().setContent(view.render("shop/product/edit"));
     }
 
     @Action Response del(int id)
