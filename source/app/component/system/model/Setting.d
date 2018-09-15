@@ -1,4 +1,4 @@
-module source.app.component.system.model.Setting;odule source.app.component.system.model.Menu.1;
+module app.component.system.model.Setting;
 
 import hunt.entity;
 
