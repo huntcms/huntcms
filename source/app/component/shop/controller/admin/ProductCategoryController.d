@@ -51,16 +51,33 @@ class ProductCategoryController : AdminBaseController
         return view.render("shop/productCategory/list");
     }
 
+    @Action string findTypes(int pid)
+    {
+        auto type_repo = new ProductTypeRepository();
+        if(pid == 0)
+        {
+            return toJSON(type_repo.findAll()).toString;
+        }
+        else
+        {
+            auto category_repo = new ProductCategoryRepository();
+            auto category = category_repo.findById(pid);
+            return toJSON([type_repo.findById(category.type_id)]).toString;    
+        }
+    }
+
     @Action Response add()
     {
         auto productCategoryRepository = new ProductCategoryRepository();
         if (request.method == "POST")
         {
+            logInfo("add1 ");
             auto productCategoryModel = new ProductCategory();
             int time = time();
             productCategoryModel.title = request.post("title");
             productCategoryModel.sort = request.post("sort").to!int;
             productCategoryModel.pid = request.post("pid").to!int;
+            productCategoryModel.type_id = request.post!int("type_id");
             auto parentData = productCategoryRepository.find(productCategoryModel.pid);
             if(parentData){
                 productCategoryModel.level = ++parentData.level;
@@ -74,8 +91,15 @@ class ProductCategoryController : AdminBaseController
                 }else {
                     view.assign("errorMessages", ["操作失败"]);
                 }
-            }else{
-                view.assign("errorMessages", ["未找到上级分类数据"]);
+            }
+            else    ///没有父类
+            {
+                productCategoryModel.level = 1;
+                productCategoryModel.status = request.post("status").to!short;
+                productCategoryModel.updated = time;
+                productCategoryModel.created  = time;
+                productCategoryRepository.insert(productCategoryModel);
+                return new RedirectResponse(createUrl("shop.productcategory.list"));
             }
 
         }
@@ -103,7 +127,11 @@ class ProductCategoryController : AdminBaseController
                 view.assign("errorMessages", ["操作失败"]);
             }
         }
-        view.assign("data",  productCategoryRepository.find(id));
+        auto type_repo = new ProductTypeRepository();
+        auto data = productCategoryRepository.find(id);
+
+        view.assign("type" ,type_repo.findById(data.type_id));
+        view.assign("data",  data);
         view.assign("categorys", productCategoryRepository.all());
         return request.createResponse().setContent(view.render("shop/productCategory/edit"));
     }

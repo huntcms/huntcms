@@ -102,6 +102,7 @@ POST        /shop/productcategory/add           shop.productcategory.add
 GET         /shop/productcategory/edit          shop.productcategory.edit
 POST        /shop/productcategory/edit          shop.productcategory.edit
 GET         /shop/productcategory/del           shop.productcategory.del
+GET         /shop/productcategory/find/{pid}    shop.productcategory.findTypes
 
 GET         /portal/menus               portal.menu.list
 GET         /portal/menu/add            portal.menu.add
@@ -134,7 +135,7 @@ GET         /shop/typeproperty/add              shop.typerelationproperty.add
 POST        /shop/typeproperty/add              shop.typerelationproperty.add
 GET         /shop/typeproperty/edit             shop.typerelationproperty.edit
 GET         /shop/typeproperty/del              shop.typerelationproperty.del
-    GET         /shop/typeproperty/list/{type_id}              shop.typerelationproperty.listByType
+GET         /shop/typeproperty/list/{type_id}              shop.typerelationproperty.listByType
 
 
 GET         /shop/typefilters                 shop.typefilter.list
