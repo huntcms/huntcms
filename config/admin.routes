@@ -142,3 +142,9 @@ GET         /shop/typefilter/add              shop.typefilter.add
 POST        /shop/typefilter/add              shop.typefilter.add
 GET         /shop/typefilter/edit             shop.typefilter.edit
 GET         /shop/typefilter/del              shop.typefilter.del
+
+GET         /portal/promotions                 portal.promotion.list
+GET         /portal/promotion/add              portal.promotion.add
+POST        /portal/promotion/add              portal.promotion.add
+GET         /portal/promotion/edit             portal.promotion.edit
+GET         /portal/promotion/del              portal.promotion.del

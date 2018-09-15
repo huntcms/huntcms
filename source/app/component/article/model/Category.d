@@ -3,7 +3,7 @@ module app.component.article.model.Category;
 import hunt.entity;
 
 
-@Table("components_category")
+@Table("article_category")
 class Category
 {
     mixin MakeEntity;

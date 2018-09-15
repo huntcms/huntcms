@@ -3,7 +3,7 @@ module app.component.tag.model.Tag;
 import hunt.entity;
 public import app.component.article.model.TagArticle;
 
-@Table("tag_tags")
+@Table("tag_tag")
 class Tag
 {
     mixin MakeEntity;

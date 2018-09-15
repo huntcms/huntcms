@@ -14,5 +14,7 @@ class RolePermission
     int role_id;
 
     int permission_id;
+
+    string permission_mca;
   
 }

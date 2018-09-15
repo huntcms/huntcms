@@ -111,7 +111,7 @@ class RoleController : AdminBaseController
 
         view.assign("role", findRole);
 
-
+        //logInfo(id);
         auto permissions = (new PermissionRepository).findAll();
         int[] rolePermissionIds = rolePermissionRepository.getRolePermissionIds(id);
         class rolePermissionClass{
@@ -122,7 +122,7 @@ class RoleController : AdminBaseController
         foreach(key, permission; permissions){
             auto tmp =new rolePermissionClass;
             tmp.permission = permission;
-            if(canFind(rolePermissionIds, permission.mca)){
+            if(canFind(rolePermissionIds, permission.id)){
                 tmp.checked ~= "checked";
             }else{
                 tmp.checked ~= "";

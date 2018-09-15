@@ -48,16 +48,20 @@ class PermissionController : AdminBaseController
             int now = time();
             auto pr = new PermissionRepository();
             Permission pm = new Permission;
-            pm.title = request.post("mca");
+            pm.mca = request.post("mca");
             pm.title = request.post("title");
             pm.isAction = request.post("actionRadio").to!short;
             pm.status = request.post("statusRadio").to!short;
-            auto exsit_data = pr.findById(request.post("id").to!int);
-            if(exsit_data !is null)
+            if(request.post("id"))
             {
-                pm.id = request.post("id").to!int;
-                pm.created = exsit_data.created;
+                auto exsit_data = pr.findById(request.post("id").to!int);
+                if(exsit_data !is null)
+                {
+                    pm.id = request.post("id").to!int;
+                    pm.created = exsit_data.created;
+                }
             }
+            
             else
                 pm.created = now;
             pm.updated = now;

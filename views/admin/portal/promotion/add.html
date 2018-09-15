@@ -1,0 +1,147 @@
+{% include "../../header.html" %} {% include "../../navigation.html" %}
+
+<div class="wrapper">
+    <div class="container-fluid">
+
+        <!-- Page-Title -->
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="page-title-box">
+                    <div class="btn-group pull-right">
+                        <h4 class="page-title">Add Promotion</h4>
+                    </div>
+                    <ol class="breadcrumb hide-phone p-0 m-0">
+                        <li class="breadcrumb-item">
+                            <a href="#">HuntCMS</a>
+                        </li>
+                        <li class="breadcrumb-item">
+                            <a href="#">Promotion</a>
+                        </li>
+                        <li class="breadcrumb-item active">Add Promotion</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+        <!-- end page title end breadcrumb -->
+
+        <div class="row">
+            <div class="col-12">
+                <div class="card-box">
+                    <h4 class="m-t-0 header-title">添加推荐</h4>
+                    <p class="text-muted m-b-30 font-14">
+                        User can add Tag.
+                    </p>
+
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="p-20">
+                                <form class="form-horizontal" role="form" action=""  enctype="multipart/form-data" method="post">
+                                    <div class="form-group row">
+                                        <label class="col-2 col-form-label">标题</label>
+                                        <div class="col-10">
+                                            <input type="text" class="form-control" required id="name" name="title" placeholder="Some text value...">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-2 col-form-label">副标题</label>
+                                        <div class="col-10">
+                                            <input type="text" class="form-control" required id="name" name="subtitle" placeholder="Some text value...">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-2 col-form-label">链接</label>
+                                        <div class="col-10">
+                                            <input type="text" class="form-control" required id="name" name="link_url" placeholder="Some text value...">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-2 col-form-label">类型</label>
+                                        <div class="col-10">
+                                            <select class="form-control" required name="type">
+                                            <option value="type-one">type-one</option>
+                                            <option value="type-two">type-two</option>
+                                            <option value="type-three">type-three</option>
+                                            <option value="type-four">type-four</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-2 col-form-label">关键字</label>
+                                        <div class="col-10">
+                                            <input type="text" class="form-control" required id="name" name="keyword" placeholder="Some text value...">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-2 col-form-label">排序</label>
+                                        <div class="col-10">
+                                            <input type="number" class="form-control" id="sort" name="sort" placeholder="Some text value..." value="">
+                                        </div>
+                                    </div>
+                                    <hr>
+                                    <div class="form-group row">
+                                            <label class="col-2 col-form-label">子模块</label>
+                                            <button class="col-3 form-control" style="display:inline-block;" onclick="addmodule()">增加子模块</button>
+
+                                    </div>
+                                    <input type="hidden" name="submodulenum" id="submodulenum">
+                                    <div id="submodule">
+                                    
+
+                                    </div>
+                                 
+                                    <div class="form-group row">
+                                        <label class="col-2 col-form-label">状态</label>
+                                        <div class="col-10">
+                                            <div class="custom-control custom-radio">
+                                                <input type="radio" id="statusRadio1" name="status" class="custom-control-input" value="1" checked>
+                                                <label class="custom-control-label" for="statusRadio1">Enabled</label>
+                                            </div>
+                                            <div class="custom-control custom-radio">
+                                                <input type="radio" id="statusRadio2" name="status" class="custom-control-input" value="0">
+                                                <label class="custom-control-label" for="statusRadio2">Disabled</label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group mb-0 justify-content-end row">
+                                        <div class="col-md-10">
+                                            <button type="submit"  class="btn btn-info waves-effect waves-light">Create</button>
+                                        </div>
+                                    </div>
+
+                                </form>
+                            </div>
+                        </div>
+
+                    </div>
+                    <!-- end row -->
+
+                </div>
+                <!-- end card-box -->
+            </div>
+            <!-- end col -->
+        </div>
+        <!-- end row -->
+
+    </div>
+    <!-- end container -->
+</div>
+<!-- end wrapper -->
+
+{% include "../../footer.html" %}
+
+<!-- Parsleyjs -->
+<script type="text/javascript" src="/assets/vendor/parsleyjs/dist/parsley.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('form').parsley();
+    });
+
+    var submodulenum = 0;
+    function addmodule(){
+        submodulenum = submodulenum+1;
+        var newmodule = '<div id="submodule'+submodulenum+'" class="col-4" style="display:inline-block;border:1px solid #ced4da;border-radius:10px;padding-left:30px;padding-top:30px;"><div class="form-group row"><div class=""><input type="text" class="form-control" required id="name" name="module'+submodulenum+'title" placeholder="标题"></div></div><div class="form-group row"><div class=""><input type="text" class="form-control" required id="name" name="module'+submodulenum+'subtitle" placeholder="副标题"></div></div><div class="form-group row"><div class=""><label class="">底图</label><br><input type="file" class="form-control" required id="name" name="module'+submodulenum+'picurlback" title="底图"></div></div><div class="form-group row"><div class=""><label class="">顶图</label><br><input type="file" class="form-control" required id="name" name="module'+submodulenum+'picurlfront" title="顶图"></div></div><div class="form-group row"><div class=""><input type="text" class="form-control" required id="name" name="module'+submodulenum+'linkurl" placeholder="链接"></div></div><div class="form-group row"><label class="col-3">是否为新</label><br><div class=""><div class="custom-control custom-radio"><input type="radio" id="statusRadio1" name="module'+submodulenum+'isnew" class="custom-control-input" value="1"><label class="custom-control-label" for="statusRadio1">是</label></div><div class="custom-control custom-radio"><input type="radio" id="statusRadio2" name="module'+submodulenum+'isnew" class="custom-control-input" value="0" checked><label class="custom-control-label" for="statusRadio2">否</label></div></div></div><div class="form-group row"><div class=""><input type="text" class="form-control" required id="name" name="module'+submodulenum+'sort" placeholder="排序"></div></div></div>';
+        $("#submodule").append(newmodule);
+        $("#submodulenum").val(submodulenum);
+    }
+</script>
