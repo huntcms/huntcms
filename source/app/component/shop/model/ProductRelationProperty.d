@@ -12,27 +12,17 @@ class ProductRelationProperty
     int id;
 
 
-    string title;
+    int product_id;
 
-    string introduction;
+    int property_id;
 
-    int pid; //父级ID
+    int property_option_id;
 
-    short level; //分类层级
-
-    int type_id;//分类关联的类别，当前分类的所有子分类关联同一个类别
-
-    int sort;
-
-    //PC网页商品主图
-    string picurl;
+    string property_input;
 
     // timestamp
     int created;
 
     // timestamp
     int updated;
-
-    // 1: enabled, 0: disabled
-    short status;
 }

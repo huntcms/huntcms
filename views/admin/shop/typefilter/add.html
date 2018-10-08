@@ -119,7 +119,7 @@
     function onUpdate()
     {
         $('#property_options')[0].selectize.clearOptions();
-        
+
         $.get("/admincp/shop/typeproperty/list/" + $("#type_id").val(),
                 function(data){
                     var arrs = JSON.parse(data);
@@ -127,7 +127,7 @@
                         $('#property_options')[0].selectize.addOption(arrs[i]);
                 }
             );
-       
+
     }
 
     $(document).ready(function() {

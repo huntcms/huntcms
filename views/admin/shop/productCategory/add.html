@@ -35,7 +35,8 @@
                                         <label class="col-2 col-form-label">所属分类（建议最多3级）</label>
                                         <div class="col-10">
                                             <div class="mt-3">
-                                                <select class="form-control" name="pid">
+                                                <select class="form-control" name="pid" id="pid" onchange="onUpdate();">
+                                                    <option value="0">顶级 - 0</option>
                                                     {% for category in categorys %}
                                                         <option value="{{category.id}}">{{category.title}}---{{category.level}}级</option>
                                                     {% endfor %}
@@ -43,6 +44,20 @@
                                             </div>
                                         </div>
                                     </div>
+                                    
+
+                                    <div class="form-group row">
+                                            <label class="col-2 col-form-label">类别</label>
+                                            <div class="col-10">
+                                                <div class="mt-3">
+                                                    <select class="form-control" name="type_id" id="type_id">
+                                                        
+                                                    </select>
+                                                </div>
+                                            </div>
+                                    </div>
+
+
                                     <div class="form-group row">
                                         <label class="col-2 col-form-label">分类名称</label>
                                         <div class="col-10">
@@ -96,6 +111,21 @@
 <script type="text/javascript" src="/assets/vendor/parsleyjs/dist/parsley.min.js"></script>
 <script src="/assets/vendor/summernote/summernote-bs4.min.js"></script>
 <script>
+    function onUpdate()
+    { 
+        $("#type_id").empty();
+        $.get("/admincp/shop/productcategory/find/" + $("#pid").val() ,
+            function(data){
+                var types = JSON.parse(data);
+                for(var i = 0 ; i < types.length ; i++)
+                {
+                    $("#type_id").append("<option value='"+types[i].id+"' >" + types[i].title + "</option>");
+                }
+            }
+        );
+      
+    }
+
     jQuery(document).ready(function(){
         $('form').parsley();
         $('#summernote').summernote({
@@ -108,6 +138,6 @@
         $('.inline-editor').summernote({
             airMode: true
         });
-
+        onUpdate();
     });
 </script>
