@@ -16,6 +16,7 @@ class AdminIdentity : Identity
 	this()
 	{
 		_allowAction["system.user.login"] = true;
+		_allowAction["system.dashboard.dashboard"] = true;
 		_allowAction["system.user.logout"] = true;
 	}
 

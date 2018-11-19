@@ -1,4 +1,8 @@
-
+{% if isLogin == "NO" %}
+<script type="text/javascript">
+    window.location.href = "/admincp/login";
+</script>
+{% else %}
 <!-- Navigation Bar-->
 <header id="topnav">
     <div class="topbar-main">
@@ -169,3 +173,4 @@
     </div> <!-- end navbar-custom -->
 </header>
 <!-- End Navigation Bar-->
+{% endif %}

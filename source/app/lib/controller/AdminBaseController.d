@@ -17,22 +17,22 @@ class AdminBaseController : Controller
     {
     }
 
-    override bool before()
-	{
+    override bool before() {
 		auto repository = new MenuRepository;
 		auto cache = Application.getInstance().cache();
 		auto userInfo = UserAuth.get(request);
-		 if (userInfo !is null)
-		 {	
+		if (userInfo !is null) {	
 			request.session.get("USER");
 			string permission = cache.get("user_permission_cache_" ~ to!string(userInfo.id()) );
 			//logInfo(permission);
 			JSONValue[] menuData = repository.getAllMenus(permission); 	
 			view.assign("menusJsonData", menuData);
-
 			User nowUser = (new UserRepository).find(userInfo.id());			
 			view.assign("nowUser", nowUser);
-		 }
+			view.assign("isLogin", "YES");
+		} else {
+			view.assign("isLogin", "NO");
+		}
 		if (cmp(toUpper(request.method), HttpMethod.Options) == 0)
 			return false;
 		return true;
