@@ -4,9 +4,9 @@ import hunt.entity;
 import  app.component.article.model.Category;
 
 @Table("article_article")
-class Article 
+class Article : Model
 {
-    mixin MakeEntity;
+    mixin MakeModel;
 
     @AutoIncrement
     @PrimaryKey

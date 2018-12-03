@@ -34,24 +34,43 @@ class TagArticleRepository : EntityRepository!(TagArticle, int)
         return objects;
     }
 
-    TagArticle[] getTagArticle(int articleId)
-    {
-        auto objects = this.newObjects();
+    // TagArticle[] getTagArticle(int articleId)
+    // {
+    //     auto objects = this.newObjects();
 
-        auto p1 = objects.builder.equal(objects.root.TagArticle.article_id, articleId);        
-        auto typedQuery = _entityManager.createQuery(objects.criteriaQuery.select(objects.root).where( p1 ));
-        TagArticle[] tagarticles = typedQuery.getResultList();
+    //     auto p1 = objects.builder.equal(objects.root.TagArticle.article_id, articleId);        
+    //     auto typedQuery = _entityManager.createQuery(objects.criteriaQuery.select(objects.root).where( p1 ));
+    //     TagArticle[] tagarticles = typedQuery.getResultList();
+    //     if(tagarticles.length > 0)
+    //         return tagarticles;
+    //     return null;
+    // }
+
+    // bool removes(int articleId)
+    // {
+    //     auto objects = this.newObjects();
+    //     auto p1 = objects.builder.equal(objects.root.TagArticle.article_id, articleId);
+    //     auto typedQuery = _entityManager.createQuery(objects.criteriaQuery.select(objects.root).where( p1 ));
+    //     TagArticle[] tagArticles = typedQuery.getResultList();
+    //     this.removeAll(tagArticles);
+    //     return true;
+    // }
+
+    TagArticle[] getTagArticle(int articleId) {
+        auto query = _entityManager.createQuery!(TagArticle)(" SELECT ta FROM TagArticle ta WHERE ta.article_id = :articleId ");
+        query.setParameter("articleId", articleId);
+        TagArticle[] tagarticles = query.getResultList();
+
         if(tagarticles.length > 0)
             return tagarticles;
         return null;
     }
 
-    bool removes(int articleId)
-    {
-        auto objects = this.newObjects();
-        auto p1 = objects.builder.equal(objects.root.TagArticle.article_id, articleId);
-        auto typedQuery = _entityManager.createQuery(objects.criteriaQuery.select(objects.root).where( p1 ));
-        TagArticle[] tagArticles = typedQuery.getResultList();
+    bool removes(int articleId) {
+        auto query = _entityManager.createQuery!(TagArticle)(" SELECT ta FROM TagArticle ta WHERE ta.article_id = :articleId ");
+        query.setParameter("articleId", articleId);
+        TagArticle[] tagArticles = query.getResultList();
+
         this.removeAll(tagArticles);
         return true;
     }

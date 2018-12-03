@@ -5,15 +5,16 @@ import hunt.framework;
 import app.component.system.model.Permission;
 import app.component.system.repository.PermissionRepository;
 
-import kiss.logger;
-import kiss.util.serialize;
-import kiss.datetime;
+import hunt.logging;
+import hunt.util.serialize;
+import hunt.datetime;
 import app.component.system.controller.admin.LogMiddleware;
 import app.lib.controller.AdminBaseController;
 import app.component.system.helper.Utils;
 
 import hunt.entity.domain;
 import app.component.system.helper.Paginate;
+import hunt.http.codec.http.model.HttpMethod;
 
 class PermissionController : AdminBaseController
 {
@@ -43,7 +44,7 @@ class PermissionController : AdminBaseController
 
     @Action Response add()
     {
-        if (request.method() == HttpMethod.Post)
+        if (request.method() == HttpMethod.POST.asString())
         {
             int now = time();
             auto pr = new PermissionRepository();
@@ -68,10 +69,14 @@ class PermissionController : AdminBaseController
 
             auto saveRes = pr.save(pm);
             if (saveRes !is null)
-                return new RedirectResponse("/admincp/system/permissions");
+                return new RedirectResponse(request, "/admincp/system/permissions");
 
         }
-        return request.createResponse().setContent(view.render("system/permission/add"));
+
+        Response response = new Response(request);
+		response.setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString());
+		response.setContent(view.render("system/permission/add"));
+		return response;
     }
 
 
@@ -87,6 +92,6 @@ class PermissionController : AdminBaseController
     @Action Response del(int id)
     {
         (new PermissionRepository()).removeById(request.get("id").to!int);
-        return new RedirectResponse("/admincp/system/permissions");
+        return new RedirectResponse(request, "/admincp/system/permissions");
     }
 }

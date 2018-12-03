@@ -145,3 +145,23 @@
         $("#submodulenum").val(submodulenum);
     }
 </script>
+<script type="text/javascript" src="/assets/vendor/upload/aliyunVideo.js"></script>
+{% include "../../uploadPicRes.html" %}
+<script>
+    var config = {
+        fileNumLimit: '1',               //最大上传图片数
+        // 上传地址
+        photoServer: '/admincp/system/file/upload',
+        // 允许上传的格式
+        accept: {
+            title: 'Images',
+            extensions: 'gif,jpg,jpeg,bmp,png',
+            mimeTypes: 'image/gif,image/jpg,image/jpeg,image/bmp,image/png'
+        },
+        // 最大上传量
+        fileSizeLimit: 200 * 1024 * 1024,    // 200 M
+        // 单张最大限制
+        fileSingleSizeLimit: 50 * 1024 * 1024,  // 50 M
+    }
+    picupload(config)
+</script>

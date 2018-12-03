@@ -7,6 +7,7 @@ import app.component.shop.repository.ShopProductTypeRepository;
 import app.lib.controller.AdminBaseController;
 import app.component.system.helper.Paginate;
 import app.component.system.helper.Utils;
+import hunt.http.codec.http.model.HttpMethod;
 
 class TypeController : AdminBaseController
 {
@@ -34,11 +35,11 @@ class TypeController : AdminBaseController
 
     @Action Response add()
     {
-        if (request.method() == HttpMethod.Post)
+        if (request.method() == HttpMethod.POST.asString())
         {
             int now = time();
             auto repo = new ShopProductTypeRepository();
-            int id = request.post!int("id");
+            int id = request.post("id").to!int;
             auto type = repo.findById(id);
             bool isNew = type is null;
             if( isNew )
@@ -47,16 +48,20 @@ class TypeController : AdminBaseController
                 type.created = now;
             }
             type.title = request.post("title");
-            type.status = request.post!int("status");
+            type.status = request.post("status").to!int;
             type.updated = now;
             if(isNew)
                 repo.insert(type);
             else
                 repo.update(type);
 
-            return new RedirectResponse("/admincp/shop/types");
+            return new RedirectResponse(request, "/admincp/shop/types");
         }
-        return request.createResponse().setContent(view.render("shop/type/add"));
+
+        Response response = new Response(request);
+		response.setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString());
+		response.setContent(view.render("shop/type/add"));
+		return response;
     }
 
 
@@ -71,7 +76,7 @@ class TypeController : AdminBaseController
     @Action Response del(int id)
     {
         (new ShopProductTypeRepository()).removeById(id);
-        return new RedirectResponse("/admincp/shop/types");
+        return new RedirectResponse(request, "/admincp/shop/types");
     } 
 
 }

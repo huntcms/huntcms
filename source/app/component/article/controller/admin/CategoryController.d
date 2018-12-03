@@ -3,9 +3,9 @@ module app.component.article.controller.admin.CategoryController;
 import hunt.framework;
 import app.component.article.repository.CategoryRepository;
 import app.component.article.model.Category;
-import kiss.datetime;
+import hunt.datetime;
 import app.lib.controller.AdminBaseController;
-
+import hunt.http.codec.http.model.HttpMethod;
 
 class CategoryController : AdminBaseController
 {
@@ -27,7 +27,7 @@ class CategoryController : AdminBaseController
 
     @Action Response add()
     {
-        if(request.method() == HttpMethod.Post)
+        if(request.method() == HttpMethod.POST.asString())
         {
             int now = cast(int) time();
 
@@ -52,9 +52,13 @@ class CategoryController : AdminBaseController
             pm.updated = now;
 
             cr.save(pm);
-            return new RedirectResponse("/admincp/article/categories");
+            return new RedirectResponse(request, "/admincp/article/categories");
         }
-        return request.createResponse().setContent(view.render("article/category/add"));
+
+        Response response = new Response(request);
+        response.setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString());
+        response.setContent(view.render("article/category/add"));
+        return response;
     }
 
     @Action string edit(int id)
@@ -71,6 +75,6 @@ class CategoryController : AdminBaseController
         exsit_data.status = 0; 
         cr.save(exsit_data);
 
-        return new RedirectResponse("/admincp/article/categories");
+        return new RedirectResponse(request, "/admincp/article/categories");
     } 
 }

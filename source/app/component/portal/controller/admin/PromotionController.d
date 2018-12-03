@@ -8,6 +8,7 @@ import app.component.system.helper.Utils;
 import app.lib.yun.YunUpLoad;
 import app.component.system.helper.Utils;
 import std.digest.sha;
+import hunt.http.codec.http.model.HttpMethod;
 
 class PromotionController : AdminBaseController
 {
@@ -31,7 +32,7 @@ class PromotionController : AdminBaseController
 
     @Action Response add()
     {
-        if (request.method() == HttpMethod.Post)
+        if (request.method() == HttpMethod.POST.asString())
         {
             int now = cast(int) time();
             auto pr = new PromotionRepository;
@@ -48,46 +49,9 @@ class PromotionController : AdminBaseController
             JSONValue submodule;
             for(int i=1;i<=submodulenum;i++)
             {
-                auto f1 = request.postForm.getFileValue("module"~i.to!string~"picurlback");
-                auto f2 = request.postForm.getFileValue("module"~i.to!string~"picurlfront");
-                //alias tmp = string[string];
                 JSONValue f;
-
-                if (f1)
-                {
-                    ubyte[] file_data;
-                    auto filesize = f1.fileSize;
-                    f1.read(filesize, (const(ubyte[]) data) { file_data ~= data; });
-                    auto sha1 = toHexString(sha1Of(file_data));
-                    auto saveName = sha1 ~ "." ~ Utils.fileExt(f1.fileName);
-                    auto upload = new YunUpLoad("1004",
-                    "http://upload.putaocloud.com",
-                    "0d87e77f509a419285db58f985836901", 
-                    "2fa77ec72e6a4c338515bfef98b97c42");
-
-                    auto json = parseJSON( upload.doUpload(cast(byte[])file_data , cast(string)saveName));
-                    logInfo(json);
-                    f["picurl_back"] = "https://mall-file.putaocdn.com/largefile/" ~ json["hash"].str ~ "_nodown.png"; 
-
-                }
-
-                if (f2)
-                {
-                    ubyte[] file_data;
-                    auto filesize = f2.fileSize;
-                    f2.read(filesize, (const(ubyte[]) data) { file_data ~= data; });
-                    auto sha1 = toHexString(sha1Of(file_data));
-                    auto saveName = sha1 ~ "." ~ Utils.fileExt(f2.fileName);
-                    auto upload = new YunUpLoad("1004",
-                    "http://upload.putaocloud.com",
-                    "0d87e77f509a419285db58f985836901", 
-                    "2fa77ec72e6a4c338515bfef98b97c42");
-
-                    auto json = parseJSON( upload.doUpload(cast(byte[])file_data , cast(string)saveName));
-                    logInfo(json);
-                    f["picurl_back"] = "https://mall-file.putaocdn.com/largefile/" ~ json["hash"].str ~ "_nodown.png"; 
-                }
-
+                f["picurl_back"] = request.post("module"~i.to!string~"picurlback");
+                f["picurl_front"] = request.post("module"~i.to!string~"picurlfront");
                 f["title"] = request.post("module"~i.to!string~"title");
                 f["subtitle"] = request.post("module"~i.to!string~"subtitle");
                 f["link_url"] = request.post("module"~i.to!string~"linkurl");
@@ -95,10 +59,6 @@ class PromotionController : AdminBaseController
                 f["isnew"] = request.post("module"~i.to!string~"isnew");
                 submodule["submodule"~i.to!string] = f;
             }
-
-            
-            //else
-              //  art.picture = request.post("currentpic");
 
             promotion.modules = submodule.to!string;
             auto id = request.post("id");
@@ -115,10 +75,13 @@ class PromotionController : AdminBaseController
 
             auto saveRes = pr.save(promotion);
             if (saveRes !is null)
-                return new RedirectResponse("/admincp/portal/promotions");
+                return new RedirectResponse(request, "/admincp/portal/promotions");
         }
 
-        return request.createResponse().setContent(view.render("portal/promotion/add"));
+        Response response = new Response(request);
+        response.setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString());
+        response.setContent(view.render("portal/promotion/edit"));
+        return response;
     }
 
     @Action Response edit(int id)
@@ -126,12 +89,15 @@ class PromotionController : AdminBaseController
         auto repository = new PromotionRepository;
         view.assign("promotion", repository.find(id));
 
-        return request.createResponse().setContent(view.render("portal/promotion/edit"));
+        Response response = new Response(request);
+        response.setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString());
+        response.setContent(view.render("portal/promotion/edit"));
+        return response;
     }
 
     @Action Response del(int id)
     {
         (new PromotionRepository).removeById(id);
-        return new RedirectResponse("/admincp/portal/promotions");
+        return new RedirectResponse(request, "/admincp/portal/promotions");
     }
 }

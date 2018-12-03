@@ -3,9 +3,9 @@ module app.component.system.model.Setting;
 import hunt.entity;
 
 @Table("system_setting")
-class Setting
+class Setting : Model 
 {
-    mixin MakeEntity;
+    mixin MakeModel;
 
     // exmple: site_name
     @PrimaryKey

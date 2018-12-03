@@ -32,7 +32,7 @@
                     <div class="row">
                         <div class="col-12">
                             <div class="p-20">
-                                <form class="form-horizontal" method="POST"  enctype="multipart/form-data" action="{{ url('article.article.add','') }}" role="form">
+                                <form class="form-horizontal" method="POST" action="{{ url('article.article.add','') }}" role="form">
                                     <div class="form-group row">
                                         <label class="col-2 col-form-label">Category</label>
                                         <div class="col-10">
@@ -84,14 +84,28 @@
                                         <div class="col-10">
                                             <textarea class="form-control" id="summernote" name="content">{{article.content}}</textarea>
                                         </div>
-                                    </div>                                   
+                                    </div>         
+
                                     <div class="form-group row">
                                         <label class="col-2 col-form-label">Picture</label>
-                                        <div class="col-10">
-                                            <input name="imageFile" class="form-control" type="file"  placeholder="picture url..."/>
-                                            <input type="hidden" class="form-control" name="currentpic" value="{{ article.picture }}">
+                                        <div class="uploder-container col-10">
+                                            <input class="fileUpdate" type="hidden" name="imageFile"
+                                                   value="{% if article.picture != 'null' %}{{ article.picture }}{% endif %}">
+                                            <!--<input type="text" value=''>-->
+                                            <div class="cxuploder">
+                                                <div class="queueList">
+                                                    <div class="placeholder" style="padding-top: 50px;">
+                                                        <div class="filePicker"></div> <p>将照片拖到这里</p>
+                                                    </div>
+                                                </div>
+                                                <div class="statusBar" style="display:none;">
+                                                    <div class="btns"> <div class="jxfilePicker"></div> </div>
+                                                    <div class="info"></div>
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>                             
+                                    </div>
+
                                     <div class="form-group row">
                                         <label class="col-2 col-form-label">Video</label>
                                         <div class="col-10">
@@ -198,3 +212,23 @@
         });
     }
     </script>
+<script type="text/javascript" src="/assets/vendor/upload/aliyunVideo.js"></script>
+{% include "../../uploadPicRes.html" %}
+<script>
+    var config = {
+        fileNumLimit: '1',               //最大上传图片数
+        // 上传地址
+        photoServer: '/admincp/system/file/upload',
+        // 允许上传的格式
+        accept: {
+            title: 'Images',
+            extensions: 'gif,jpg,jpeg,bmp,png',
+            mimeTypes: 'image/gif,image/jpg,image/jpeg,image/bmp,image/png'
+        },
+        // 最大上传量
+        fileSizeLimit: 200 * 1024 * 1024,    // 200 M
+        // 单张最大限制
+        fileSingleSizeLimit: 50 * 1024 * 1024,  // 50 M
+    }
+    picupload(config)
+</script>    

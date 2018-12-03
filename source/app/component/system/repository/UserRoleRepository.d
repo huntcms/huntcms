@@ -11,42 +11,30 @@ import app.component.system.model.UserRole;
 import hunt.entity;
 import hunt.entity.EntityManager;
 
-import kiss.logger;
-
 import std.algorithm;
 class UserRoleRepository : EntityRepository!(UserRole, int)
 {
 
     private EntityManager _entityManager;
-    struct Objects
-    {
-        CriteriaBuilder builder;
-        CriteriaQuery!UserRole criteriaQuery;
-        Root!UserRole root;
-    }
 
     this(EntityManager manager = null) {
         super(manager);
         _entityManager = manager is null ? createEntityManager() : manager;
     }
 
+    int[] getUserRoleIds(int userId) {
 
-    int[] getUserRoleIds(int userId)
-    {
-        auto objects = this.newObjects();
-
-        auto p1 = objects.builder.equal(objects.root.UserRole.user_id, userId);
-        auto typedQuery = _entityManager.createQuery(objects.criteriaQuery.select(objects.root).where( p1 ));
-        UserRole[] userRoles = typedQuery.getResultList();
-
+        auto query = _entityManager.createQuery!(UserRole)(" SELECT ur FROM UserRole ur WHERE ur.user_id = :userId ");
+        query.setParameter("userId", userId);
+        auto userRoles = query.getResultList();
+        
         int[] ids;
-        foreach (userRole; userRoles)
-        {
+        foreach (userRole; userRoles) {
             ids ~= userRole.role_id;
         }
-
         return ids;
     }
+
 
     bool saves(int userId, int[] roleIds)
     {
@@ -61,24 +49,12 @@ class UserRoleRepository : EntityRepository!(UserRole, int)
         return true;
     }
 
-    bool removes(int userId)
-    {
-        auto objects = this.newObjects();
-        auto p1 = objects.builder.equal(objects.root.UserRole.user_id, userId);
-        auto typedQuery = _entityManager.createQuery(objects.criteriaQuery.select(objects.root).where( p1 ));
-        UserRole[] userRoles = typedQuery.getResultList();
+    bool removes(int userId) {
+        auto query = _entityManager.createQuery!(UserRole)(" SELECT ur FROM UserRole ur WHERE ur.user_id = :userId ");
+        query.setParameter("userId", userId);
+        UserRole[] userRoles = query.getResultList();
         this.removeAll(userRoles);
         return true;
     }
 
-    Objects newObjects()
-    {
-        Objects objects;
-
-        objects.builder = _entityManager.getCriteriaBuilder();
-        objects.criteriaQuery = objects.builder.createQuery!UserRole;
-        objects.root = objects.criteriaQuery.from();
-
-        return objects;
-    }
 }

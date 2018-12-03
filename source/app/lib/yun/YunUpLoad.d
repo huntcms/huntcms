@@ -13,8 +13,8 @@ import std.digest.hmac;
 import std.base64;
 import std.conv;
 import std.string;
-//import kiss.util.configuration;
-
+import hunt.util.configuration;
+import hunt.logging;
 
 import std.experimental.allocator.mallocator;
 import core.stdc.time;
@@ -52,6 +52,9 @@ class YunUpLoad
 	string doUpload(const byte[] data , string filename = "test")
 	{
 		JSONValue json = getDataInfo(data,filename);
+		if(json["hash"].str != ""){
+			json["url"] = "https://mall-file.putaocdn.com/largefile/" ~ json["hash"].str ~ ".png";
+		}
 		if (json["error_code"].integer != 0){
 			status(UpLoadStuts.UploadErro);
 			return null;
@@ -63,14 +66,14 @@ class YunUpLoad
 			return doReturnUrl(json, filename);
 		}
 		json = sliceUpLoad(json["key"].str ,data,cast(size_t)(json["begin"].integer));
-		if(json["error_code"].integer == 0 &&  json["filestate"].integer == 1){
+		if(json["error_code"].integer == 0 && json["filestate"].integer == 1){
 			status(UpLoadStuts.WaitHandle);
+			json["url"] = "https://mall-file.putaocdn.com/largefile/" ~ json["hash"].str ~ ".png";
 			return doReturnUrl(json, filename);
 		} else {
 			status(UpLoadStuts.UploadErro);
 			return null;
 		}
-
 	}
 
 

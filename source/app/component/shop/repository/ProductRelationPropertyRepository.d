@@ -2,8 +2,8 @@ module app.component.shop.repository.ProductRelationPropertyRepository;
 
 import hunt.entity;
 import std.json;
-import kiss.util.serialize;
-import kiss.logger;
+import hunt.util.serialize;
+import hunt.logging;
 public import app.component.shop.model.ProductRelationProperty;
 public import app.component.shop.model.ShopPropertyOption;
 

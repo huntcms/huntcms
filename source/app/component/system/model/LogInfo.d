@@ -4,9 +4,9 @@ import hunt.entity;
 import app.component.system.model.User;
 
 @Table("system_log_info")
-class LogInfo
+class LogInfo : Model 
 {
-    mixin MakeEntity;
+    mixin MakeModel;
 
     @AutoIncrement
     @PrimaryKey

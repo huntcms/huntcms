@@ -11,6 +11,7 @@ import app.component.shop.repository.ShopProductTypeRepository;
 import app.lib.controller.AdminBaseController;
 import app.component.system.helper.Paginate;
 import app.component.system.helper.Utils;
+import hunt.http.codec.http.model.HttpMethod;
 
 class PropertyOptionController : AdminBaseController
 {
@@ -62,11 +63,11 @@ class PropertyOptionController : AdminBaseController
 
     @Action Response add()
     {
-        if (request.method() == HttpMethod.Post)
+        if (request.method() == HttpMethod.POST.asString())
         {
             int now = time();
             auto repo = new PropertyOptionRepository();
-            int id = request.post!int("id");
+            int id = request.post("id").to!int;
             auto property = repo.findById(id);
             bool isNew = property is null;
             if( isNew )
@@ -75,21 +76,25 @@ class PropertyOptionController : AdminBaseController
                 property.created = now;
             }
             property.title = request.post("title");
-            property.property_id = request.post!int("property_id");
-            property.status = request.post!int("status");
-            property.sort = request.post!int("sort");
+            property.property_id = request.post("property_id").to!int;
+            property.status = request.post("status").to!int;
+            property.sort = request.post("sort").to!int;
             property.updated = now;
             if(isNew)
                 repo.insert(property);
             else
                 repo.update(property);
 
-            return new RedirectResponse("/admincp/shop/propertyoptions");
+            return new RedirectResponse(request, "/admincp/shop/propertyoptions");
         }
         auto repo_property = new ShopPropertyRepository();
         auto properties = repo_property.findAll();
         view.assign("properties", properties);
-        return request.createResponse().setContent(view.render("shop/propertyoption/add"));
+
+        Response response = new Response(request);
+		response.setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString());
+		response.setContent(view.render("shop/propertyoption/add"));
+		return response;
     }
 
 
@@ -106,6 +111,6 @@ class PropertyOptionController : AdminBaseController
     @Action Response del(int id)
     {
         (new PropertyOptionRepository()).removeById(id);
-        return new RedirectResponse("/admincp/shop/propertyoptions");
+        return new RedirectResponse(request, "/admincp/shop/propertyoptions");
     } 
 }

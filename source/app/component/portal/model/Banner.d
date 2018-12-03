@@ -3,9 +3,9 @@ module app.component.portal.model.Banner;
 import hunt.entity;
 
 @Table("portal_banner")
-class Banner
+class Banner : Model
 {
-    mixin MakeEntity;
+    mixin MakeModel;
 
     @AutoIncrement
     @PrimaryKey

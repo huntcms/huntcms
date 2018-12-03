@@ -3,9 +3,9 @@ module app.component.system.model.Permission;
 import hunt.entity;
 
 @Table("system_permission")
-class Permission 
+class Permission : Model 
 {
-    mixin MakeEntity;
+    mixin MakeModel;
 
     @PrimaryKey
     int id;

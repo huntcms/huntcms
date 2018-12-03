@@ -5,14 +5,11 @@ import std.digest.sha;
 import std.file;
 import std.net.curl;
 
-import kiss.util.configuration;
-import kiss.datetime;
-
-import collie.codec.http.server.httpform;
+import hunt.util.configuration;
+import hunt.datetime;
 
 import app.component.system.repository.FileInfoRepository;
 import app.component.system.model.FileInfo;
-import app.auth.UserAuth;
 
 string uploadToCloud()
 {

@@ -4,9 +4,9 @@ import hunt.entity;
 public import app.component.article.model.TagArticle;
 
 @Table("tag_tag")
-class Tag
+class Tag : Model
 {
-    mixin MakeEntity;
+    mixin MakeModel;
 
     @AutoIncrement
     @PrimaryKey

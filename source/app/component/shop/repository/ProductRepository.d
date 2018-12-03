@@ -4,8 +4,9 @@ import hunt.entity;
 import hunt.entity.domain;
 import std.json;
 import std.math;
-import kiss.util.serialize;
-import kiss.logger;
+import hunt.util.serialize;
+import hunt.logging;
+import hunt.framework;
 import app.component.shop.model.Product;
 
 class ProductRepository : EntityRepository!(Product, int)

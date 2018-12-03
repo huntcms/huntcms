@@ -4,8 +4,9 @@ import hunt.entity;
 import hunt.entity.domain;
 import std.json;
 import std.math;
-import kiss.util.serialize;
-import kiss.logger;
+import hunt.util.serialize;
+import hunt.logging;
+import hunt.framework;
 import app.component.shop.model.ProductType;
 
 class ProductTypeRepository : EntityRepository!(ProductType, int)
@@ -15,22 +16,6 @@ class ProductTypeRepository : EntityRepository!(ProductType, int)
     this(EntityManager manager = null) {
         super(manager);
         _entityManager = manager is null ? createEntityManager() : manager;
-    }
-
-    struct Objects
-    {
-        CriteriaBuilder builder;
-        CriteriaQuery!ProductType criteriaQuery;
-        Root!ProductType root;
-    }
-
-    Objects newObjects()
-    {
-        Objects objects;
-        objects.builder = _entityManager.getCriteriaBuilder();
-        objects.criteriaQuery = objects.builder.createQuery!ProductType;
-        objects.root = objects.criteriaQuery.from();
-        return objects;
     }
 
 }

@@ -4,8 +4,8 @@ import hunt.framework;
 import hunt.framework.simplify;
 import hunt.framework.http.RedirectResponse;
 import std.uri;
-import kiss.logger;
-import kiss.datetime.format;
+import hunt.logging;
+import hunt.datetime.format;
 import app.lib.controller.AdminBaseController;
 import app.component.shop.repository.ProductCategoryRepository;
 import app.component.shop.model.ProductCategory;
@@ -35,11 +35,11 @@ class ProductCategoryController : AdminBaseController
         view.assign("get", conditions);
 
         uint page = request.get!uint("page" , 1);
-        string linkUrl = request.fullUrl();
+        string linkUrl = request.url();
         if (indexOf(linkUrl, "page="~page.to!string) != -1){
             linkUrl = linkUrl.replace("page="~page.to!string, "page={page}");
         }else {
-            if (indexOf(request.fullUrl(), "?") != -1){
+            if (indexOf(request.url(), "?") != -1){
                 linkUrl ~= "&page={page}";
             }else {
                 linkUrl ~= "?page={page}";
@@ -77,7 +77,7 @@ class ProductCategoryController : AdminBaseController
             productCategoryModel.title = request.post("title");
             productCategoryModel.sort = request.post("sort").to!int;
             productCategoryModel.pid = request.post("pid").to!int;
-            productCategoryModel.type_id = request.post!int("type_id");
+            productCategoryModel.type_id = request.post("type_id").to!int;
             auto parentData = productCategoryRepository.find(productCategoryModel.pid);
             if(parentData){
                 productCategoryModel.level = ++parentData.level;
@@ -87,7 +87,7 @@ class ProductCategoryController : AdminBaseController
                 auto save = productCategoryRepository.save(productCategoryModel);
                 if (save !is null)
                 {
-                    return new RedirectResponse(createUrl("shop.productcategory.list"));
+                    return new RedirectResponse(request, createUrl("shop.productcategory.list"));
                 }else {
                     view.assign("errorMessages", ["操作失败"]);
                 }
@@ -99,12 +99,16 @@ class ProductCategoryController : AdminBaseController
                 productCategoryModel.updated = time;
                 productCategoryModel.created  = time;
                 productCategoryRepository.insert(productCategoryModel);
-                return new RedirectResponse(createUrl("shop.productcategory.list"));
+                return new RedirectResponse(request, createUrl("shop.productcategory.list"));
             }
 
         }
         view.assign("categorys", productCategoryRepository.all());
-        return request.createResponse().setContent(view.render("shop/productCategory/add"));
+
+        Response response = new Response(request);
+        response.setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString());
+        response.setContent(view.render("shop/productCategory/add"));
+        return response;
     }
 
     @Action Response edit(int id)
@@ -122,7 +126,7 @@ class ProductCategoryController : AdminBaseController
             auto save = productCategoryRepository.save(productCategoryModel);
             if (save !is null)
             {
-                return new RedirectResponse(createUrl("shop.productcategory.list"));
+                return new RedirectResponse(request, createUrl("shop.productcategory.list"));
             }else {
                 view.assign("errorMessages", ["操作失败"]);
             }
@@ -133,7 +137,11 @@ class ProductCategoryController : AdminBaseController
         view.assign("type" ,type_repo.findById(data.type_id));
         view.assign("data",  data);
         view.assign("categorys", productCategoryRepository.all());
-        return request.createResponse().setContent(view.render("shop/productCategory/edit"));
+
+        Response response = new Response(request);
+        response.setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString());
+        response.setContent(view.render("shop/productCategory/edit"));
+        return response;
     }
 
     @Action Response del(int id)
@@ -141,11 +149,11 @@ class ProductCategoryController : AdminBaseController
         auto productCategoryRepository = new ProductCategoryRepository();
         if(productCategoryRepository.childrens(id))
         {
-            return new RedirectResponse(createUrl("shop.productcategory.list"));
+            return new RedirectResponse(request, createUrl("shop.productcategory.list"));
         }
         auto productCategoryModel = productCategoryRepository.find(id);
         productCategoryRepository.remove(productCategoryModel);
-        return new RedirectResponse(createUrl("shop.productcategory.list"));
+        return new RedirectResponse(request, createUrl("shop.productcategory.list"));
     }
 
 }

@@ -3,9 +3,9 @@ module app.component.portal.model.Menu;
 import hunt.entity;
 
 @Table("portal_menu")
-class Menu
+class Menu : Model
 {
-    mixin MakeEntity;
+    mixin MakeModel;
 
     @AutoIncrement
     @PrimaryKey

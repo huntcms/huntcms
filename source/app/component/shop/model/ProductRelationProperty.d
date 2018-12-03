@@ -3,9 +3,9 @@ module app.component.shop.model.ProductRelationProperty;
 import hunt.entity;
 
 @Table("shop_product_relation_property")
-class ProductRelationProperty
+class ProductRelationProperty : Model
 {
-    mixin MakeEntity;
+    mixin MakeModel;
 
     @AutoIncrement
     @PrimaryKey

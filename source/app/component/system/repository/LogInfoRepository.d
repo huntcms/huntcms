@@ -7,7 +7,7 @@ import app.component.system.model.LogInfo;
 import hunt.entity;
 import hunt.entity.EntityManager;
 
-import kiss.logger;
+// import kiss.logger;
 import hunt.framework;
 
 class LogInfoRepository : EntityRepository!(LogInfo, int)

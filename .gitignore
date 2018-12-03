@@ -10,3 +10,4 @@ dub.selections.json
 dub.userprefs
 .idea
 config/application.conf
+*.dll

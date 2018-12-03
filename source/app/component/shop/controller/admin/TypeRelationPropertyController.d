@@ -15,6 +15,7 @@ import app.lib.controller.AdminBaseController;
 import app.component.system.helper.Paginate;
 import app.component.system.helper.Utils;
 import app.component.shop.controller.admin.PropertyOptionController;
+import hunt.http.codec.http.model.HttpMethod;
 
 
 class TypeRelationPropertyController : AdminBaseController
@@ -62,11 +63,11 @@ class TypeRelationPropertyController : AdminBaseController
 
     @Action string add()
     {
-        if (request.method() == HttpMethod.Post)
+        if (request.method() == HttpMethod.POST.asString())
         {
             int now = time();
             auto repo = new TypeRelationPropertyRepository();
-            int id = request.post!int("id");
+            int id = request.post("id").to!int;
             auto type = repo.findById(id);
             bool isNew = type is null;
             if( isNew )
@@ -74,9 +75,9 @@ class TypeRelationPropertyController : AdminBaseController
                 type = new ShopProductTypeRelationProperty();
                 type.created = now;
             }
-            type.type_id = request.post!int("type_id");
-            type.property_id = request.post!int("property_id");
-            type.sort = request.post!int("sort");
+            type.type_id = request.post("type_id").to!int;
+            type.property_id = request.post("property_id").to!int;
+            type.sort = request.post("sort").to!int;
             type.updated = now;
             if(isNew)
                 repo.insert(type);
@@ -111,7 +112,7 @@ class TypeRelationPropertyController : AdminBaseController
     @Action Response del(int id)
     {
         (new TypeRelationPropertyRepository()).removeById(id);
-        return new RedirectResponse("/admincp/shop/typeproperties");
+        return new RedirectResponse(request, "/admincp/shop/typeproperties");
     } 
 
 }

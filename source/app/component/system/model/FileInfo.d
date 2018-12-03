@@ -4,9 +4,9 @@ import hunt.entity;
 import app.component.system.model.User;
 
 @Table("system_file_info")
-class FileInfo
+class FileInfo : Model 
 {
-    mixin MakeEntity;
+    mixin MakeModel;
 
     @AutoIncrement
     @PrimaryKey

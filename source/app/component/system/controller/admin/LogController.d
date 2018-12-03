@@ -5,9 +5,8 @@ import hunt.framework;
 import app.component.system.model.LogInfo;
 import app.component.system.repository.LogInfoRepository;
 
-import kiss.logger;
-import kiss.util.serialize;
-import kiss.datetime;
+import hunt.util.serialize;
+import hunt.datetime;
 import app.component.system.controller.admin.LogMiddleware;
 import app.lib.controller.AdminBaseController;
 import app.component.system.helper.Utils;
@@ -40,6 +39,6 @@ class LogController : AdminBaseController
     @Action Response del(int id)
     {
         (new LogInfoRepository()).removeById(id);
-        return new RedirectResponse("/admincp/system/logs");
+        return new RedirectResponse(request, "/admincp/system/logs");
     }
 }

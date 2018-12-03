@@ -4,8 +4,8 @@ import hunt.entity;
 import hunt.entity.domain;
 import std.json;
 import std.math;
-import kiss.util.serialize;
-import kiss.logger;
+import hunt.util.serialize;
+import hunt.logging;
 import app.component.shop.model.ProductCategory;
 
 class ProductCategoryRepository : EntityRepository!(ProductCategory, int)
@@ -17,38 +17,12 @@ class ProductCategoryRepository : EntityRepository!(ProductCategory, int)
         _entityManager = manager is null ? createEntityManager() : manager;
     }
 
-    struct Objects
-    {
-        CriteriaBuilder builder;
-        CriteriaQuery!ProductCategory criteriaQuery;
-        Root!ProductCategory root;
-    }
-
-    Objects newObjects()
-    {
-        Objects objects;
-        objects.builder = _entityManager.getCriteriaBuilder();
-        objects.criteriaQuery = objects.builder.createQuery!ProductCategory;
-        objects.root = objects.criteriaQuery.from();
-        return objects;
-    }
-
-    JSONValue adminList(string[string] conditions = null, int limit = 20)
-    {
-        auto objects1 = this.newObjects();
-        auto objects2 = this.newObjects();
-        auto querySelect1 = objects1.criteriaQuery.select(objects1.root).where(objects1.builder.equal(objects1.root.ProductCategory.deleted, 0));
-        auto querySelect2 = objects2.criteriaQuery.select(objects2.builder.count(objects2.root)).where(objects2.builder.equal(objects2.root.ProductCategory.deleted, 0));
-
+    JSONValue adminList(string[string] conditions = null, int limit = 20) {
         //筛选条件
+        string strConditions = "";
         if(conditions !is null && "title" in conditions){
-            querySelect1.where(objects1.builder.like(objects1.root.ProductCategory.title, "'%"~conditions["title"]~"%'"));
-            querySelect2.where(objects2.builder.like(objects2.root.ProductCategory.title, "'%"~conditions["title"]~"%'"));
+            strConditions = " AND pc.title = '%" ~ conditions["title"] ~ "%'";
         }
-        //筛选条件
-
-        auto typedQuery1 = _entityManager.createQuery(querySelect1);
-        auto typedQuery2 = _entityManager.createQuery(querySelect2);
 
         int offset = 0;
         if(conditions !is null && "page" in conditions){
@@ -57,14 +31,15 @@ class ProductCategoryRepository : EntityRepository!(ProductCategory, int)
             offset = (page-1) * limit;
         }
         JSONValue result;
-        Long count = cast(Long)(typedQuery2.getSingleResult());
-        int totalCount = count ? count.longValue().to!int : 0;
+
+        long count = count(new Condition( " pc.deleted = 0 %s ", strConditions));
+        int totalCount = count ? cast(int) count : 0;
         result["total_count"] = totalCount;
         result["total_page"] = cast(int) ceil(cast(float) totalCount/limit);
         JSONValue[] data;
-        ProductCategory[] productCategorys = typedQuery1.setFirstResult(offset).setMaxResults(limit).getResultList();
-        foreach(productCategory; productCategorys)
-        {
+
+        auto query = _entityManager.createQuery!(ProductCategory)(" SELECT pc FROM ProductCategory pc WHERE pc.deleted = 0" ~ strConditions ~ " LIMIT " ~ limit.to!string ~ " OFFSET " ~ offset.to!string );
+        foreach(productCategory; query.getResultList()) {
             JSONValue tmp = toJSON(productCategory);
             data ~= tmp;
         }
@@ -72,21 +47,15 @@ class ProductCategoryRepository : EntityRepository!(ProductCategory, int)
         return result;
     }
 
-    ProductCategory[] all()
-    {
-        auto objects1 = this.newObjects();
-        auto querySelect1 = objects1.criteriaQuery.select(objects1.root).where(objects1.builder.equal(objects1.root.ProductCategory.deleted, 0));
-        auto typedQuery1 = _entityManager.createQuery(querySelect1);
-        return typedQuery1.getResultList();
+    ProductCategory[] all() {
+        return _entityManager.createQuery!(ProductCategory)(" SELECT pc FROM ProductCategory pc WHERE pc.deleted = 0 ")
+            .getResultList();
     }
 
-    ProductCategory[] childrens(int categoryId)
-    {
-        auto objects1 = this.newObjects();
-        auto p1 = objects1.builder.equal(objects1.root.ProductCategory.deleted, 0);
-        auto p2 = objects1.builder.equal(objects1.root.ProductCategory.pid, categoryId);
-        auto querySelect1 = objects1.criteriaQuery.select(objects1.root).where(p1, p2);
-        auto typedQuery1 = _entityManager.createQuery(querySelect1);
-        return typedQuery1.getResultList();
+    ProductCategory[] childrens(int categoryId) {
+        return _entityManager.createQuery!(ProductCategory)(" SELECT pc FROM ProductCategory pc WHERE pc.deleted = 0 AND pc.pid = :categoryId ")
+            .setParameter("categoryId", categoryId)
+            .getResultList();
     }
+
 }

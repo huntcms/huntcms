@@ -6,12 +6,11 @@ import app.component.system.repository.LogInfoRepository;
 import app.component.system.repository.UserRepository;
 import app.component.system.model.LogInfo;
 import hunt.framework;
-import kiss.datetime;
-import app.auth.UserAuth;
+import hunt.datetime;
 import hunt.entity.DefaultEntityManagerFactory;
 
 
-class LogMiddleware : MiddlewareInterface
+class LogMiddleware : Middleware
 {
 
     string name()
@@ -23,8 +22,9 @@ class LogMiddleware : MiddlewareInterface
     {
         try
         {
-            auto user = UserAuth.get(req);
-            if(user is null)
+
+            auto userInfo = Application.getInstance().accessManager.user;
+            if(userInfo is null)
             {
                 logError("no user info");
                 return null;
@@ -33,9 +33,9 @@ class LogMiddleware : MiddlewareInterface
 
             auto userRepository = new UserRepository(manager);
 
-            logDebug("id : ", user.id, "  email : ", user.name);
+            logDebug("id : ", userInfo.id);
             LogInfo li = new LogInfo;
-            li.user = userRepository.findByEmail(user.name);
+            li.user = userRepository.find(userInfo.id);
             li.params = toJSON(req.all()).toString;
             li.type = req.method();
             li.time = cast(int) time();

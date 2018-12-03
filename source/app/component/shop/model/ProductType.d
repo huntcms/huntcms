@@ -3,9 +3,9 @@ module app.component.shop.model.ProductType;
 import hunt.entity;
 
 @Table("shop_product_type")
-class ProductType
+class ProductType : Model
 {
-    mixin MakeEntity;
+    mixin MakeModel;
 
     @AutoIncrement
     @PrimaryKey

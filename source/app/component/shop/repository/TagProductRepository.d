@@ -9,12 +9,6 @@ import std.json;
 class TagProductRepository : EntityRepository!(TagProduct, int)
 {
     private EntityManager _entityManager;
-    struct Objects
-    {
-        CriteriaBuilder builder;
-        CriteriaQuery!TagProduct criteriaQuery;
-        Root!TagProduct root;
-    }
     
     this(EntityManager manager = null)
     {
@@ -22,36 +16,19 @@ class TagProductRepository : EntityRepository!(TagProduct, int)
         super(_entityManager);
     }
 
-
-    Objects newObjects()
-    {
-        Objects objects;
-
-        objects.builder = _entityManager.getCriteriaBuilder();
-        objects.criteriaQuery = objects.builder.createQuery!TagProduct;
-        objects.root = objects.criteriaQuery.from();
-
-        return objects;
-    }
-
-    TagProduct[] getTagProduct(int productId)
-    {
-        auto objects = this.newObjects();
-
-        auto p1 = objects.builder.equal(objects.root.TagProduct.product_id, productId);        
-        auto typedQuery = _entityManager.createQuery(objects.criteriaQuery.select(objects.root).where( p1 ));
-        TagProduct[] tagproducts = typedQuery.getResultList();
+    TagProduct[] getTagProduct(int productId) {
+        auto query = _entityManager.createQuery!(TagProduct)(" SELECT tp FROM TagProduct tp WHERE tp.product_id = :productId ");
+        query.setParameter("productId", productId);
+        TagProduct[] tagproducts = query.getResultList();
         if(tagproducts.length > 0)
             return tagproducts;
         return null;
     }
 
-    bool removes(int productId)
-    {
-        auto objects = this.newObjects();
-        auto p1 = objects.builder.equal(objects.root.TagProduct.product_id, productId);
-        auto typedQuery = _entityManager.createQuery(objects.criteriaQuery.select(objects.root).where( p1 ));
-        TagProduct[] tagproducts = typedQuery.getResultList();
+    bool removes(int productId) {
+        auto query = _entityManager.createQuery!(TagProduct)(" SELECT tp FROM TagProduct tp WHERE tp.product_id = :productId ");
+        query.setParameter("productId", productId);
+        TagProduct[] tagproducts = query.getResultList();
         this.removeAll(tagproducts);
         return true;
     }

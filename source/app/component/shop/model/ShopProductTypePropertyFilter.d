@@ -3,9 +3,9 @@ module app.component.shop.model.ShopProductTypePropertyFilter;
 import hunt.entity;
 
 @Table("shop_property_filter")
-class ShopProductTypePropertyFilter
+class ShopProductTypePropertyFilter : Model
 {
-   mixin MakeEntity;
+   mixin MakeModel;
 
     @AutoIncrement
     @PrimaryKey

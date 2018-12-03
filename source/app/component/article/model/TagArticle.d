@@ -5,9 +5,9 @@ import  app.component.tag.model.Tag;
 import  app.component.article.model.Article;
 
 @Table("tag_article")
-class TagArticle 
+class TagArticle : Model 
 {
-    mixin MakeEntity;
+    mixin MakeModel;
 
     @AutoIncrement
     @PrimaryKey

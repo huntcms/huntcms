@@ -6,6 +6,7 @@ import app.lib.controller.AdminBaseController;
 
 import app.component.system.model.User;
 import app.component.system.model.Role;
+import app.component.system.form.LoginForm;
 
 import app.component.system.repository.UserRepository;
 import app.component.system.repository.RoleRepository;
@@ -13,17 +14,19 @@ import app.component.system.repository.UserRoleRepository;
 import app.component.system.helper.Password;
 import app.component.system.helper.Utils;
 
-import app.auth.UserAuth;
+// import app.auth.UserAuth;
 
 import hunt.entity.DefaultEntityManagerFactory;
-
-import kiss.logger;
-import kiss.datetime;
+import hunt.logging;
+import hunt.datetime;
 
 import std.string;
 import std.json;
 
-import hunt.database.exception;
+import hunt.database.DatabaseException;
+import hunt.http.codec.http.model.HttpMethod;
+import hunt.http.codec.http.model.HttpHeader;
+import hunt.util.MimeType;
 
 import std.algorithm;
 
@@ -45,20 +48,17 @@ class UserController : AdminBaseController
 
     @Action Response add()
     {
-        if(request.method() == "POST")
+        if(request.method() == HttpMethod.POST.asString())
         {
             auto params = request.all();
             string name = request.post!string("name");
             string email = request.post!string("email");
-            short status = request.post!short("status");
+            short status = request.post("status").to!short;
 
             int[] roleIds = Utils.getCheckbox!int(request.all(), "roleid");
-
             string[] errorMessages;
 
             User user = new User();
-
-
             int time = cast(int)time();
             user.name = name;
             user.email = email;
@@ -93,14 +93,14 @@ class UserController : AdminBaseController
 
                     manager.getTransaction().commit();
 
-                    return new RedirectResponse("/admincp/system/users");
+                    return new RedirectResponse(request, "/admincp/system/users");
                 } catch(Exception e) {
 
                     errorMessages ~= "Email already existed.";
 
                     manager.getTransaction().rollback();
 
-                    kiss.logger.error(e);
+                    logError(e);
                 }
             }
 
@@ -109,7 +109,11 @@ class UserController : AdminBaseController
         }
 
         view.assign("roles", (new RoleRepository).findAll());
-        return request.createResponse().setContent(view.render("system/user/add"));
+        
+        Response response = new Response(request);
+		response.setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString());
+		response.setContent(view.render("system/user/add"));
+		return response;
     }
 
     @Action Response edit()
@@ -121,11 +125,11 @@ class UserController : AdminBaseController
         auto userRepository = new UserRepository(manager);
 
         auto findUser = userRepository.find(id);
-        if(request.method() == "POST")
+        if(request.method() == HttpMethod.POST.asString())
         {
             auto params = request.all();
             string name = request.post!string("name", "");
-            short status = request.post!short("status", 0);
+            short status = request.post("status").to!short;
             int[] roleIds = Utils.getCheckbox!int(request.all(), "roleid");
 
             try {
@@ -139,17 +143,17 @@ class UserController : AdminBaseController
                 userRoleRepository.removes(id);
                 userRoleRepository.saves(id, roleIds);
                 manager.getTransaction().commit();
-                return new RedirectResponse("/admincp/system/users");
+                return new RedirectResponse(request, "/admincp/system/users");
             } catch(Exception e) {
 
                 errorMessages ~= "Email already existed.";
 
                 manager.getTransaction().rollback();
 
-                kiss.logger.error(e);
+                logError(e);
             }
 
-            return new RedirectResponse("/admincp/system/user/edit?id="~to!string(id));
+            return new RedirectResponse(request, "/admincp/system/user/edit?id="~to!string(id));
         }
 
 
@@ -176,7 +180,11 @@ class UserController : AdminBaseController
         view.assign("userRoles", userRoles);
 
         view.assign("roles", (new RoleRepository).findAll());
-        return request.createResponse().setContent(view.render("system/user/edit"));
+
+        Response response = new Response(request);
+		response.setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString());
+		response.setContent(view.render("system/user/edit"));
+		return response;
     }
 
     @Action string del()
@@ -190,7 +198,9 @@ class UserController : AdminBaseController
     @Action string profile()
     {
         auto userRepository = new UserRepository;
-        User user = userRepository.find(UserAuth.userId(request));
+        auto userInfo = Application.getInstance().accessManager.user;
+        User user = userRepository.find(userInfo.id);
+        // User user = userRepository.find(UserAuth.userId(request));
 
         if(request.method == "POST"){
             string name = request.post!string("name", "");
@@ -216,35 +226,48 @@ class UserController : AdminBaseController
         return view.render("system/user/profile");
     }
 
-    @Action Response login()
-    {
-        session.set("test" , "test");
-        if(request.method() == HttpMethod.Post)
-        {
-            string username = request.post("username" , "");
-            string password = request.post("password" , "");
-            string salt = generateSalt();
-            auto find = (new UserRepository).findByEmail(username);
-            if(find){
-                auto user = UserAuth.login(username , generateUserPassword(password, find.salt));
-                if(user !is null)
-                {
-                    UserAuth.put(request , user);
+    @Action Response login(LoginForm loginForm) {
+        
+        if(request.method() == HttpMethod.POST.asString()) {
+            auto result = loginForm.valid();
+            logInfo(result);
 
-                    return new RedirectResponse("/admincp/system/users");
+            if(result.isValid() == true){
+                string salt = generateSalt();
+                
+                logInfo(loginForm.username);
+                auto find = (new UserRepository).findByEmail(loginForm.username);
+                logInfo(find);
+
+                if(find){
+
+                    logInfo("find id :" ~ to!string(find.id));
+                    auto user = Application.getInstance().accessManager.addUser(find.id);
+
+                    if(user !is null){
+                        return new RedirectResponse(request, "/admincp/");
+                    }
+
+                }else{
+                    this.errorMessages ~= "Your email has not been found or has been banned";
                 }
-            }else{
-                this.errorMessages ~= "Your email has not been found or has been banned";
             }
+
         }
-        return request.createResponse().setContent(view.render("system/user/login"));
+        
+        Response response = new Response(request);
+		response.setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString());
+		response.setContent(view.render("system/user/login"));
+		return response;
     }
 
     @Action Response logout()
     {
-        if(request.session.has("USER")){
-            request.session.remove("USER");
-        }
-        return new RedirectResponse("/admincp/login");
+        // HttpSession rSession = this.request.session(true);
+        // if(rSession.has("USER")){
+        //     rSession.remove("USER");
+        // }
+        Application.getInstance().accessManager.removeAuth();
+        return new RedirectResponse(request, "/admincp/login");
     }
 }

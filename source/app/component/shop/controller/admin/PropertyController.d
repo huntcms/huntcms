@@ -1,6 +1,5 @@
 module app.component.shop.controller.admin.PropertyController;
 
-
 import hunt.framework;
 import hunt.entity;
 import app.component.shop.model.ShopProperty;
@@ -8,6 +7,7 @@ import app.component.shop.repository.ShopPropertyRepository;
 import app.lib.controller.AdminBaseController;
 import app.component.system.helper.Paginate;
 import app.component.system.helper.Utils;
+import hunt.http.codec.http.model.HttpMethod;
 
 class PropertyController : AdminBaseController
 {
@@ -29,16 +29,16 @@ class PropertyController : AdminBaseController
          page , pageData.getTotalPages());
         view.assign("pageView", temPage.showPages());
 
-         return view.render("shop/property/list");
+        return view.render("shop/property/list");
     }
 
     @Action Response add()
     {
-        if (request.method() == HttpMethod.Post)
+        if (request.method() == HttpMethod.POST.asString())
         {
             int now = time();
             auto repo = new ShopPropertyRepository();
-            int id = request.post!int("id");
+            int id = request.post("id").to!int;
             auto property = repo.findById(id);
             bool isNew = property is null;
             if( isNew )
@@ -48,18 +48,22 @@ class PropertyController : AdminBaseController
             }
             property.title = request.post("title");
             property.introduce = request.post("introduce");
-            property.status = request.post!int("status");
-            property.option_type = request.post!int("option_type");
-            property.is_require = request.post!int("is_require");
+            property.status = request.post("status").to!int;
+            property.option_type = request.post("option_type").to!int;
+            property.is_require = request.post("is_require").to!int;
             property.updated = now;
             if(isNew)
                 repo.insert(property);
             else
                 repo.update(property);
 
-            return new RedirectResponse("/admincp/shop/properties");
+            return new RedirectResponse(request, "/admincp/shop/properties");
         }
-        return request.createResponse().setContent(view.render("shop/property/add"));
+
+        Response response = new Response(request);
+		response.setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString());
+		response.setContent(view.render("shop/property/add"));
+		return response;
     }
 
 
@@ -74,6 +78,6 @@ class PropertyController : AdminBaseController
     @Action Response del(int id)
     {
         (new ShopPropertyRepository()).removeById(id);
-        return new RedirectResponse("/admincp/shop/properties");
+        return new RedirectResponse(request, "/admincp/shop/properties");
     } 
 }

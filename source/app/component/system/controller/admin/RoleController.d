@@ -12,9 +12,10 @@ import app.component.system.repository.PermissionRepository;
 import app.component.system.repository.RolePermissionRepository;
 import app.component.system.helper.Utils;
 
-import kiss.datetime;
+import hunt.datetime;
 
 import hunt.entity.DefaultEntityManagerFactory;
+import hunt.http.codec.http.model.HttpMethod;
 
 import std.algorithm;
 
@@ -33,7 +34,7 @@ class RoleController : AdminBaseController
     {
         if(request.method == "POST"){
             string name = request.post!string("name", "");
-            short status = request.post!short("status");
+            short status = request.post("status").to!short;
             int time = cast(int)time();
             int[] permissionIds = Utils.getCheckbox!int(request.all(), "permissionid");
 
@@ -54,8 +55,8 @@ class RoleController : AdminBaseController
                 rolePermissionRepository.saves(role.id, permissionIds);
 
                 manager.getTransaction().commit();
-
-                return new RedirectResponse("/admincp/system/roles");
+                Application.getInstance().accessManager.refresh();  
+                return new RedirectResponse(request, "/admincp/system/roles");
             } catch(Exception e) {
 
                 errorMessages ~= "role already existed.";
@@ -64,8 +65,11 @@ class RoleController : AdminBaseController
             }
         }
         view.assign("permissions", (new PermissionRepository).findAll());
-        return request.createResponse().setContent(view.render("system/role/add"));
 
+        Response response = new Response(request);
+		response.setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString());
+		response.setContent(view.render("system/role/add"));
+		return response;
     }
 
     @Action Response edit()
@@ -77,11 +81,11 @@ class RoleController : AdminBaseController
         auto roleRepository = new RoleRepository(manager);
 
         auto findRole = roleRepository.find(id);
-        if(request.method() == "POST")
+        if(request.method() == HttpMethod.POST.asString())
         {
             auto params = request.all();
             string name = request.post!string("name", "");
-            short status = request.post!short("status", 0);
+            short status = request.post("status").to!short;
             int[] permissionIds = Utils.getCheckbox!int(request.all(), "permissionid");
 
             try {
@@ -95,17 +99,18 @@ class RoleController : AdminBaseController
                 rolePermissionRepository.removes(id);
                 rolePermissionRepository.saves(id, permissionIds);
                 manager.getTransaction().commit();
-                return new RedirectResponse("/admincp/system/roles");
+                Application.getInstance().accessManager.refresh();  
+                return new RedirectResponse(request, "/admincp/system/roles");
             } catch(Exception e) {
 
                 errorMessages ~= "error.";
 
                 manager.getTransaction().rollback();
 
-                kiss.logger.error(e);
+                logError(e);
             }
 
-            return new RedirectResponse("/admincp/system/role/edit?id="~to!string(id));
+            return new RedirectResponse(request, "/admincp/system/role/edit?id="~to!string(id));
         }
 
 
@@ -131,6 +136,9 @@ class RoleController : AdminBaseController
         }
         view.assign("rolePermissions", rolePermissions);
 
-        return request.createResponse().setContent(view.render("system/role/edit"));
+        Response response = new Response(request);
+		response.setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString());
+		response.setContent(view.render("system/role/edit"));
+		return response;
     }
 }

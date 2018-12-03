@@ -5,7 +5,7 @@ import hunt.framework;
 import std.json;
 import hunt.entity.domain;
 
-import kiss.util.serialize;
+import hunt.util.serialize;
 
 static JSONValue pageToJson(T)(Page!T pageObj)
 {

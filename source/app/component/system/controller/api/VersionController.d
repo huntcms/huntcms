@@ -2,7 +2,7 @@ module app.component.system.controller.api.VersionController;
 
 import hunt.framework;
 
-import kiss.util.serialize;
+import hunt.util.serialize;
 
 class VersionController : Controller
 {
@@ -18,7 +18,7 @@ class VersionController : Controller
         message.description = "test version";
         message.released = 1234567890;
 
-        auto res = new JsonResponse;
+        auto res = new JsonResponse(request);
         res.json(toJson(message));
 
         return res;

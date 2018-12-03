@@ -11,12 +11,12 @@ class RoleRepository : EntityRepository!(Role, int)
 {
     private EntityManager _entityManager;
 
-    struct Objects
-    {
-        CriteriaBuilder builder;
-        CriteriaQuery!Role criteriaQuery;
-        Root!Role root;
-    }
+    // struct Objects
+    // {
+    //     CriteriaBuilder builder;
+    //     CriteriaQuery!Role criteriaQuery;
+    //     Root!Role root;
+    // }
 
     this(EntityManager manager = null) {
         super(manager);

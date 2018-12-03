@@ -59,12 +59,26 @@
                                             <input type="text" class="form-control" required id="linkUrl" name="linkUrl" placeholder="Some text value...">
                                         </div>
                                     </div>
+
                                     <div class="form-group row">
                                         <label class="col-2 col-form-label">Picture</label>
-                                        <div class="col-10">
-                                            <input name="imageFile" class="form-control" type="file"  placeholder="picture url..."/>
+                                        <div class="uploder-container col-10">
+                                            <input class="fileUpdate" type="hidden" name="imageFile" value="">
+                                            <!--<input type="text" value=''>-->
+                                            <div class="cxuploder">
+                                                <div class="queueList">
+                                                    <div class="placeholder" style="padding-top: 50px;">
+                                                        <div class="filePicker"></div><p>将照片拖到这里</p>
+                                                    </div>
+                                                </div>
+                                                <div class="statusBar" style="display:none;">
+                                                    <div class="btns"><div class="jxfilePicker"></div></div>
+                                                    <div class="info"></div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
+
                                     <div class="form-group row">
                                         <label class="col-2 col-form-label">IconClass</label>
                                         <div class="col-10">
@@ -137,4 +151,25 @@
     $(document).ready(function() {
         $('form').parsley();
     });
+</script>
+
+<script type="text/javascript" src="/assets/vendor/upload/aliyunVideo.js"></script>
+{% include "../../uploadPicRes.html" %}
+<script>
+    var config = {
+        fileNumLimit: '1',               //最大上传图片数
+        // 上传地址
+        photoServer: '/admincp/system/file/upload',
+        // 允许上传的格式
+        accept: {
+            title: 'Images',
+            extensions: 'gif,jpg,jpeg,bmp,png',
+            mimeTypes: 'image/gif,image/jpg,image/jpeg,image/bmp,image/png'
+        },
+        // 最大上传量
+        fileSizeLimit: 200 * 1024 * 1024,    // 200 M
+        // 单张最大限制
+        fileSingleSizeLimit: 50 * 1024 * 1024,  // 50 M
+    }
+    picupload(config)
 </script>

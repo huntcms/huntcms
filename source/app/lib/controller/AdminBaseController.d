@@ -8,38 +8,62 @@ import app.component.system.model.User;
 import app.component.system.repository.MenuRepository;
 import app.component.system.repository.UserRepository;
 
-import app.auth.UserAuth;
+import std.json;
+import std.algorithm.sorting;
+import hunt.http.codec.http.model.HttpMethod;
+
+alias AclUser = hunt.framework.security.acl.User.User;
+alias AclPermission = hunt.framework.security.acl.Permission.Permission;
 
 class AdminBaseController : Controller
 {
     protected string[] errorMessages;
-    this()
-    {
+	
+	protected User thisUser;
+    this() {
     }
 
     override bool before() {
 		auto repository = new MenuRepository;
 		auto cache = Application.getInstance().cache();
-		auto userInfo = UserAuth.get(request);
-		if (userInfo !is null) {	
-			request.session.get("USER");
-			string permission = cache.get("user_permission_cache_" ~ to!string(userInfo.id()) );
-			//logInfo(permission);
-			JSONValue[] menuData = repository.getAllMenus(permission); 	
-			view.assign("menusJsonData", menuData);
-			User nowUser = (new UserRepository).find(userInfo.id());			
+		auto userInfo = Application.getInstance().accessManager.user;
+		logInfo(toJSON(userInfo));
+		if (userInfo !is null) {
+
+			string permissionStr;
+			User nowUser = (new UserRepository).find(userInfo.id);		
+			logInfo(toJSON(nowUser));	
 			view.assign("nowUser", nowUser);
+
+			auto roles = userInfo.roles;
+			if(roles){
+				foreach(role; roles){
+					// logInfo(toJSON(role));
+					auto permissions = role.permissions;
+					if(permissions){
+						foreach(permission; permissions){
+							// logInfo(toJSON(permission));
+							if(permissionStr.indexOf(permission.key) < 0){
+								permissionStr ~= "," ~ permission.key;
+							}
+						}
+					}
+					logInfo(permissionStr);
+				}
+			}
+
+			JSONValue[] menuData = repository.getAllMenus(permissionStr); 	
+			view.assign("menusJsonData", menuData);
 			view.assign("isLogin", "YES");
 		} else {
 			view.assign("isLogin", "NO");
 		}
-		if (cmp(toUpper(request.method), HttpMethod.Options) == 0)
+		if (cmp(toUpper(request.method), HttpMethod.OPTIONS.asString()) == 0)
 			return false;
 		return true;
 	}
 
-	override bool after()
-	{
+	override bool after() {
 		log("---running after----");
 		view.assign("errorMessages", this.errorMessages);
 		return true;

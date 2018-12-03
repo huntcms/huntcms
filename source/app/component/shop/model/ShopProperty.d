@@ -4,9 +4,9 @@ import hunt.entity;
 
 
 @Table("shop_property")
-class ShopProperty
+class ShopProperty : Model
 {
-   mixin MakeEntity;
+   mixin MakeModel;
 
     @AutoIncrement
     @PrimaryKey

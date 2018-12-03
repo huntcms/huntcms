@@ -6,7 +6,7 @@
     "license": "Apache-2.0",
     "targetType": "executable",
     "dependencies": {
-        "hunt-framework":  "~master"
+        "hunt-framework":  {"path":"../hunt-framework"}
     },
     "versions":["WithDatabase"],
     "configurations": [{

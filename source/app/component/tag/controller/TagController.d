@@ -5,7 +5,7 @@ import app.component.tag.repository.TagRepository;
 import app.component.tag.model.Tag;
 import app.lib.controller.AdminBaseController;
 import app.component.tag.helper.Utils;
-
+import hunt.http.codec.http.model.HttpMethod;
 
 class TagController : AdminBaseController
 {
@@ -23,7 +23,7 @@ class TagController : AdminBaseController
 
     @Action Response add()
     {
-        if (request.method() == HttpMethod.Post)
+        if (request.method() == HttpMethod.POST.asString())
         {
             int now = cast(int) time();
             auto tr = new TagRepository;
@@ -44,11 +44,14 @@ class TagController : AdminBaseController
 
             auto saveRes = tr.save(tag);
             if (saveRes !is null)
-                return new RedirectResponse("/admincp/tag/tags");
+                return new RedirectResponse(request, "/admincp/tag/tags");
         }
         auto repository = new TagRepository;
-         
-        return request.createResponse().setContent(view.render("tag/tag/add"));
+
+        Response response = new Response(request);
+		response.setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString());
+		response.setContent(view.render("tag/tag/add"));
+		return response;
     }
 
     @Action string edit(int id)
@@ -63,6 +66,6 @@ class TagController : AdminBaseController
     @Action Response del(int id)
     {
         (new TagRepository).removeById(id);
-        return new RedirectResponse("/admincp/tag/tags");
+        return new RedirectResponse(request, "/admincp/tag/tags");
     }
 }

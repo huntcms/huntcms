@@ -16,6 +16,7 @@ import app.component.shop.controller.admin.PropertyOptionController;
 import app.lib.controller.AdminBaseController;
 import app.component.system.helper.Paginate;
 import app.component.system.helper.Utils;
+import hunt.http.codec.http.model.HttpMethod;
 
 class TypeFilterController : AdminBaseController
 {
@@ -74,11 +75,11 @@ class TypeFilterController : AdminBaseController
 
     @Action Response add()
     {
-        if (request.method() == HttpMethod.Post)
+        if (request.method() == HttpMethod.POST.asString())
         {
             int now = time();
             auto repo = new TypePropertyFilterRepository();
-            int id = request.post!int("id");
+            int id = request.post("id").to!int;
             auto property = repo.findById(id);
             bool isNew = property is null;
             if( isNew )
@@ -87,9 +88,9 @@ class TypeFilterController : AdminBaseController
                 property.created = now;
             }
             property.title = request.post("title");
-            property.type_id = request.post!int("type_id");
+            property.type_id = request.post("type_id").to!int;
             property.property_options = request.post("property_options") ;
-            property.sort = request.post!int("sort");
+            property.sort = request.post("sort").to!int;
             logInfo(property.property_options);
             property.updated = now;
             if(isNew)
@@ -97,12 +98,16 @@ class TypeFilterController : AdminBaseController
             else
                 repo.update(property);
 
-            return new RedirectResponse("/admincp/shop/typefilters");
+            return new RedirectResponse(request, "/admincp/shop/typefilters");
         }
         auto repo_type = new ShopProductTypeRepository();
         auto types = repo_type.findAll();
         view.assign("types", types);
-        return request.createResponse().setContent(view.render("shop/typefilter/add"));
+
+        Response response = new Response(request);
+		response.setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString());
+		response.setContent(view.render("shop/typefilter/add"));
+		return response;
     }
 
 
@@ -119,6 +124,6 @@ class TypeFilterController : AdminBaseController
     @Action Response del(int id)
     {
         (new TypePropertyFilterRepository()).removeById(id);
-        return new RedirectResponse("/admincp/shop/typefilters");
+        return new RedirectResponse(request, "/admincp/shop/typefilters");
     } 
 }

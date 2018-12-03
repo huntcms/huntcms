@@ -6,10 +6,11 @@ import app.component.system.model.Menu;
 import app.component.system.repository.MenuRepository;
 import app.lib.controller.AdminBaseController;
 
-import kiss.logger;
-import kiss.util.serialize;
-import kiss.datetime;
+import hunt.logging;
+import hunt.util.serialize;
+import hunt.datetime;
 import app.component.system.helper.Utils;
+import hunt.http.codec.http.model.HttpMethod;
 
 import hunt.entity.domain;
 
@@ -35,17 +36,17 @@ class MenuController : AdminBaseController
 
     @Action Response add()
     {
-        if (request.method() == HttpMethod.Post)
+        if (request.method() == HttpMethod.POST.asString())
         {
             int now = cast(int) time();
             auto mr = new MenuRepository;
             Menu mn = new Menu;
-            mn.pid = request.post("pid" , 0);
+            mn.pid = request.post("pid").to!int;
             mn.name = request.post("name");
             mn.mca = request.post("mca");
             mn.linkUrl = request.post("linkUrl");
             mn.iconClass = request.post("iconClass" , "");
-            mn.sort = request.post("sort" , 0);
+            mn.sort = request.post("sort").to!int;
             mn.isAction = request.post("actionRadio").to!short;
             mn.status = request.post("statusRadio").to!short;
             auto id = request.post("id");
@@ -62,13 +63,16 @@ class MenuController : AdminBaseController
 
             auto saveRes = mr.save(mn);
             if (saveRes !is null)
-                return new RedirectResponse("/admincp/system/menus");
+                return new RedirectResponse(request, "/admincp/system/menus");
 
         }
         auto repository = new MenuRepository;
         view.assign("firstLevelMenus", repository.getMenusByPid(0));
 
-        return request.createResponse().setContent(view.render("system/menu/add"));
+        Response response = new Response(request);
+		response.setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString());
+		response.setContent(view.render("system/menu/add"));
+		return response;
     }
 
     @Action string edit(int id)
@@ -84,6 +88,6 @@ class MenuController : AdminBaseController
     @Action Response del(int id)
     {
         (new MenuRepository).removeById(id);
-        return new RedirectResponse("/admincp/system/menus");
+        return new RedirectResponse(request, "/admincp/system/menus");
     }
 }

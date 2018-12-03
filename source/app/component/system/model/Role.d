@@ -3,9 +3,9 @@ module app.component.system.model.Role;
 import hunt.entity;
 
 @Table("system_role")
-class Role
+class Role : Model 
 {
-    mixin MakeEntity;
+    mixin MakeModel;
 
     @AutoIncrement
     @PrimaryKey

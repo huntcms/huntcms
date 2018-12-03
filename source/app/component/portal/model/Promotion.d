@@ -3,9 +3,9 @@ module app.component.portal.model.Promotion;
 import hunt.entity;
 
 @Table("portal_promotion")
-class Promotion
+class Promotion : Model
 {
-    mixin MakeEntity;
+    mixin MakeModel;
 
     @AutoIncrement
     @PrimaryKey

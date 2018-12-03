@@ -3,7 +3,7 @@ module app.component.article.controller.admin.ArticleController;
 
 import hunt.framework;
 import app.component.article.repository.ArticleRepository;
-import kiss.datetime;
+import hunt.datetime;
 import app.component.article.model.Article;
 import app.component.article.model.TagArticle;
 import app.component.article.repository.CategoryRepository;
@@ -14,7 +14,13 @@ import app.component.system.helper.Utils;
 import app.lib.yun.YunUpLoad;
 import std.digest.sha;
 import std.file;
-import kiss.util.configuration;
+import hunt.util.configuration;
+import hunt.http.codec.http.model.HttpMethod;
+import hunt.http.codec.http.model.HttpHeader;
+
+import hunt.http.codec.http.model.MultipartFormInputStream;
+import std.format;
+import hunt.string;
 
 class ArticleController : AdminBaseController
 {
@@ -43,39 +49,21 @@ class ArticleController : AdminBaseController
 
     @Action Response add()
     {
-        if(request.method() == HttpMethod.Post)
+        if(request.method() == HttpMethod.POST.asString())
         {
             int now = cast(int) time();
 
             Article art = new Article;
             ArticleRepository are = new ArticleRepository;
-            art.category = (new CategoryRepository).findById( to!int(request.post("category" , "0")) );    
-            art.title = request.post("title" , "");      
-            art.summary = request.post("summary" , "");   
-            art.author = request.post("author" , ""); 
-            art.content = request.post("content" , ""); 
-            art.video = request.post("video" , "");           
+
+            art.category = (new CategoryRepository).findById( to!int(request.post("category","0")) );    
+            art.title = request.post("title");      
+            art.summary = request.post("summary");   
+            art.author = request.post("author"); 
+            art.content = request.post("content"); 
+            art.video = request.post("video");
             art.status = to!short(request.post("customRadio","0"));  
-
-            auto f = request.postForm.getFileValue("imageFile");
-
-            if (f)
-            {
-                ubyte[] file_data;
-                auto filesize = f.fileSize;
-                f.read(filesize, (const(ubyte[]) data) { file_data ~= data; });
-                auto sha1 = toHexString(sha1Of(file_data));
-                auto saveName = sha1 ~ "." ~ Utils.fileExt(f.fileName);
-                auto upload = new YunUpLoad("1004",
-                "http://upload.putaocloud.com",
-                "0d87e77f509a419285db58f985836901", 
-                "2fa77ec72e6a4c338515bfef98b97c42");
-
-                auto json = parseJSON( upload.doUpload(cast(byte[])file_data , cast(string)saveName));
-                logInfo(json);
-                art.picture = "https://mall-file.putaocdn.com/largefile/" ~ json["hash"].str ~ "_nodown.png"; 
-            }else
-                art.picture = request.post("currentpic");
+            art.picture = request.post("imageFile");
 
             auto tr = new TagRepository;
             auto tags = tr.findAll();
@@ -106,7 +94,7 @@ class ArticleController : AdminBaseController
             art.updated = now;
 
             int article_id = (are.save(art)).id;
-
+            
             auto tae = new TagArticleRepository;
             if(id.length != 0)
             {
@@ -120,7 +108,7 @@ class ArticleController : AdminBaseController
                 tar.created = now;
                 tae.insert(tar);
             }
-            return new RedirectResponse("/admincp/article/articles");
+            return new RedirectResponse(request, "/admincp/article/articles");
         }
         auto cr = new CategoryRepository;
         auto categories = cr.findAll();
@@ -128,8 +116,11 @@ class ArticleController : AdminBaseController
         auto tags = tr.findAll();
         view.assign("categories", categories);
         view.assign("tags", tags);
-
-        return request.createResponse().setContent(view.render("article/article/add"));
+        
+        Response response = new Response(request);
+        response.setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString());
+        response.setContent(view.render("article/article/add"));
+        return response;
     }
 
     @Action string edit(int id)
@@ -154,7 +145,7 @@ class ArticleController : AdminBaseController
         (new ArticleRepository).removeById(id);
         auto tar = new TagArticleRepository;
         tar.removes(id.to!int);  
-        return new RedirectResponse("/admincp/article/articles");
+        return new RedirectResponse(request, "/admincp/article/articles");
     }
 
 }
