@@ -35,9 +35,9 @@ class TypeController : AdminBaseController
 
     @Action Response add()
     {
-        if (request.method() == HttpMethod.POST.asString())
+        if (request.methodAsString() == HttpMethod.POST.asString())
         {
-            int now = time();
+            int now = cast(int) time();
             auto repo = new ShopProductTypeRepository();
             int id = request.post("id").to!int;
             auto type = repo.findById(id);

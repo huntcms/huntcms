@@ -18,7 +18,7 @@ import app.component.system.helper.Utils;
 
 import hunt.entity.DefaultEntityManagerFactory;
 import hunt.logging;
-import hunt.datetime;
+import hunt.util.DateTime;
 
 import std.string;
 import std.json;
@@ -48,7 +48,7 @@ class UserController : AdminBaseController
 
     @Action Response add()
     {
-        if(request.method() == HttpMethod.POST.asString())
+        if(request.methodAsString() == HttpMethod.POST.asString())
         {
             auto params = request.all();
             string name = request.post!string("name");
@@ -125,7 +125,7 @@ class UserController : AdminBaseController
         auto userRepository = new UserRepository(manager);
 
         auto findUser = userRepository.find(id);
-        if(request.method() == HttpMethod.POST.asString())
+        if(request.methodAsString() == HttpMethod.POST.asString())
         {
             auto params = request.all();
             string name = request.post!string("name", "");
@@ -202,7 +202,7 @@ class UserController : AdminBaseController
         User user = userRepository.find(userInfo.id);
         // User user = userRepository.find(UserAuth.userId(request));
 
-        if(request.method == "POST"){
+        if(request.methodAsString() == HttpMethod.POST.asString()){
             string name = request.post!string("name", "");
             string password = request.post!string("password", "");
             string rpassword = request.post!string("rpassword", "");
@@ -227,8 +227,8 @@ class UserController : AdminBaseController
     }
 
     @Action Response login(LoginForm loginForm) {
-        
-        if(request.method() == HttpMethod.POST.asString()) {
+
+        if(request.methodAsString() == HttpMethod.POST.asString()) {
             auto result = loginForm.valid();
             logInfo(result);
 

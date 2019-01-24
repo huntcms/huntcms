@@ -7,8 +7,8 @@ import app.component.system.repository.MenuRepository;
 import app.lib.controller.AdminBaseController;
 
 import hunt.logging;
-import hunt.util.serialize;
-import hunt.datetime;
+import hunt.util.Serialize;
+import hunt.util.DateTime;
 import app.component.system.helper.Utils;
 import hunt.http.codec.http.model.HttpMethod;
 
@@ -36,7 +36,7 @@ class MenuController : AdminBaseController
 
     @Action Response add()
     {
-        if (request.method() == HttpMethod.POST.asString())
+        if (request.methodAsString() == HttpMethod.POST.asString())
         {
             int now = cast(int) time();
             auto mr = new MenuRepository;

@@ -4,8 +4,8 @@ import hunt.framework;
 import app.component.portal.model.Menu;
 import app.component.portal.repository.MenuRepository;
 import app.lib.controller.AdminBaseController;
-import hunt.util.serialize;
-import hunt.datetime;
+import hunt.util.Serialize;
+import hunt.util.DateTime;
 import app.component.system.helper.Utils;
 import app.component.system.model.FileInfo;
 import app.component.system.repository.FileInfoRepository;
@@ -13,7 +13,7 @@ import app.component.system.repository.UserRepository;
 import std.json;
 import std.digest.sha;
 import std.file;
-import hunt.util.configuration;
+import hunt.util.Configuration;
 import hunt.entity.domain;
 import hunt.entity.DefaultEntityManagerFactory;
 import app.lib.yun.YunUpLoad;
@@ -41,7 +41,7 @@ class MenuController : AdminBaseController
 
     @Action Response add()
     {
-        if (request.method() == HttpMethod.POST.asString())
+        if (request.methodAsString() == HttpMethod.POST.asString())
         {
             int now = cast(int) time();
             auto mr = new MenuRepository;

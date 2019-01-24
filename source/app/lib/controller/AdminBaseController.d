@@ -12,14 +12,12 @@ import std.json;
 import std.algorithm.sorting;
 import hunt.http.codec.http.model.HttpMethod;
 
-alias AclUser = hunt.framework.security.acl.User.User;
-alias AclPermission = hunt.framework.security.acl.Permission.Permission;
-
 class AdminBaseController : Controller
 {
     protected string[] errorMessages;
 	
 	protected User thisUser;
+
     this() {
     }
 
@@ -58,7 +56,8 @@ class AdminBaseController : Controller
 		} else {
 			view.assign("isLogin", "NO");
 		}
-		if (cmp(toUpper(request.method), HttpMethod.OPTIONS.asString()) == 0)
+		// if (cmp(toUpper(request.method), HttpMethod.OPTIONS.asString()) == 0)
+		if (request.methodAsString() == HttpMethod.OPTIONS.asString())
 			return false;
 		return true;
 	}

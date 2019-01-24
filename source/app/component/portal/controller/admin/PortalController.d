@@ -8,7 +8,7 @@ class PortalController : Controller
 
     @Action string index()
     {
-        string url = createUrl("system.dashboard.dashboard", null, "admin");
+        string url = url("admin:system.dashboard.dashboard");
 
         return "<a href='" ~ url ~ "'>Go to AdminCP!</a>";
     }

@@ -31,7 +31,7 @@
                     <div class="row">
                         <div class="col-sm-6">
                             <div class="m-b-30">
-                                <a href="{{ url('system.permission.add', "")}}" id="addToTable" class="btn btn-success waves-effect waves-light">Add
+                                <a href="{{ url('system.permission.add', '')}}" id="addToTable" class="btn btn-success waves-effect waves-light">Add
                                     <i class="mdi mdi-plus-circle-outline"></i>
                                 </a>
                             </div>
@@ -83,11 +83,11 @@
                                 <td>{{ date('Y-m-d H:i:s',permission.updated) }}</td>
                                 <td>
                                     <span class="badge label-table badge-success">
-                                        {% if permission.status == 0 %} Disabled {% else if permission.status == 1 %} Active {% else %} Suspended {% endif %}
+                                        {% if permission.status == 0 %} Disabled {% elif permission.status == 1 %} Active {% else %} Suspended {% endif %}
                                     </span>
                                 </td>
                                 <td class="actions">
-                                    <a href="{{ url('system.permission.edit', "")}}?id={{ permission.id }}" class="on-default edit-row" data-toggle="tooltip" data-placement="top"
+                                    <a href="{{ url('system.permission.edit', '')}}?id={{ permission.id }}" class="on-default edit-row" data-toggle="tooltip" data-placement="top"
                                         title="" data-original-title="Click Edit">
                                         <i class="fa fa-pencil"></i>
                                     </a>

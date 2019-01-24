@@ -3,7 +3,7 @@ module app.component.article.controller.admin.CategoryController;
 import hunt.framework;
 import app.component.article.repository.CategoryRepository;
 import app.component.article.model.Category;
-import hunt.datetime;
+import hunt.util.DateTime;
 import app.lib.controller.AdminBaseController;
 import hunt.http.codec.http.model.HttpMethod;
 
@@ -27,7 +27,7 @@ class CategoryController : AdminBaseController
 
     @Action Response add()
     {
-        if(request.method() == HttpMethod.POST.asString())
+        if(request.methodAsString() == HttpMethod.POST.asString())
         {
             int now = cast(int) time();
 

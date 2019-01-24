@@ -3,7 +3,7 @@ module app.component.article.controller.admin.ArticleController;
 
 import hunt.framework;
 import app.component.article.repository.ArticleRepository;
-import hunt.datetime;
+import hunt.util.DateTime;
 import app.component.article.model.Article;
 import app.component.article.model.TagArticle;
 import app.component.article.repository.CategoryRepository;
@@ -14,13 +14,13 @@ import app.component.system.helper.Utils;
 import app.lib.yun.YunUpLoad;
 import std.digest.sha;
 import std.file;
-import hunt.util.configuration;
+import hunt.util.Configuration;
 import hunt.http.codec.http.model.HttpMethod;
 import hunt.http.codec.http.model.HttpHeader;
 
 import hunt.http.codec.http.model.MultipartFormInputStream;
 import std.format;
-import hunt.string;
+import hunt.text;
 
 class ArticleController : AdminBaseController
 {
@@ -49,7 +49,7 @@ class ArticleController : AdminBaseController
 
     @Action Response add()
     {
-        if(request.method() == HttpMethod.POST.asString())
+        if(request.methodAsString() == HttpMethod.POST.asString())
         {
             int now = cast(int) time();
 

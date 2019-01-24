@@ -36,7 +36,7 @@
                     <form action="{{ url('shop.product.list', '')}}" method="get">
                         <div class="form-inline m-b-20">
                             <div class="form-group float-right">
-                                <input id="demo-foo-search" name="title" type="text" {% if get.title !="null" %}
+                                <input id="demo-foo-search" name="title" type="text" {% if get and get.title !="" %}
                                        value="{{ get.title }}" {% endif %} placeholder="商品名称搜索"
                                        class="form-control" autocomplete="on"/>
                                 <input type="submit" class="btn btn-success" value="搜索"/>

@@ -2,7 +2,7 @@ module app.component.system.controller.api.VersionController;
 
 import hunt.framework;
 
-import hunt.util.serialize;
+import hunt.util.Serialize;
 
 class VersionController : Controller
 {

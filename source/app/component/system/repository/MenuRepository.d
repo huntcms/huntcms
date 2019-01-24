@@ -41,7 +41,7 @@ class MenuRepository : EntityRepository!(Menu, int)
                 if(aMenu.pid == fmenu.id && aMenu.status == 1 && getAllMenus.indexOf(aMenu.mca) != -1){
                     string temLink = "";
                     if(aMenu.isAction == 1){
-                        temLink = createUrl(aMenu.mca);   
+                        temLink = url(aMenu.mca);   
                     }else{
                         temLink = aMenu.linkUrl ;   
                     }                                    
@@ -51,7 +51,7 @@ class MenuRepository : EntityRepository!(Menu, int)
 
            string userUrl = "";
            if(fmenu.isAction == 1){
-               userUrl = createUrl(fmenu.mca);
+               userUrl = url(fmenu.mca);
            }else{
                userUrl = fmenu.linkUrl ;
            }

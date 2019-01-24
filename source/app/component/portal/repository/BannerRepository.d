@@ -46,13 +46,9 @@ class BannerRepository : EntityRepository!(Banner, int)
     // }
 
     Banner[] getBannersByPid(int parentId) {
-        auto query = _entityManager.createQuery!(Banner)(" SELECT b FROM Banner b WHERE b.pid = :parentId ");
-        query.setParameter("parentId", parentId);
-        Banner[] banners = query.getResultList();
-
-        if(banners.length > 0)
-            return banners;
-        return null;
+        return _entityManager.createQuery!(Banner)(" SELECT b FROM Banner b WHERE b.pid = :parentId ")
+            .setParameter("parentId", parentId)
+            .getResultList();
     }
 
 }

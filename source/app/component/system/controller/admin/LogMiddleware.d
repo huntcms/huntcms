@@ -6,11 +6,11 @@ import app.component.system.repository.LogInfoRepository;
 import app.component.system.repository.UserRepository;
 import app.component.system.model.LogInfo;
 import hunt.framework;
-import hunt.datetime;
+import hunt.util.DateTime;
 import hunt.entity.DefaultEntityManagerFactory;
 
 
-class LogMiddleware : Middleware
+class LogMiddleware : MiddlewareInterface
 {
 
     string name()
@@ -37,7 +37,7 @@ class LogMiddleware : Middleware
             LogInfo li = new LogInfo;
             li.user = userRepository.find(userInfo.id);
             li.params = toJSON(req.all()).toString;
-            li.type = req.method();
+            li.type = req.method().asString();
             li.time = cast(int) time();
             li.action = req.route.getRoute();
             auto lir = new LogInfoRepository();

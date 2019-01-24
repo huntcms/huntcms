@@ -28,7 +28,7 @@
                     <div class="row">
                         <div class="col-sm-6">
                             <div class="m-b-30">
-                                <a href="{{ url('system.menu.add', "")}}" id="addToTable" class="btn btn-success waves-effect waves-light">Add <i class="mdi mdi-plus-circle-outline"></i></a>
+                                <a href="{{ url('system.menu.add', '')}}" id="addToTable" class="btn btn-success waves-effect waves-light">Add <i class="mdi mdi-plus-circle-outline"></i></a>
                             </div>
                         </div>
                     </div>
@@ -80,15 +80,15 @@
                                     <td><span class="badge label-table badge-success">
                                         {% if menu.status == 0 %}
                                             Disabled
-                                        {% else if menu.status == 1 %}
+                                        {% elif menu.status == 1 %}
                                             Active
                                         {% else %}
                                             Suspended
                                         {% endif %}
                                     </span></td>
                                     <td class="actions">
-                                        <a href="{{ url('system.menu.edit', "")}}?id={{ menu.id }}" class="on-default edit-row" data-toggle="tooltip" data-placement="top" title="" data-original-title="Click Edit"><i class="fa fa-pencil"></i></a>
-                                        <a href="{{ url('system.menu.del', "")}}?id={{ menu.id }}" class="on-default remove-row" data-toggle="tooltip" data-placement="top" title="" data-original-title="Click Delete"><i class="fa fa-trash-o"></i></a>
+                                        <a href="{{ url('system.menu.edit', '')}}?id={{ menu.id }}" class="on-default edit-row" data-toggle="tooltip" data-placement="top" title="" data-original-title="Click Edit"><i class="fa fa-pencil"></i></a>
+                                        <a href="{{ url('system.menu.del', '')}}?id={{ menu.id }}" class="on-default remove-row" data-toggle="tooltip" data-placement="top" title="" data-original-title="Click Delete"><i class="fa fa-trash-o"></i></a>
                                     </td>
                                 </tr>
                             {% endfor %}
@@ -110,7 +110,7 @@
                 <ul class="pagination pagination-split">
                     {% if menus.cur > 0 %}
                     <li class="page-item" >
-                        <a class="page-link" href="{{ url('system.menu.list', "")}}?page={{ menus.prev }}" aria-label="Previous">
+                        <a class="page-link" href="{{ url('system.menu.list', '')}}?page={{ menus.prev }}" aria-label="Previous">
                             <span aria-hidden="true">«</span>
                             <span class="sr-only">Previous</span>
                         </a>
@@ -123,7 +123,7 @@
                     <li class="page-item"><a class="page-link" href="#">5</a></li> -->
                     {% if menus.cur < menus.totalPages %} 
                     <li class="page-item" >
-                        <a class="page-link" href="{{ url('system.menu.list', "")}}?page={{ menus.next }}" aria-label="Next">
+                        <a class="page-link" href="{{ url('system.menu.list', '')}}?page={{ menus.next }}" aria-label="Next">
                             <span aria-hidden="true">»</span>
                             <span class="sr-only">Next</span>
                         </a>

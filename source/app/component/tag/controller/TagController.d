@@ -23,7 +23,7 @@ class TagController : AdminBaseController
 
     @Action Response add()
     {
-        if (request.method() == HttpMethod.POST.asString())
+        if (request.methodAsString() == HttpMethod.POST.asString())
         {
             int now = cast(int) time();
             auto tr = new TagRepository;

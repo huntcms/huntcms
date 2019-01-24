@@ -6,8 +6,8 @@ import app.component.system.repository.FileInfoRepository;
 import std.json;
 import std.digest.sha;
 import std.file;
-import hunt.util.configuration;
-import hunt.datetime;
+import hunt.util.Configuration;
+import hunt.util.DateTime;
 import app.component.system.helper.Utils;
 
 import app.component.system.repository.UserRepository;
@@ -16,7 +16,7 @@ import app.lib.yun.YunUpLoad;
 
 import hunt.http.codec.http.model.MultipartFormInputStream;
 import std.format;
-import hunt.string;
+import hunt.text;
 
 class FileController : Controller
 {
@@ -36,7 +36,7 @@ class FileController : Controller
                     if(mp.getName() == "file"){
                         auto file_data = cast(const(ubyte)[]) read(fDir);
                         auto filesize = mp.getSize();
-                        auto now = time();
+                        auto now = cast(int) time();
                         FileInfo fi = new FileInfo;
                         fi.filename = mp.getSubmittedFileName();
                         fi.rename = "";
@@ -59,7 +59,7 @@ class FileController : Controller
                         if (fir.save(fi) is null) {
                             res["error_code"] = 10001;
                         }
-                        ConfigBuilder con = Config.config("hunt");
+                        // ConfigBuilder con = Config.config("hunt");
                         auto saveName = fi.sha1 ~ "." ~ Utils.fileExt(mp.getSubmittedFileName());
                         auto upload = new YunUpLoad("1004", "http://upload.putaocloud.com", "0d87e77f509a419285db58f985836901", "2fa77ec72e6a4c338515bfef98b97c42");
                         auto json = parseJSON(upload.doUpload(cast(byte[])file_data , cast(string) saveName));

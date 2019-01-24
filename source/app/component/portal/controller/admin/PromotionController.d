@@ -32,7 +32,7 @@ class PromotionController : AdminBaseController
 
     @Action Response add()
     {
-        if (request.method() == HttpMethod.POST.asString())
+        if (request.methodAsString() == HttpMethod.POST.asString())
         {
             int now = cast(int) time();
             auto pr = new PromotionRepository;
@@ -80,7 +80,7 @@ class PromotionController : AdminBaseController
 
         Response response = new Response(request);
         response.setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString());
-        response.setContent(view.render("portal/promotion/edit"));
+        response.setContent(view.render("portal/promotion/add"));
         return response;
     }
 

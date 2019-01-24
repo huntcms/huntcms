@@ -2,7 +2,7 @@ module app.component.shop.repository.ProductRelationPropertyRepository;
 
 import hunt.entity;
 import std.json;
-import hunt.util.serialize;
+import hunt.util.Serialize;
 import hunt.logging;
 public import app.component.shop.model.ProductRelationProperty;
 public import app.component.shop.model.ShopPropertyOption;

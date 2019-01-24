@@ -6,8 +6,8 @@ import app.component.system.model.Permission;
 import app.component.system.repository.PermissionRepository;
 
 import hunt.logging;
-import hunt.util.serialize;
-import hunt.datetime;
+import hunt.util.Serialize;
+import hunt.util.DateTime;
 import app.component.system.controller.admin.LogMiddleware;
 import app.lib.controller.AdminBaseController;
 import app.component.system.helper.Utils;
@@ -44,9 +44,9 @@ class PermissionController : AdminBaseController
 
     @Action Response add()
     {
-        if (request.method() == HttpMethod.POST.asString())
+        if (request.methodAsString() == HttpMethod.POST.asString())
         {
-            int now = time();
+            int now = cast(int) time();
             auto pr = new PermissionRepository();
             Permission pm = new Permission;
             pm.mca = request.post("mca");

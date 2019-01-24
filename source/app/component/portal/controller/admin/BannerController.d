@@ -7,7 +7,7 @@ import app.lib.controller.AdminBaseController;
 import app.component.portal.helper.Utils;
 import std.digest.sha;
 import std.file;
-import hunt.util.configuration;
+import hunt.util.Configuration;
 import hunt.http.codec.http.model.HttpMethod;
 
 class BannerController : AdminBaseController
@@ -26,7 +26,7 @@ class BannerController : AdminBaseController
     
     @Action Response add()
     {
-        if (request.method() == HttpMethod.POST.asString())
+        if (request.methodAsString() == HttpMethod.POST.asString())
         {
             int now = cast(int) time();
             auto br = new BannerRepository;
@@ -63,8 +63,6 @@ class BannerController : AdminBaseController
             if (saveRes !is null)
                 return new RedirectResponse(request, "/admincp/portal/banners");
         }
-        auto repository = new BannerRepository;
-        view.assign("groups", repository.getBannersByPid(1));
 
         Response response = new Response(request);
         response.setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString());
@@ -77,7 +75,6 @@ class BannerController : AdminBaseController
         logDebug(" edit id : ", id, "  get id : ", request.get("id"));
         auto repository = new BannerRepository;
         view.assign("banner", repository.find(id));
-        //view.assign("groups", repository.getBannersByPid(1));
 
         return view.render("portal/banner/edit");
     }

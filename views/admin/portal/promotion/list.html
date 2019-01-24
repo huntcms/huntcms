@@ -82,18 +82,18 @@
                                     <td><span class="badge label-table badge-success">
                                         {% if promotion.status == 0 %}
                                             Disabled
-                                        {% else if promotion.status == 1 %}
+                                        {% elif promotion.status == 1 %}
                                             Active
                                         {% else %}
                                             Suspended
                                         {% endif %}
                                     </span></td>
                                     <td class="actions">
-                                        <a href="{{ url('portal.promotion.edit', "")}}?id={{promotion.id}} " class="on-default edit-row" data-toggle="tooltip" data-placement="top"
+                                        <a href="{{ url('portal.promotion.edit', '')}}?id={{promotion.id}} " class="on-default edit-row" data-toggle="tooltip" data-placement="top"
                                             title="" data-original-title="Click Edit">
                                             <i class="fa fa-pencil"></i>
                                         </a>
-                                        <a href="{{ url('portal.promotion.del', "")}}?id={{promotion.id}} "  onclick="javascript:if(!confirm('确定删除？'))return false;" class="on-default remove-row" data-toggle="tooltip" data-placement="top"
+                                        <a href="{{ url('portal.promotion.del', '')}}?id={{promotion.id}} "  onclick="javascript:if(!confirm('确定删除？'))return false;" class="on-default remove-row" data-toggle="tooltip" data-placement="top"
                                             title="" data-original-title="Click Delete">
                                             <i class="fa fa-trash-o"></i>
                                         </a>                                       

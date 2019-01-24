@@ -31,7 +31,7 @@
                     <div class="row">
                         <div class="col-sm-6">
                             <div class="m-b-30">
-                                <a href="{{ url('shop.propertyoption.add', "")}}" id="addToTable" class="btn btn-success waves-effect waves-light">Add
+                                <a href="{{ url('shop.propertyoption.add', '')}}" id="addToTable" class="btn btn-success waves-effect waves-light">Add
                                     <i class="mdi mdi-plus-circle-outline"></i>
                                 </a>
                             </div>
@@ -84,15 +84,15 @@
                                 <td>{{ date('Y-m-d H:i:s',type.updated) }}</td>
                                 <td>
                                     <span class="badge label-table badge-success">
-                                        {% if type.status == 0 %} Disabled {% else if type.status == 1 %} Active {% else %} Suspended {% endif %}
+                                        {% if type.status == 0 %} Disabled {% elif type.status == 1 %} Active {% else %} Suspended {% endif %}
                                     </span>
                                 </td>
                                 <td class="actions">
-                                    <a href="{{ url('shop.propertyoption.edit', "")}}?id={{ type.id }}" " class="on-default edit-row" data-toggle="tooltip" data-placement="top"
+                                    <a href="{{ url('shop.propertyoption.edit', '')}}?id={{ type.id }}" " class="on-default edit-row" data-toggle="tooltip" data-placement="top"
                                         title="" data-original-title="Click Edit">
                                         <i class="fa fa-pencil"></i>
                                     </a>
-                                    <a href="{{ url('shop.propertyoption.del' , "")}}?id={{ type.id }}" " class="on-default remove-row" data-toggle="tooltip" data-placement="top"
+                                    <a href="{{ url('shop.propertyoption.del' , '')}}?id={{ type.id }}" " class="on-default remove-row" data-toggle="tooltip" data-placement="top"
                                         title="" data-original-title="Click Delete">
                                         <i class="fa fa-trash-o"></i>
                                     </a>

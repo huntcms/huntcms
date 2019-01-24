@@ -12,7 +12,7 @@ import app.component.system.repository.PermissionRepository;
 import app.component.system.repository.RolePermissionRepository;
 import app.component.system.helper.Utils;
 
-import hunt.datetime;
+import hunt.util.DateTime;
 
 import hunt.entity.DefaultEntityManagerFactory;
 import hunt.http.codec.http.model.HttpMethod;
@@ -32,7 +32,7 @@ class RoleController : AdminBaseController
 
     @Action Response add()
     {
-        if(request.method == "POST"){
+        if(request.methodAsString() == HttpMethod.POST.asString()){
             string name = request.post!string("name", "");
             short status = request.post("status").to!short;
             int time = cast(int)time();
@@ -81,7 +81,7 @@ class RoleController : AdminBaseController
         auto roleRepository = new RoleRepository(manager);
 
         auto findRole = roleRepository.find(id);
-        if(request.method() == HttpMethod.POST.asString())
+        if(request.methodAsString() == HttpMethod.POST.asString())
         {
             auto params = request.all();
             string name = request.post!string("name", "");

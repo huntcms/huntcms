@@ -5,8 +5,8 @@ import hunt.framework;
 import app.component.system.model.LogInfo;
 import app.component.system.repository.LogInfoRepository;
 
-import hunt.util.serialize;
-import hunt.datetime;
+import hunt.util.Serialize;
+import hunt.util.DateTime;
 import app.component.system.controller.admin.LogMiddleware;
 import app.lib.controller.AdminBaseController;
 import app.component.system.helper.Utils;

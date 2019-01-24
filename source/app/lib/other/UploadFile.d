@@ -5,8 +5,8 @@ import std.digest.sha;
 import std.file;
 import std.net.curl;
 
-import hunt.util.configuration;
-import hunt.datetime;
+import hunt.util.Configuration;
+import hunt.util.DateTime;
 
 import app.component.system.repository.FileInfoRepository;
 import app.component.system.model.FileInfo;
@@ -17,7 +17,7 @@ string uploadToCloud()
     //auto filesize = f.fileSize;
     //f.read(filesize, (const(ubyte[]) data) { file_data ~= data; });
     ////logDebug("file content :  ",cast(string)file_data);
-    //auto now = time();
+    //auto now = cast(int) time();
     //ConfigBuilder config = Config.config("hunt");
     //
     //

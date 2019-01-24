@@ -1,11 +1,11 @@
 module app.component.shop.controller.admin.ProductCategoryController;
 
 import hunt.framework;
-import hunt.framework.simplify;
+import hunt.framework.Simplify;
 import hunt.framework.http.RedirectResponse;
 import std.uri;
 import hunt.logging;
-import hunt.datetime.format;
+import hunt.util.DateTime;
 import app.lib.controller.AdminBaseController;
 import app.component.shop.repository.ProductCategoryRepository;
 import app.component.shop.model.ProductCategory;
@@ -69,11 +69,11 @@ class ProductCategoryController : AdminBaseController
     @Action Response add()
     {
         auto productCategoryRepository = new ProductCategoryRepository();
-        if (request.method == "POST")
+        if (request.methodAsString() == HttpMethod.POST.asString())
         {
             logInfo("add1 ");
             auto productCategoryModel = new ProductCategory();
-            int time = time();
+            int time = cast(int) time();
             productCategoryModel.title = request.post("title");
             productCategoryModel.sort = request.post("sort").to!int;
             productCategoryModel.pid = request.post("pid").to!int;
@@ -87,7 +87,7 @@ class ProductCategoryController : AdminBaseController
                 auto save = productCategoryRepository.save(productCategoryModel);
                 if (save !is null)
                 {
-                    return new RedirectResponse(request, createUrl("shop.productcategory.list"));
+                    return new RedirectResponse(request, url("admin:shop.productcategory.list"));
                 }else {
                     view.assign("errorMessages", ["操作失败"]);
                 }
@@ -99,7 +99,7 @@ class ProductCategoryController : AdminBaseController
                 productCategoryModel.updated = time;
                 productCategoryModel.created  = time;
                 productCategoryRepository.insert(productCategoryModel);
-                return new RedirectResponse(request, createUrl("shop.productcategory.list"));
+                return new RedirectResponse(request, url("admin:shop.productcategory.list"));
             }
 
         }
@@ -114,10 +114,10 @@ class ProductCategoryController : AdminBaseController
     @Action Response edit(int id)
     {
         auto productCategoryRepository = new ProductCategoryRepository();
-        if (request.method == "POST")
+        if (request.methodAsString() == HttpMethod.POST.asString())
         {
             auto productCategoryModel = productCategoryRepository.find(id);
-            int time = time();
+            int time = cast(int) time();
             productCategoryModel.id = id;
             productCategoryModel.title = request.post("title");
             productCategoryModel.sort = request.post("sort").to!int;
@@ -126,7 +126,7 @@ class ProductCategoryController : AdminBaseController
             auto save = productCategoryRepository.save(productCategoryModel);
             if (save !is null)
             {
-                return new RedirectResponse(request, createUrl("shop.productcategory.list"));
+                return new RedirectResponse(request, url("admin:shop.productcategory.list"));
             }else {
                 view.assign("errorMessages", ["操作失败"]);
             }
@@ -149,11 +149,11 @@ class ProductCategoryController : AdminBaseController
         auto productCategoryRepository = new ProductCategoryRepository();
         if(productCategoryRepository.childrens(id))
         {
-            return new RedirectResponse(request, createUrl("shop.productcategory.list"));
+            return new RedirectResponse(request, url("admin:shop.productcategory.list"));
         }
         auto productCategoryModel = productCategoryRepository.find(id);
         productCategoryRepository.remove(productCategoryModel);
-        return new RedirectResponse(request, createUrl("shop.productcategory.list"));
+        return new RedirectResponse(request, url("admin:shop.productcategory.list"));
     }
 
 }

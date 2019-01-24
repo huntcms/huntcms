@@ -84,7 +84,7 @@
                             </div>
 
                             <!-- item-->
-                            <a href="{{ url('system.user.profile', "")}}" class="dropdown-item notify-item">
+                            <a href="{{ url('system.user.profile', '')}}" class="dropdown-item notify-item">
                                 <i class="mdi mdi-account"></i> <span>Profile</span>
                             </a>
 
@@ -99,7 +99,7 @@
                             </a>
 
                             <!-- item-->
-                            <a href="{{ url('system.user.logout', "")}}" class="dropdown-item notify-item">
+                            <a href="{{ url('system.user.logout', '')}}" class="dropdown-item notify-item">
                                 <i class="mdi mdi-logout"></i> <span>Logout</span>
                             </a>
                         </div>
@@ -123,7 +123,7 @@
                     {% for v in menusJsonData %}
                         <li class="has-submenu">
                             <a href="{{v.user_link}}"><i class="{{v.icon_class}}"></i>{{v.name}}</a>
-                            {% if length(v.menus) > 0 %}
+                            {% if v.menus and length(v.menus) > 0 %}
                                 <ul class="submenu">
                                     {% for m in v.menus %}
                                     <li><a href="{{m.user_link}}">{{m.name}}</a></li>

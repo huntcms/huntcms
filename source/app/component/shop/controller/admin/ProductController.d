@@ -1,12 +1,12 @@
 module app.component.shop.controller.admin.ProductController;
 
 import hunt.framework;
-import hunt.framework.simplify;
+import hunt.framework.Simplify;
 import hunt.framework.http.RedirectResponse;
 import std.uri;
 import std.digest.sha;
 import hunt.logging;
-import hunt.datetime.format;
+import hunt.util.DateTime;
 import app.lib.controller.AdminBaseController;
 import app.component.shop.repository.ProductRepository;
 import app.component.shop.repository.ProductCategoryRepository;
@@ -47,6 +47,10 @@ class ProductController : AdminBaseController
         auto tagproducts = tpr.findAll();
         auto tags = tr.findAll();
         view.assign("data", list["data"]);
+
+        if("title" !in conditions){
+            conditions["title"] = "";
+        }
         view.assign("get", conditions);
         view.assign("tagproducts", tagproducts);
         view.assign("tags", tags);
@@ -69,11 +73,11 @@ class ProductController : AdminBaseController
     @Action Response add()
     {
         auto pcRepository = new ProductCategoryRepository();
-        if (request.method == "POST")
+        if (request.methodAsString() == HttpMethod.POST.asString())
         {
             auto productModel = new Product();
             auto productRepository = new ProductRepository();
-            int time = time();
+            int time = cast(int) time();
 
             productModel.pc_picurl = request.post("pc_picurl");
             productModel.app_picurl = request.post("app_picurl");
@@ -121,7 +125,7 @@ class ProductController : AdminBaseController
                     tp.created = time;
                     tpr.insert(tp);
                 }
-                return new RedirectResponse(request, createUrl("shop.product.list"));
+                return new RedirectResponse(request, url("admin:shop.product.list"));
             }else {
                 view.assign("errorMessages", ["操作失败"]);
             }
@@ -142,17 +146,22 @@ class ProductController : AdminBaseController
         auto productRepository = new ProductRepository();
         auto productCategory = new ProductCategoryRepository();
         auto productModel = productRepository.find(id);
-        auto picurls = parseJSON(productModel.picurls).array;
+        
+        JSONValue picurls;
+        if(productModel.picurls){
+            picurls = parseJSON(productModel.picurls).array;
+        }
+
         auto productCategoryModel = productCategory.find(productModel.category_id);
         if(action == "property")
         {
-            if (request.method == "POST")
+            if (request.methodAsString() == HttpMethod.POST.asString())
             {
 
                 ProductRelationProperty[] productRelationPropertys;
                 auto productRelationPropertyRepository = new ProductRelationPropertyRepository();
                 // auto params = request.postForm.formMap();
-                int time = time();
+                int time = cast(int) time();
                 logInfo(id);
                 // foreach(key,param; params)
                 // {
@@ -203,7 +212,7 @@ class ProductController : AdminBaseController
             return response;
 
         }else{
-            if (request.method == "POST")
+            if (request.methodAsString() == HttpMethod.POST.asString())
             {
                 productModel.title = request.post("title");
                 productModel.code = request.post("code");
@@ -217,7 +226,7 @@ class ProductController : AdminBaseController
                 productModel.app_picurl = request.post("app_picurl");
                 productModel.wap_picurl = request.post("wap_picurl");
 
-                productModel.updated = time();
+                productModel.updated = cast(int) time();
 
                 string[] picurlarr;
                 picurlarr.length = 5;
@@ -250,10 +259,10 @@ class ProductController : AdminBaseController
                     {
                         tp.product_id = save.id;
                         tp.tag_id = tag;
-                        tp.created = time();
+                        tp.created = cast(int) time();
                         tpr.insert(tp);
                     }
-                    return new RedirectResponse(request, createUrl("shop.product.list"));
+                    return new RedirectResponse(request, url("admin:shop.product.list"));
                 }else {
                     view.assign("errorMessages", ["操作失败"]);
                 }
@@ -282,6 +291,6 @@ class ProductController : AdminBaseController
         productRepository.remove(productModel);
         auto tpr = new TagProductRepository;
         tpr.removes(id.to!int); 
-        return new RedirectResponse(request, createUrl("shop.product.list"));
+        return new RedirectResponse(request, url("admin:shop.product.list"));
     }
 }

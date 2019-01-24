@@ -13,7 +13,7 @@ import std.digest.hmac;
 import std.base64;
 import std.conv;
 import std.string;
-import hunt.util.configuration;
+import hunt.util.Configuration;
 import hunt.logging;
 
 import std.experimental.allocator.mallocator;

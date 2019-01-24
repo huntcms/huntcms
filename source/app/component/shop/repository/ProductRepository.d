@@ -4,7 +4,7 @@ import hunt.entity;
 import hunt.entity.domain;
 import std.json;
 import std.math;
-import hunt.util.serialize;
+import hunt.util.Serialize;
 import hunt.logging;
 import hunt.framework;
 import app.component.shop.model.Product;

@@ -135,7 +135,7 @@
                                         <label class="col-2 col-form-label">预览图1</label>
                                         <div class="uploder-container col-10">
                                             <input class="fileUpdate" type="hidden" name="picurls1"
-                                                   value="{% if picurls[0] != 'null' %}{{ picurls[0] }}{% endif %}">
+                                                   value="{% if picurls and picurls[0] != 'null' %}{{ picurls[0] }}{% endif %}">
                                             <div class="cxuploder">
                                                 <div class="queueList">
                                                     <div class="placeholder" style="padding-top: 50px;">
@@ -153,7 +153,7 @@
                                         <label class="col-2 col-form-label">预览图2</label>
                                         <div class="uploder-container col-10">
                                             <input class="fileUpdate" type="hidden" name="picurls2"
-                                                   value="{% if picurls[1] != 'null' %}{{ picurls[1] }}{% endif %}">
+                                                   value="{% if picurls and picurls[1] != 'null' %}{{ picurls[1] }}{% endif %}">
                                             <div class="cxuploder">
                                                 <div class="queueList">
                                                     <div class="placeholder" style="padding-top: 50px;">
@@ -171,7 +171,7 @@
                                         <label class="col-2 col-form-label">预览图3</label>
                                         <div class="uploder-container col-10">
                                             <input class="fileUpdate" type="hidden" name="picurls3"
-                                                   value="{% if picurls[2] != 'null' %}{{ picurls[2] }}{% endif %}">
+                                                   value="{% if picurls and picurls[2] != 'null' %}{{ picurls[2] }}{% endif %}">
                                             <div class="cxuploder">
                                                 <div class="queueList">
                                                     <div class="placeholder" style="padding-top: 50px;">
@@ -189,7 +189,7 @@
                                         <label class="col-2 col-form-label">预览图4</label>
                                         <div class="uploder-container col-10">
                                             <input class="fileUpdate" type="hidden" name="picurls4"
-                                                   value="{% if picurls[3] != 'null' %}{{ picurls[3] }}{% endif %}">
+                                                   value="{% if picurls and picurls[3] != 'null' %}{{ picurls[3] }}{% endif %}">
                                             <div class="cxuploder">
                                                 <div class="queueList">
                                                     <div class="placeholder" style="padding-top: 50px;">
@@ -207,7 +207,7 @@
                                         <label class="col-2 col-form-label">预览图5</label>
                                         <div class="uploder-container col-10">
                                             <input class="fileUpdate" type="hidden" name="picurls5"
-                                                   value="{% if picurls[4] != 'null' %}{{ picurls[4] }}{% endif %}">
+                                                   value="{% if picurls and picurls[4] != 'null' %}{{ picurls[4] }}{% endif %}">
                                             <div class="cxuploder">
                                                 <div class="queueList">
                                                     <div class="placeholder" style="padding-top: 50px;">
