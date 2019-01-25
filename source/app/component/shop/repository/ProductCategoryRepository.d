@@ -21,25 +21,21 @@ class ProductCategoryRepository : EntityRepository!(ProductCategory, int)
         //筛选条件
         string strConditions = "";
         if(conditions !is null && "title" in conditions){
-            strConditions = " AND pc.title = '%" ~ conditions["title"] ~ "%'";
+            strConditions = "AND pc.title = '%" ~ conditions["title"] ~ "%' ";
         }
-
-        int offset = 0;
+        int page = 1;
         if(conditions !is null && "page" in conditions){
-            int page = conditions["page"].to!int;
-            page = page <1 ? 1 : page;
-            offset = (page-1) * limit;
+            page = conditions["page"].to!int;
+            page = page < 1 ? 1 : page;
         }
         JSONValue result;
-
-        long count = count(new Condition( " pc.deleted = 0 %s ", strConditions));
-        int totalCount = count ? cast(int) count : 0;
-        result["total_count"] = totalCount;
-        result["total_page"] = cast(int) ceil(cast(float) totalCount/limit);
+        auto allData = _entityManager.createQuery!(ProductCategory)(" SELECT pc FROM ProductCategory pc WHERE pc.deleted = 0 " ~ strConditions, new Pageable(page - 1, limit))
+            .getPageResult();
+        logInfo(allData);
+        result["total_count"] = allData.getTotalElements();
+        result["total_page"] = allData.getTotalPages();
         JSONValue[] data;
-
-        auto query = _entityManager.createQuery!(ProductCategory)(" SELECT pc FROM ProductCategory pc WHERE pc.deleted = 0" ~ strConditions ~ " LIMIT " ~ limit.to!string ~ " OFFSET " ~ offset.to!string );
-        foreach(productCategory; query.getResultList()) {
+        foreach(productCategory; allData.getContent()) {
             JSONValue tmp = toJSON(productCategory);
             data ~= tmp;
         }

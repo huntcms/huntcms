@@ -6,9 +6,9 @@
     "license": "Apache-2.0",
     "targetType": "executable",
     "dependencies": {
-        "hunt-framework": "~>2.0.0" 
+        "hunt-framework": "~>2.0.0-rc.4" 
     },
-    "versions":["WithDatabase"],
+    "versions":["WithDatabase", "HUNT_DEBUG"],
     "configurations": [{
         "name": "default",
         "subConfigurations": {

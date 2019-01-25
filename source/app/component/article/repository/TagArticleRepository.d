@@ -9,30 +9,29 @@ import std.json;
 class TagArticleRepository : EntityRepository!(TagArticle, int)
 {
     private EntityManager _entityManager;
-    struct Objects
-    {
-        CriteriaBuilder builder;
-        CriteriaQuery!TagArticle criteriaQuery;
-        Root!TagArticle root;
-    }
+    // struct Objects
+    // {
+    //     CriteriaBuilder builder;
+    //     CriteriaQuery!TagArticle criteriaQuery;
+    //     Root!TagArticle root;
+    // }
     
-    this(EntityManager manager = null)
-    {
+    this(EntityManager manager = null) {
          _entityManager = manager is null ? createEntityManager() : manager;
         super(_entityManager);
     }
 
 
-    Objects newObjects()
-    {
-        Objects objects;
+    // Objects newObjects()
+    // {
+    //     Objects objects;
 
-        objects.builder = _entityManager.getCriteriaBuilder();
-        objects.criteriaQuery = objects.builder.createQuery!TagArticle;
-        objects.root = objects.criteriaQuery.from();
+    //     objects.builder = _entityManager.getCriteriaBuilder();
+    //     objects.criteriaQuery = objects.builder.createQuery!TagArticle;
+    //     objects.root = objects.criteriaQuery.from();
 
-        return objects;
-    }
+    //     return objects;
+    // }
 
     // TagArticle[] getTagArticle(int articleId)
     // {

@@ -23,15 +23,18 @@ class ProductCategoryController : AdminBaseController
 
     @Action string list()
     {
+
         auto conditions = request.all();
         int limit = 20 ;  // 每页显示多少条
-        foreach (key, condition; conditions)
-        {
+        foreach (key, condition; conditions){
             conditions[key] = decodeComponent(condition);
         }
-        auto productCategoryRepository = new ProductCategoryRepository();
-        auto list = productCategoryRepository.adminList(conditions, limit);
+        auto pcRep = new ProductCategoryRepository();
+        auto list = pcRep.adminList(conditions, limit);
         view.assign("data", list["data"]);
+        if("title" !in conditions){
+            conditions["title"] = "";
+        }
         view.assign("get", conditions);
 
         uint page = request.get!uint("page" , 1);
@@ -47,7 +50,7 @@ class ProductCategoryController : AdminBaseController
         }
         Paginate pageView = new Paginate(linkUrl , (cast(int) page <= 0 ? 1 : cast(int) page) , to!int(list["total_page"].integer), limit);
         view.assign("pageView", pageView.showPages());
-        view.assign("categorys", productCategoryRepository.all());
+        view.assign("categorys", pcRep.all());
         return view.render("shop/productCategory/list");
     }
 

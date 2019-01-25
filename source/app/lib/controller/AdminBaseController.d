@@ -11,6 +11,7 @@ import app.component.system.repository.UserRepository;
 import std.json;
 import std.algorithm.sorting;
 import hunt.http.codec.http.model.HttpMethod;
+import hunt.logging;
 
 class AdminBaseController : Controller
 {
@@ -63,7 +64,7 @@ class AdminBaseController : Controller
 	}
 
 	override bool after() {
-		log("---running after----");
+		logWarning("---running after----");
 		view.assign("errorMessages", this.errorMessages);
 		return true;
 	}

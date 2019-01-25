@@ -12,6 +12,7 @@ import app.lib.controller.AdminBaseController;
 import app.component.system.helper.Paginate;
 import app.component.system.helper.Utils;
 import hunt.http.codec.http.model.HttpMethod;
+import std.algorithm;
 
 class PropertyOptionController : AdminBaseController
 {
@@ -23,13 +24,16 @@ class PropertyOptionController : AdminBaseController
         int[] propertyIds;
         foreach( o ; alldata["data"].array)
         {
-            propertyIds ~= cast(int) o[ID].integer;
+            int tmp = cast(int) o[ID].integer;
+            if(!canFind(propertyIds, tmp))
+                propertyIds ~= tmp;
         }
         auto repo_property = new T();
+        logInfo(repo_property);
         auto properties = repo_property.findAllByIds(propertyIds);
+        logWarning(properties);
         for( size_t i = 0 ; i < alldata["data"].array.length ; i++)
         {
-            import std.algorithm.searching;
             auto list = find!("a.id == b")(properties , alldata["data"][i][ID].integer);
             if(list is null)
                 alldata["data"][i][TITLE] = "not found";
@@ -50,15 +54,14 @@ class PropertyOptionController : AdminBaseController
         int limit = 20 ;  // 每页显示多少条
         auto pageData = repository.findAll(new Pageable(page - 1 , limit));
         JSONValue alldata = pageToJson!ShopPropertyOption(pageData);
-        
-        add_title!(ShopPropertyRepository , "property_id" , "property_title")(alldata);
+        // logError(alldata);
+        add_title!(ShopPropertyRepository, "property_id", "property_title")(alldata);
        
         view.assign("types", alldata);
-        Paginate temPage = new Paginate("/admincp/shop/propertyoption?page={page}" ,
-         page , pageData.getTotalPages());
+        Paginate temPage = new Paginate("/admincp/shop/propertyoption?page={page}", page , pageData.getTotalPages());
         view.assign("pageView", temPage.showPages());
 
-         return view.render("shop/propertyoption/list");
+        return view.render("shop/propertyoption/list");
     }
 
     @Action Response add()

@@ -5,23 +5,38 @@ public import app.component.shop.model.ShopPropertyOption;
 
 class PropertyOptionRepository:EntityRepository!(ShopPropertyOption ,int)
 {
+
+    private EntityManager _entityManager;
+
+    this(EntityManager manager = null) {
+        super(manager);
+        _entityManager = manager is null ? createEntityManager() : manager;
+    }
+
     ShopPropertyOption[] findAllByProperty(int property_id)
     {
-        return findAll(new Condition("%s = %s order by sort asc" , Field.property_id , property_id));
+        // return findAll(new Condition("%s = %s order by sort asc" , Field.property_id , property_id));
+        return _entityManager.createQuery!(ShopPropertyOption)(" SELECT spo FROM ShopPropertyOption spo WHERE spo.property_id = :propertyId ORDER BY spo.sort ASC ")
+            .setParameter("propertyId", property_id)
+            .getResultList();
     }
 
     ShopPropertyOption[] findAllByIds(int[] ids)
     {
         string strIds = to!string(ids);
         strIds = strIds[1 .. $ - 1];
-        return findAll(new Condition(" %s in ( %s ) order by field(%s , %s)" , Field.id,strIds , Field.id , strIds));
+        // return findAll(new Condition(" %s in ( %s ) order by field(%s , %s)" , Field.id,strIds , Field.id , strIds));
+        return _entityManager.createQuery!(ShopPropertyOption)(" SELECT spo FROM ShopPropertyOption spo WHERE spo.id in (" ~ strIds ~ ") ORDER BY spo.id ASC ")
+            .getResultList();
     }
 
      ShopPropertyOption[] findAllByPropertyIds(int[] ids)
      {
         string strIds = to!string(ids);
         strIds = strIds[1 .. $ - 1];
-        return findAll(new Condition(" %s in ( %s ) order by field(%s , %s)" , Field.property_id,strIds , Field.property_id , strIds));
+        // return findAll(new Condition(" %s in ( %s ) order by field(%s , %s)" , Field.property_id,strIds , Field.property_id , strIds));
+        return _entityManager.createQuery!(ShopPropertyOption)(" SELECT spt FROM ShopPropertyOption spt WHERE spt.property_id in (" ~ strIds ~ ") ORDER BY spt.property_id ASC ")
+            .getResultList();
      }
     
 }
