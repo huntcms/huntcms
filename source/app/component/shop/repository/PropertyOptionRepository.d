@@ -15,10 +15,9 @@ class PropertyOptionRepository:EntityRepository!(ShopPropertyOption ,int)
 
     ShopPropertyOption[] findAllByProperty(int property_id)
     {
-        // return findAll(new Condition("%s = %s order by sort asc" , Field.property_id , property_id));
-        return _entityManager.createQuery!(ShopPropertyOption)(" SELECT spo FROM ShopPropertyOption spo WHERE spo.property_id = :propertyId ORDER BY spo.sort ASC ")
-            .setParameter("propertyId", property_id)
-            .getResultList();
+        auto sortCondition = new Sort();
+        sortCondition.add(new Order(Field.sort, OrderBy.ASC));
+        return findAll(new Condition(" %s = %s " , Field.property_id , property_id), sortCondition);
     }
 
     ShopPropertyOption[] findAllByIds(int[] ids)

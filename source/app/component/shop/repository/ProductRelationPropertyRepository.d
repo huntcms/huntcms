@@ -47,6 +47,6 @@ class ProductRelationPropertyRepository:EntityRepository!(ProductRelationPropert
     }
     ProductRelationProperty[] findInputsByProductId(int productId)
     {
-        return findAll(new Condition(" %s =  %s and property_option_id = 0 " , Field.product_id , productId));
+        return findAll(new Condition(" %s =  %s and %s = 0 " , Field.product_id , productId, Field.property_option_id));
     }
 }

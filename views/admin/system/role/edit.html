@@ -44,12 +44,21 @@
                                         <label class="col-2 col-form-label">Role</label>
                                         <div class="col-10">
                                             <div class="mt-3">
-                                                {% for rolePermission in rolePermissions %}
-                                                    <div class="custom-control custom-checkbox" style="display: inline-block;">
-                                                        <input type="checkbox" {{ rolePermission.checked }} name="permissionid_{{rolePermission.permission.id}}" class="custom-control-input" value="{{rolePermission.permission.id}}" id="customCheck{{rolePermission.permission.id}}">
-                                                        <label onselectstart="return false" class="custom-control-label" for="customCheck{{rolePermission.permission.id}}">{{rolePermission.permission.title}}</label>
-                                                    </div>
+
+                                                {% for group in groups %}
+                                                <div class="group-div" style="font-weight: 500; color: #4c5667; margin-top: {% if loop.index == 1 %}-1rem;{% else %}0.5rem;{% endif %}">{{ loop.index }} - {{ group.title }}</div>
+                                                <div>
+                                                    {% for rolePermission in rolePermissions %}
+                                                        {% if rolePermission.permission.group_id == group.id %}
+                                                        <div class="custom-control custom-checkbox" style="display: inline-block;">
+                                                            <input type="checkbox" {{ rolePermission.checked }} name="permissionid_{{rolePermission.permission.id}}" class="custom-control-input" value="{{rolePermission.permission.id}}" id="customCheck{{rolePermission.permission.id}}">
+                                                            <label onselectstart="return false" class="custom-control-label" for="customCheck{{rolePermission.permission.id}}">{{rolePermission.permission.title}}</label>
+                                                        </div>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </div>
                                                 {% endfor %}
+
                                             </div>
                                         </div>
                                     </div>

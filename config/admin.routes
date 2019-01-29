@@ -30,6 +30,13 @@ GET         /system/permission/edit     system.permission.edit
 POST        /system/permission/edit     system.permission.edit
 GET         /system/permission/del      system.permission.del
 
+GET         /system/permission/groups               system.permissiongroup.list
+GET         /system/permission/group/add            system.permissiongroup.add
+POST        /system/permission/group/add        system.permissiongroup.add
+GET         /system/permission/group/edit           system.permissiongroup.edit
+POST        /system/permission/group/edit           system.permissiongroup.edit
+GET         /system/permission/group/del            system.permissiongroup.del
+
 GET         /system/menus               system.menu.list
 GET         /system/menu/add            system.menu.add
 POST        /system/menu/add            system.menu.add

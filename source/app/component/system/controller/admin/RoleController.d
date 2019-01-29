@@ -12,6 +12,8 @@ import app.component.system.repository.PermissionRepository;
 import app.component.system.repository.RolePermissionRepository;
 import app.component.system.helper.Utils;
 
+import app.component.system.model.PermissionGroup;
+import app.component.system.repository.PermissionGroupRepository;
 import hunt.util.DateTime;
 
 import hunt.entity.DefaultEntityManagerFactory;
@@ -65,6 +67,7 @@ class RoleController : AdminBaseController
             }
         }
         view.assign("permissions", (new PermissionRepository).findAll());
+        view.assign("groups", (new PermissionGroupRepository).findAll());
 
         Response response = new Response(request);
 		response.setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString());
@@ -135,7 +138,8 @@ class RoleController : AdminBaseController
             rolePermissions ~= tmp;
         }
         view.assign("rolePermissions", rolePermissions);
-
+        view.assign("groups", (new PermissionGroupRepository).findAll());
+        
         Response response = new Response(request);
 		response.setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString());
 		response.setContent(view.render("system/role/edit"));

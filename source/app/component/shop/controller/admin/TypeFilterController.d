@@ -62,7 +62,7 @@ class TypeFilterController : AdminBaseController
         int limit = 20 ;  // 每页显示多少条
         auto pageData = repository.findAll(new Pageable(page - 1 , limit));
         JSONValue alldata = pageToJson!ShopProductTypePropertyFilter(pageData);
-        
+        logInfo(alldata);
         PropertyOptionController.add_title!(ShopProductTypeRepository , "type_id" , "type_title")(alldata);
         add_option_title(alldata);
         view.assign("types", alldata);

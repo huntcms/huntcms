@@ -36,42 +36,67 @@ class ProductRepository : EntityRepository!(Product, int)
 
     JSONValue adminList(string[string] conditions = null, int limit = 20)
     {
-        auto objects1 = this.newObjects();
-        auto objects2 = this.newObjects();
-        auto querySelect1 = objects1.criteriaQuery.select(objects1.root).where(objects1.builder.equal(objects1.root.Product.deleted, 0));
-        auto querySelect2 = objects2.criteriaQuery.select(objects2.builder.count(objects2.root)).where(objects2.builder.equal(objects2.root.Product.deleted, 0));
+        // auto objects1 = this.newObjects();
+        // auto objects2 = this.newObjects();
+        // auto querySelect1 = objects1.criteriaQuery.select(objects1.root).where(objects1.builder.equal(objects1.root.Product.deleted, 0));
+        // auto querySelect2 = objects2.criteriaQuery.select(objects2.builder.count(objects2.root)).where(objects2.builder.equal(objects2.root.Product.deleted, 0));
 
-        //筛选条件
+        // //筛选条件
+        // if(conditions !is null && "title" in conditions){
+        //     querySelect1.where(objects1.builder.like(objects1.root.Product.title, "'%"~conditions["title"]~"%'"));
+        //     querySelect2.where(objects2.builder.like(objects2.root.Product.title, "'%"~conditions["title"]~"%'"));
+        // }
+        // //筛选条件
+
+        // auto typedQuery1 = _entityManager.createQuery(querySelect1);
+        // auto typedQuery2 = _entityManager.createQuery(querySelect2);
+
+        // int offset = 0;
+        // if(conditions !is null && "page" in conditions){
+        //     int page = conditions["page"].to!int;
+        //     page = page <1 ? 1 : page;
+        //     offset = (page-1) * limit;
+        // }
+        // JSONValue result;
+        // Long count = cast(Long)(typedQuery2.getSingleResult());
+        // int totalCount = count ? count.longValue().to!int : 0;
+        // result["total_count"] = totalCount;
+        // result["total_page"] = cast(int) ceil(cast(float) totalCount/limit);
+        // JSONValue[] data;
+        // Product[] products = typedQuery1.setFirstResult(offset).setMaxResults(limit).getResultList();
+        // foreach(product; products)
+        // {
+        //     JSONValue tmp = toJSON(product);
+        //     data ~= tmp;
+        // }
+        // result["data"] = data;
+        // logInfo(result);
+        // return result;
+
+        string strConditions = "";
         if(conditions !is null && "title" in conditions){
-            querySelect1.where(objects1.builder.like(objects1.root.Product.title, "'%"~conditions["title"]~"%'"));
-            querySelect2.where(objects2.builder.like(objects2.root.Product.title, "'%"~conditions["title"]~"%'"));
+            strConditions = " AND p.title LIKE '%" ~ conditions["title"] ~ "%' ";
         }
-        //筛选条件
-
-        auto typedQuery1 = _entityManager.createQuery(querySelect1);
-        auto typedQuery2 = _entityManager.createQuery(querySelect2);
-
-        int offset = 0;
+        int page = 1;
         if(conditions !is null && "page" in conditions){
-            int page = conditions["page"].to!int;
-            page = page <1 ? 1 : page;
-            offset = (page-1) * limit;
+            page = conditions["page"].to!int;
+            page = page < 1 ? 1 : page;
         }
         JSONValue result;
-        Long count = cast(Long)(typedQuery2.getSingleResult());
-        int totalCount = count ? count.longValue().to!int : 0;
-        result["total_count"] = totalCount;
-        result["total_page"] = cast(int) ceil(cast(float) totalCount/limit);
+        auto allData = _entityManager.createQuery!(Product)(" SELECT p FROM Product p WHERE p.deleted = 0 " ~ strConditions, new Pageable(page - 1, limit))
+            .getPageResult();
+        logInfo(allData);
+        result["total_count"] = allData.getTotalElements();
+        result["total_page"] = allData.getTotalPages();
         JSONValue[] data;
-        Product[] products = typedQuery1.setFirstResult(offset).setMaxResults(limit).getResultList();
-        foreach(product; products)
-        {
+        foreach(product; allData.getContent()) {
             JSONValue tmp = toJSON(product);
             data ~= tmp;
         }
         result["data"] = data;
-        logInfo(result);
         return result;
+
+
     }
 
 }

@@ -44,11 +44,18 @@
                                         <label class="col-2 col-form-label">Permission</label>
                                         <div class="col-10">
                                             <div class="mt-3">
-                                                {% for permission in permissions %}
-                                                    <div class="custom-control custom-checkbox" style="display: inline-block;">
+                                                {% for group in groups %}
+                                                <div class="group-div" style="font-weight: 500; color: #4c5667; margin-top: {% if loop.index == 1 %}-1rem;{% else %}0.5rem;{% endif %}">{{ loop.index }} - {{ group.title }}</div>
+                                                <div>
+                                                    {% for permission in permissions %}
+                                                        {% if permission.group_id == group.id %}
+                                                    <div class="custom-control custom-checkbox" style="display: inline-block; margin-right: 15px;">
                                                         <input type="checkbox" name="permissionid_{{permission.id}}" class="custom-control-input" value="{{permission.id}}" id="customCheck-{{permission.id}}">
                                                         <label onselectstart="return false" class="custom-control-label" for="customCheck-{{permission.id}}">{{permission.title}}</label>
                                                     </div>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </div>
                                                 {% endfor %}
                                             </div>
                                         </div>

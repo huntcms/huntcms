@@ -6,7 +6,9 @@ public import app.component.shop.model.ShopProductTypePropertyFilter;
 class TypePropertyFilterRepository:EntityRepository!(ShopProductTypePropertyFilter ,int)
 {
     ShopProductTypePropertyFilter[] findAllByType(int type_id)
-    {
-        return super.findAll(new Condition("%s = %s order by sort asc" , Field.type_id , type_id));
+    {        
+        auto sortCondition = new Sort();
+        sortCondition.add(new Order(Field.sort, OrderBy.ASC));
+        return super.findAll(new Condition(" %s = %s " , Field.type_id , type_id), sortCondition);
     }
 }

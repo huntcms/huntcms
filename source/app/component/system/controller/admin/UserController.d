@@ -263,10 +263,6 @@ class UserController : AdminBaseController
 
     @Action Response logout()
     {
-        // HttpSession rSession = this.request.session(true);
-        // if(rSession.has("USER")){
-        //     rSession.remove("USER");
-        // }
         Application.getInstance().accessManager.removeAuth();
         return new RedirectResponse(request, "/admincp/login");
     }

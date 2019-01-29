@@ -80,11 +80,6 @@
                                 <td>{{ type.property_options_desc}}</td>
                                 <td>{{ date('Y-m-d H:i:s',type.created) }}</td>
                                 <td>{{ date('Y-m-d H:i:s',type.updated) }}</td>
-                                <td>
-                                    <span class="badge label-table badge-success">
-                                        {% if type.status == 0 %} Disabled {% elif type.status == 1 %} Active {% else %} Suspended {% endif %}
-                                    </span>
-                                </td>
                                 <td class="actions">
                                     <a href="{{ url('shop.typefilter.edit', '')}}?id={{ type.id }}" " class="on-default edit-row" data-toggle="tooltip" data-placement="top"
                                         title="" data-original-title="Click Edit">

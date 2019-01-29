@@ -48,6 +48,19 @@
                                             <input type="text" class="form-control" required id="title" name="title" placeholder="Some text value...">
                                         </div>
                                     </div>
+
+                                    <div class="form-group row">
+                                        <label class="col-2 col-form-label">Group</label>
+                                        <div class="col-10">
+                                            <select id="demo-foo-filter-status" name="groupId" class="form-control input-sm">
+                                                <option value="0">NO GROUP</option>
+                                                {% for group in groups %}
+                                                <option value="{{ group.id }}">{{ group.title }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+
                                     <div class="form-group row">
                                         <label class="col-2 col-form-label">isAction</label>
                                         <div class="col-10">

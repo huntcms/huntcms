@@ -21,7 +21,7 @@ class ProductCategoryRepository : EntityRepository!(ProductCategory, int)
         //筛选条件
         string strConditions = "";
         if(conditions !is null && "title" in conditions){
-            strConditions = "AND pc.title = '%" ~ conditions["title"] ~ "%' ";
+            strConditions = "AND pc.title LIKE '%" ~ conditions["title"] ~ "%' ";
         }
         int page = 1;
         if(conditions !is null && "page" in conditions){

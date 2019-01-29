@@ -4,6 +4,8 @@ import hunt.framework;
 
 import app.component.system.model.Permission;
 import app.component.system.repository.PermissionRepository;
+import app.component.system.model.PermissionGroup;
+import app.component.system.repository.PermissionGroupRepository;
 
 import hunt.logging;
 import hunt.util.Serialize;
@@ -34,6 +36,8 @@ class PermissionController : AdminBaseController
         JSONValue alldata = pageToJson!Permission(repository.findAll(new Pageable((page-1 < 0 ? 0 : page-1 ) , limit)));
         //logDebug("permissions : ",alldata);
         view.assign("permissions", alldata);
+        auto pgList = (new PermissionGroupRepository).findAll();
+        view.assign("groups", pgList);
 
         int totalPages = cast(int)alldata["totalPages"].integer ;
         Paginate temPage = new Paginate("/admincp/system/permissions?page={page}" , (cast(int) page <= 0 ? 1 : cast(int) page) , totalPages);
@@ -51,6 +55,7 @@ class PermissionController : AdminBaseController
             Permission pm = new Permission;
             pm.mca = request.post("mca");
             pm.title = request.post("title");
+            pm.group_id = request.post("groupId").to!int;
             pm.isAction = request.post("actionRadio").to!short;
             pm.status = request.post("statusRadio").to!short;
             if(request.post("id"))
@@ -72,7 +77,8 @@ class PermissionController : AdminBaseController
                 return new RedirectResponse(request, "/admincp/system/permissions");
 
         }
-
+        auto pgList = (new PermissionGroupRepository).findAll();
+        view.assign("groups", pgList);
         Response response = new Response(request);
 		response.setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString());
 		response.setContent(view.render("system/permission/add"));
@@ -85,7 +91,8 @@ class PermissionController : AdminBaseController
         logDebug(" edit id : ", id, "  get id : ", request.get("id"));
         auto repository = new PermissionRepository();
         view.assign("permission", repository.find(request.get("id").to!int));
-
+        auto pgList = (new PermissionGroupRepository).findAll();
+        view.assign("groups", pgList);
         return view.render("system/permission/edit");
     }
 

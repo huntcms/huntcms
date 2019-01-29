@@ -14,6 +14,8 @@ class Permission : Model
 
     string title;
 
+    int group_id;
+
     @Column("is_action")
     short isAction;
 

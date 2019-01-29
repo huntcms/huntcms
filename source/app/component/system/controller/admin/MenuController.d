@@ -46,7 +46,7 @@ class MenuController : AdminBaseController
             mn.mca = request.post("mca");
             mn.linkUrl = request.post("linkUrl");
             mn.iconClass = request.post("iconClass" , "");
-            mn.sort = request.post("sort").to!int;
+            mn.sort = request.post("sort","0").to!int;
             mn.isAction = request.post("actionRadio").to!short;
             mn.status = request.post("statusRadio").to!short;
             auto id = request.post("id");

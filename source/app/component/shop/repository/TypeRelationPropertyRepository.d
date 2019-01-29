@@ -7,13 +7,17 @@ class TypeRelationPropertyRepository:EntityRepository!(ShopProductTypeRelationPr
 {
     ShopProductTypeRelationProperty[] findAllByType(int type_id)
     {
-        return super.findAll(new Condition("%s = %s order by sort asc" , Field.type_id , type_id));
+        auto sortCondition = new Sort();
+        sortCondition.add(new Order(Field.sort, OrderBy.ASC));
+        return super.findAll(new Condition(" %s = %s " , Field.type_id , type_id), sortCondition);
     }
 
     int[] findAllByPropertyIds(int type_id)
     {
-        int[] ids;
-        auto results = super.findAll(new Condition("%s = %s order by sort asc" , Field.type_id , type_id));
+        int[] ids;        
+        auto sortCondition = new Sort();
+        sortCondition.add(new Order(Field.sort, OrderBy.ASC));
+        auto results = super.findAll(new Condition(" %s = %s " , Field.type_id , type_id), sortCondition);
         foreach(result; results)
         {
             ids ~= result.property_id;
