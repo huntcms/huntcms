@@ -58,7 +58,8 @@ class RoleController : AdminBaseController
 
                 manager.getTransaction().commit();
                 Application.getInstance().accessManager.refresh();  
-                return new RedirectResponse(request, "/admincp/system/roles");
+                // return new RedirectResponse(request, "/admincp/system/roles");
+                return new RedirectResponse(request, url("system.role.list", null, "admin"));
             } catch(Exception e) {
 
                 errorMessages ~= "role already existed.";
@@ -69,10 +70,9 @@ class RoleController : AdminBaseController
         view.assign("permissions", (new PermissionRepository).findAll());
         view.assign("groups", (new PermissionGroupRepository).findAll());
 
-        Response response = new Response(request);
-		response.setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString());
-		response.setContent(view.render("system/role/add"));
-		return response;
+        return new Response(request)
+            .setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString())
+            .setContent(view.render("system/role/add"));
     }
 
     @Action Response edit()
@@ -93,30 +93,26 @@ class RoleController : AdminBaseController
 
             try {
                 manager.getTransaction().begin();
-
                 auto role = findRole;
                 role.name = name;
                 role.status = status;
                 roleRepository.save(role);
-
                 rolePermissionRepository.removes(id);
                 rolePermissionRepository.saves(id, permissionIds);
                 manager.getTransaction().commit();
                 Application.getInstance().accessManager.refresh();  
                 return new RedirectResponse(request, "/admincp/system/roles");
             } catch(Exception e) {
-
                 errorMessages ~= "error.";
-
                 manager.getTransaction().rollback();
-
                 logError(e);
             }
 
-            return new RedirectResponse(request, "/admincp/system/role/edit?id="~to!string(id));
+            return new RedirectResponse(request, "/admincp/system/role/edit?id="~to!string(id));            
+            // string[string] redirectParams;
+            // redirectParams["id"] = to!string(id);
+            // return new RedirectResponse(request, url("system.role.edit", redirectParams, "admin"));
         }
-
-
         view.assign("role", findRole);
 
         //logInfo(id);
@@ -139,10 +135,9 @@ class RoleController : AdminBaseController
         }
         view.assign("rolePermissions", rolePermissions);
         view.assign("groups", (new PermissionGroupRepository).findAll());
-        
-        Response response = new Response(request);
-		response.setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString());
-		response.setContent(view.render("system/role/edit"));
-		return response;
+
+        return new Response(request)
+            .setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString())
+            .setContent(view.render("system/role/edit"));
     }
 }

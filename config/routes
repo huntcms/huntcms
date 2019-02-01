@@ -1,21 +1,11 @@
-#
-# method    path                      module.controller.action
-#
+GET         /                                            portal.index.index
+GET         /projects                                    project.project.list
+GET         /project/{sign<[0-9a-zA-Z_-]+>}              project.project.detail
 
-GET         /                         portal.portal.index
+GET         /docs/{proSign<[0-9a-zA-Z_.-]+>}-{docVersion<[^-/]+>}/{nodeSigns<[0-9a-zA-Z_/-]+>}         document.document.detail
+GET         /docs/{proSign<[0-9a-zA-Z_.-]+>}-{docVersion<[^-/]+>}                                      document.document.detail
 
-GET         /portal/banners             portal.banner.list
-GET         /portal/banner/add          portal.banner.add
-POST        /portal/banner/add          portal.banner.add
-GET         /portal/banner/edit         portal.banner.edit
-POST        /portal/banner/edit         portal.banner.edit
-
-GET         /portal/menus          portal.menu.list
-GET         /portal/menu/add       portal.menu.add
-POST        /portal/menu/add       portal.menu.add
-GET         /portal/menu/edit      portal.menu.edit
-POST        /portal/menu/edit      portal.menu.edit
-GET         /portal/menu/del       portal.menu.del
-GET         /portal/menu/routes       portal.menu.routes
-
-*           /file                     staticDir:file
+GET         /test                                           portal.index.test
+GET         /test2                                          portal.test.test
+GET         /index2                                         portal.test.index
+GET         /index3                                         portal.test2.index

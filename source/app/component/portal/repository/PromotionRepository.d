@@ -8,16 +8,10 @@ import std.json;
 class PromotionRepository : EntityRepository!(Promotion, int)
 {
     private EntityManager _entityMnagaer;
-    // struct Objects
-    // {
-    //     CriteriaBuilder builder;
-    //     CriteriaQuery!Promotion criteriaQuery;
-    //     Root!Promotion root;
-    // }
 
     this(EntityManager manager = null)
     {
-         _entityMnagaer = manager is null ? createEntityManager() : manager;
+        _entityMnagaer = manager is null ? createEntityManager() : manager;
         super(_entityMnagaer);
     }
 }

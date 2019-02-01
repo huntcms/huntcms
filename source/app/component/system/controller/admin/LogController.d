@@ -40,5 +40,6 @@ class LogController : AdminBaseController
     {
         (new LogInfoRepository()).removeById(id);
         return new RedirectResponse(request, "/admincp/system/logs");
+        // return new RedirectResponse(request, url("system.log.list", null, "admin"));
     }
 }

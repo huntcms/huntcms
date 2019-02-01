@@ -55,10 +55,9 @@ class CategoryController : AdminBaseController
             return new RedirectResponse(request, "/admincp/article/categories");
         }
 
-        Response response = new Response(request);
-        response.setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString());
-        response.setContent(view.render("article/category/add"));
-        return response;
+        return new Response(request)
+            .setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString())
+            .setContent(view.render("article/category/add"));
     }
 
     @Action string edit(int id)

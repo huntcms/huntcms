@@ -56,17 +56,34 @@
                                         </div>
                                     </div>
                                     <div class="form-group row">
-                                            <label class="col-2 col-form-label">Keyword</label>
-                                            <div class="col-10">
-                                                <input type="text" class="form-control" required id="keyword"  value="{{banner.keyword}}" name="keyword" placeholder="Some text value...">
-                                            </div>
-                                        </div>
-                                    <div class="form-group row">
-                                        <label class="col-2 col-form-label">Picurl</label>
+                                        <label class="col-2 col-form-label">Keyword</label>
                                         <div class="col-10">
-                                            <input name="picurl" class="form-control" type="text"  value="{{banner.picurl}}" placeholder="picture url..."/>
+                                            <input type="text" class="form-control" required id="keyword"  value="{{banner.keyword}}" name="keyword" placeholder="Some text value...">
                                         </div>
                                     </div>
+
+                                    <div class="form-group row">
+                                        <label class="col-2 col-form-label">LOGO图片</label>
+                                        <div class="uploder-container col-10">
+                                            <input class="number" type="hidden" name="picurl" required value="{{banner.picurl}}">
+                                            <!--<input type="text" value=''>-->
+                                            <div class="cxuploder">
+                                                <div class="queueList">
+                                                    <div class="placeholder" style="padding-top: 50px;">
+                                                        <div class="filePicker"></div>
+                                                        <p>将照片拖到这里</p>
+                                                    </div>
+                                                </div>
+                                                <div class="statusBar" style="display:none;">
+                                                    <div class="btns">
+                                                        <div class="jxfilePicker"></div>
+                                                    </div>
+                                                    <div class="info"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
                                     <div class="form-group row">
                                         <label class="col-2 col-form-label">LinkUrl</label>
                                         <div class="col-10">
@@ -126,4 +143,25 @@
     $(document).ready(function() {
         $('form').parsley();
     });
+</script>
+
+<script type="text/javascript" src="/assets/vendor/upload/aliyunVideo.js"></script>
+{% include "../../uploadPicRes.html" %}
+<script>
+    var config = {
+        fileNumLimit: '1',               //最大上传图片数
+        // 上传地址
+        photoServer: '/admincp/system/file/upload',
+        // 允许上传的格式
+        accept: {
+            title: 'Images',
+            extensions: 'gif,jpg,jpeg,bmp,png',
+            mimeTypes: 'image/gif,image/jpg,image/jpeg,image/bmp,image/png'
+        },
+        // 最大上传量
+        fileSizeLimit: 200 * 1024 * 1024,    // 200 M
+        // 单张最大限制
+        fileSingleSizeLimit: 50 * 1024 * 1024  // 50 M
+    }
+    picupload(config)
 </script>

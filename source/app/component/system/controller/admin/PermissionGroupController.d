@@ -64,7 +64,7 @@ class PermissionGroupController : AdminBaseController
 
             auto saveRes = pr.save(pm);
             if (saveRes !is null)
-                //return new RedirectResponse(request, createUrl("system.permissiongroup.list", null, "admin"));
+                //return new RedirectResponse(request, url("system.permissiongroup.list", null, "admin"));
                 return new RedirectResponse(request, "/admincp/system/permission/groups");
 
         }
@@ -87,7 +87,7 @@ class PermissionGroupController : AdminBaseController
     @Action Response del(int id)
     {
         (new PermissionGroupRepository()).removeById(request.get("id").to!int);
-            //return new RedirectResponse(request, createUrl("system.permissiongroup.list", null, "admin"));
+            //return new RedirectResponse(request, url("system.permissiongroup.list", null, "admin"));
             return new RedirectResponse(request, "/admincp/system/permission/groups");
     }
 }

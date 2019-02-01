@@ -4,15 +4,20 @@ import hunt.framework;
 import app.component.portal.repository.BannerRepository;
 import app.component.portal.model.Banner;
 import app.lib.controller.AdminBaseController;
-import app.component.portal.helper.Utils;
 import std.digest.sha;
 import std.file;
 import hunt.util.Configuration;
 import hunt.http.codec.http.model.HttpMethod;
+import app.component.system.helper.Utils;
 
 class BannerController : AdminBaseController
 {
     mixin MakeController;
+    
+    this(){
+        super();  
+    }
+
     @Action string list()
     {
         uint page = request.get!uint("page" , 0);
@@ -33,20 +38,12 @@ class BannerController : AdminBaseController
             Banner banner = new Banner;
             banner.title = request.post("title");
             banner.subtitle = request.post("subtitle");
-            banner.sort = request.post("sort").to!int;
+            // banner.sort = request.post("sort").to!int;
+            banner.sort = initInt("sort", 0, "POST");
             banner.url = request.post("url");
             banner.keyword = request.post("keyword");
-            // auto f = request.postForm.getFileValue("imageFile");
-            // ubyte[] file_data;
-            // auto filesize = f.fileSize;
-            // f.read(filesize, (const(ubyte[]) data) { file_data ~= data; });
-            // ConfigBuilder con = Config.config("hunt");
-            // auto saveName = "aaa";
-            // std.file.write(con.file.path.value ~ saveName, file_data);
-            banner.picurl = request.post("imageFile");
-
-            //banner.pid    = request.post("pid").to!int;
-            //banner.group  = br.findById(banner.pid.to!int).title;
+            // banner.picurl = request.post("imageFile");
+            banner.picurl = request.post("picurl");
             auto id = request.post("id");
             if(id.length != 0)
             {
@@ -57,17 +54,21 @@ class BannerController : AdminBaseController
             }
             else
                 banner.created = now;
-                banner.updated = now;
+            banner.updated = now;
 
             auto saveRes = br.save(banner);
+            // 更新缓存信息
+            _tmpCache.getBanner("index", true);
             if (saveRes !is null)
                 return new RedirectResponse(request, "/admincp/portal/banners");
         }
+        
+        auto repository = new BannerRepository;
+        view.assign("groups", repository.getBannersByPid(1));
 
-        Response response = new Response(request);
-        response.setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString());
-        response.setContent(view.render("portal/banner/add"));
-        return response;
+        return new Response(request)
+            .setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString())
+            .setContent(view.render("portal/banner/add"));
     }
 
     @Action string edit(int id)
@@ -75,14 +76,12 @@ class BannerController : AdminBaseController
         logDebug(" edit id : ", id, "  get id : ", request.get("id"));
         auto repository = new BannerRepository;
         view.assign("banner", repository.find(id));
-
         return view.render("portal/banner/edit");
     }
 
-    
-    @Action Response del(int id)
-    {
+    @Action Response del(int id){
         (new BannerRepository).removeById(id);
-        return new RedirectResponse(request, "/admincp/portal/banners");
+        _tmpCache.getBanner("index", true);
+        return new RedirectResponse(request, url("portal.banner.list", null, "admin"));
     }
 }

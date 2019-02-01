@@ -1,6 +1,5 @@
 module app.component.article.repository.ArticleRepository;
 
-
 import hunt.entity;
 import app.component.article.model.Article;
 import hunt.framework;

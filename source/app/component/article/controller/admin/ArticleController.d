@@ -1,6 +1,5 @@
 module app.component.article.controller.admin.ArticleController;
 
-
 import hunt.framework;
 import app.component.article.repository.ArticleRepository;
 import hunt.util.DateTime;
@@ -117,10 +116,9 @@ class ArticleController : AdminBaseController
         view.assign("categories", categories);
         view.assign("tags", tags);
         
-        Response response = new Response(request);
-        response.setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString());
-        response.setContent(view.render("article/article/add"));
-        return response;
+        return new Response(request)
+            .setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString())
+            .setContent(view.render("article/article/add"));
     }
 
     @Action string edit(int id)

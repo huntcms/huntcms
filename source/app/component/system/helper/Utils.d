@@ -27,6 +27,22 @@ static JSONValue pageToJson(T)(Page!T pageObj)
 	return page;
 }
 
+/**
+ * 获取表单INT数据
+ */
+static int initInt(string paramName, int initValue = 1, string reqType = "POST"){
+    int resNum;
+    if(paramName && reqType){
+        string param;
+        if(reqType == "POST"){
+            param = request.post(paramName, initValue.to!string).replace(" ", "");
+        }else{
+            param = request.get(paramName, initValue.to!string).replace(" ", "");
+        }
+        resNum = isNumeric(param) ? to!int(param) : initValue;
+    }
+    return resNum;
+}
 
 class Utils
 {

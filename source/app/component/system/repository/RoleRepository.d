@@ -9,14 +9,8 @@ import app.component.system.repository.UserRoleRepository;
 
 class RoleRepository : EntityRepository!(Role, int)
 {
+    
     private EntityManager _entityManager;
-
-    // struct Objects
-    // {
-    //     CriteriaBuilder builder;
-    //     CriteriaQuery!Role criteriaQuery;
-    //     Root!Role root;
-    // }
 
     this(EntityManager manager = null) {
         super(manager);
@@ -32,7 +26,6 @@ class RoleRepository : EntityRepository!(Role, int)
     int[] searchPostRoleIds(string[string] requestParams)
     {
         int[] roleIds;
-
         foreach(key, value; requestParams)
         {
             if(indexOf(key, "roleid") != -1)

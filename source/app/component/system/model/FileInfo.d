@@ -22,6 +22,8 @@ class FileInfo : Model
 
     string sha1;
 
+    string url;
+    
     string type;
 
     long size;

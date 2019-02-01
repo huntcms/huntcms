@@ -1,0 +1,154 @@
+{% include "../../header.html" %}
+{% include "../../navigation.html" %}
+<link href="/assets/vendor/summernote/summernote-bs4.css" rel="stylesheet" />
+<div class="wrapper">
+    <div class="container-fluid">
+
+        <!-- Page-Title -->
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="page-title-box">
+                    <div class="btn-group pull-right">
+                        <h4 class="page-title">{% if editType == "edit" %}编辑{% else %}创建{% endif %}节点内容</h4>
+                    </div>
+                    <ol class="breadcrumb hide-phone p-0 m-0">
+                        <li class="breadcrumb-item"><a href="#">HuntCMS</a></li>
+                        <li class="breadcrumb-item"><a href="#">文档管理</a></li>
+                        <li class="breadcrumb-item"><a href="{{ url('document.document.list', '')}}">文档管理</a></li>
+                        {% if document.currect == 0 %}
+                        <li class="breadcrumb-item"><a href="{{ url('document.document.history', '')}}?project_id={{ document.project_id }}"></a>历史版本列表</li>
+                        {% endif %}
+                        <li class="breadcrumb-item"><a href="{{ url('document.node.list', '')}}?doc_id={{ document.id }}">节点列表管理</a></li>
+                        <li class="breadcrumb-item active">{% if editType == "edit" %}编辑{% else %}创建{% endif %}节点内容</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+        <!-- end page title end breadcrumb -->
+
+        <div class="row">
+            <div class="col-12">
+                <div class="card-box">
+                    <h4 class="m-t-0 header-title">{% if editType == "edit" %}编辑{% else %}创建{% endif %}节点内容</h4>
+                    <p class="text-muted m-b-30 font-14">
+                        {% if editType == "edit" %}编辑{% else %}创建{% endif %}非主语言版本的文档内容。
+                    </p>
+
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="p-20">
+                                <form class="form-horizontal" method="POST" action="{{ url('document.node.other','') }}" role="form">
+
+                                    <div class="form-group row">
+                                        <label class="col-2 col-form-label">节点标题</label>
+                                        <div class="col-10">    
+                                            <input type="hidden" name="node_id" class="form-control" value="{{itemData.node_id}}">
+                                            <input type="hidden" name="language_id" class="form-control" value="{{itemData.language_id}}">
+                                            <input type="text" name="title" class="form-control" value="{{ itemData.title }}" placeholder="请输入节点的标题...">
+                                        </div>
+                                    </div> 
+                                    <div class="form-group row">
+                                        <label class="col-2 col-form-label">节点内容</label>
+                                        <div class="col-10">
+                                            <textarea class="form-control" id="summernote" name="content">{{ itemData.content }}</textarea>
+                                        </div>
+                                    </div>         
+
+                                    <div class="form-group mb-0 justify-content-end row">
+                                        <div class="col-md-10">
+                                            {% if nodeData.id  %}
+                                            <input type="hidden" name="id" value="{{itemData.id}}">
+                                            <button type="submit" class="btn btn-info waves-effect waves-light">修改节点数据</button>
+                                            {% else %}
+                                            <button type="submit" class="btn btn-info waves-effect waves-light">新建节点数据</button>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+
+                                </form>
+                            </div>
+                        </div>
+
+                    </div>
+                    <!-- end row -->
+
+                </div> <!-- end card-box -->
+            </div><!-- end col -->
+        </div>
+        <!-- end row -->
+
+    </div> <!-- end container -->
+</div>
+<!-- end wrapper -->
+
+{% include "../../footer.html" %}
+
+<script src="/assets/vendor/summernote/summernote-bs4.min.js"></script>
+<script>
+    jQuery(document).ready(function(){
+
+        $('#summernote').summernote({
+            height: 350,                 // set editor height
+            minHeight: null,             // set minimum height of editor
+            maxHeight: null,             // set maximum height of editor
+            focus: false                 // set focus to editable area after initializing summernote
+        });
+
+        $('.inline-editor').summernote({
+            airMode: true
+        });
+
+    });
+</script>
+<script type="text/javascript">
+    $('#summernote').summernote({
+        height: ($(window).height() - 300),
+        callbacks: {
+            onImageUpload: function(image) {
+                uploadImage(image[0]);
+            }
+        }
+    });
+    
+    function uploadImage(image) {
+        var data = new FormData();
+        data.append("imageFile", image);
+        console.log(data);
+        $.ajax({
+            url: '/admincp/system/file/upload',
+            cache: false,
+            contentType: false,
+            processData: false,
+            data: data,
+            type: "post",
+            success: function(res) {
+                var res = JSON.parse(res);
+                var image = $('<img>').attr('src', res.picurl);
+                $('#summernote').summernote("insertNode", image[0]);
+            },
+            error: function(data) {
+                console.log(data);
+            }
+        });
+    }
+    </script>
+<script type="text/javascript" src="/assets/vendor/upload/aliyunVideo.js"></script>
+{% include "../../uploadPicRes.html" %}
+<script>
+    var config = {
+        fileNumLimit: '1',               //最大上传图片数
+        // 上传地址
+        photoServer: '/admincp/system/file/upload',
+        // 允许上传的格式
+        accept: {
+            title: 'Images',
+            extensions: 'gif,jpg,jpeg,bmp,png',
+            mimeTypes: 'image/gif,image/jpg,image/jpeg,image/bmp,image/png'
+        },
+        // 最大上传量
+        fileSizeLimit: 200 * 1024 * 1024,    // 200 M
+        // 单张最大限制
+        fileSingleSizeLimit: 50 * 1024 * 1024,  // 50 M
+    }
+    picupload(config)
+</script>    

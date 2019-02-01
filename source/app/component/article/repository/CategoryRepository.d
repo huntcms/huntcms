@@ -1,6 +1,5 @@
 module app.component.article.repository.CategoryRepository;
 
-
 import hunt.entity.repository;
 import app.component.article.model.Category;
 import hunt.framework;

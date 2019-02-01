@@ -1,0 +1,41 @@
+        <!-- Footer -->
+        <footer class="py-5 bg-dark">
+            <div class="container">
+                <p class="m-0 text-center text-white">Copyright &copy; 2019 <a href="{{ siteBase }}">HuntLabs</a></p>
+            </div>
+            <!-- /.container -->
+        </footer>
+      
+        <!-- Bootstrap core JavaScript -->
+        <script src="/static/assets/vendor/jquery/jquery.min.js"></script>
+        <script src="/static/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+        <script>
+            $(function() {
+                console.log({{ timeGroup }});
+                console.log("执行时间:" + {{ exeTime }} + " ms");
+
+                $("#doc-menu .submenu-title").click(function(e) {
+                    console.log(e)
+                    $(e.currentTarget).siblings('ul.list-group').toggle()
+                    if ($(e.currentTarget).siblings('ul.list-group').is(':hidden')) {
+                        $(e.currentTarget).parent().removeClass('active')
+                    } else {
+                        $(e.currentTarget).parent().addClass('active')
+                    }
+                });
+                
+                $("li.selected").parent().siblings(".submenu-title").addClass("selected").parents(".submenu").addClass("active");
+                $("li.active>.submenu-title").addClass("selected");
+            })
+        </script>
+    </body>
+    <script>
+        var _hmt = _hmt || [];
+        (function() {
+          var hm = document.createElement("script");
+          hm.src = "https://hm.baidu.com/hm.js?19ddd60b3f9156e88b2e2efa99ca76fa";
+          var s = document.getElementsByTagName("script")[0]; 
+          s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+</html>

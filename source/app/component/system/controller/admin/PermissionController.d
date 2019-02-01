@@ -75,14 +75,15 @@ class PermissionController : AdminBaseController
             auto saveRes = pr.save(pm);
             if (saveRes !is null)
                 return new RedirectResponse(request, "/admincp/system/permissions");
+                // return new RedirectResponse(request, url("system.permission.list", null, "admin"));
 
         }
         auto pgList = (new PermissionGroupRepository).findAll();
         view.assign("groups", pgList);
-        Response response = new Response(request);
-		response.setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString());
-		response.setContent(view.render("system/permission/add"));
-		return response;
+
+        return new Response(request)
+		    .setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString())
+		    .setContent(view.render("system/permission/add"));
     }
 
 
@@ -99,6 +100,7 @@ class PermissionController : AdminBaseController
     @Action Response del(int id)
     {
         (new PermissionRepository()).removeById(request.get("id").to!int);
-        return new RedirectResponse(request, "/admincp/system/permissions");
+        // return new RedirectResponse(request, "/admincp/system/permissions");
+        return new RedirectResponse(request, url("system.permission.list", null, "admin"));
     }
 }

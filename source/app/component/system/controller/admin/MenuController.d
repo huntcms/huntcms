@@ -69,10 +69,9 @@ class MenuController : AdminBaseController
         auto repository = new MenuRepository;
         view.assign("firstLevelMenus", repository.getMenusByPid(0));
 
-        Response response = new Response(request);
-		response.setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString());
-		response.setContent(view.render("system/menu/add"));
-		return response;
+        return new Response(request)
+            .setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString())
+            .setContent(view.render("system/menu/add"));
     }
 
     @Action string edit(int id)
@@ -88,6 +87,7 @@ class MenuController : AdminBaseController
     @Action Response del(int id)
     {
         (new MenuRepository).removeById(id);
-        return new RedirectResponse(request, "/admincp/system/menus");
+        // return new RedirectResponse(request, "/admincp/system/menus");
+        return new RedirectResponse(request, url("system.menu.list", null, "admin"));
     }
 }

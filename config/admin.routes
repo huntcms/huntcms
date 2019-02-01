@@ -156,3 +156,19 @@ GET         /portal/promotion/add              portal.promotion.add
 POST        /portal/promotion/add              portal.promotion.add
 GET         /portal/promotion/edit             portal.promotion.edit
 GET         /portal/promotion/del              portal.promotion.del
+
+GET         /project/projects               project.project.list
+GET         /project/project/edit           project.project.edit
+POST        /project/project/edit           project.project.edit
+GET         /project/project/del            project.project.del
+
+GET         /document/documents             document.document.list
+GET         /document/document/edit         document.document.edit
+POST        /document/document/edit         document.document.edit
+GET         /document/document/del          document.document.del
+GET         /document/history               document.document.history
+
+GET         /document/nodes               document.node.list
+GET         /document/node/edit           document.node.edit
+POST        /document/node/edit           document.node.edit
+GET         /document/node/del            document.node.del

@@ -1,0 +1,71 @@
+        {% include "header.html" %}
+
+        <header>
+            <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+                <ol class="carousel-indicators">
+                    {% for banner in banners %}
+                    <li data-target="#carouselExampleIndicators" data-slide-to="{{ loop.index0 }}" {% if loop.index0 == 0 %}class="active"{% endif %}></li>
+                    {% endfor %}
+                </ol>
+                <div class="carousel-inner" role="listbox">
+                    {% for banner in banners %}
+                    <div class="carousel-item {% if loop.index0 == 0 %}active{% endif %}" 
+                        {% if banner.url != '' %}onclick="window.location.href='{{ banner.url }}'"{% endif %}
+                        style="background-image: url('{{ banner.picurl }}')">
+                        <div class="carousel-caption d-none d-md-block">
+                            <h3>{{ banner.title }}</h3>
+                            <p>{{ banner.subtitle }}</p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Previous</span>
+                </a>
+                <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Next</span>
+                </a>
+            </div>
+        </header>
+    
+        <!-- Page Content -->
+        <div class="container mt">
+            <!-- Features Section -->
+            <div class="row">
+                <div class="col-lg-6">
+                    <h2>Hunt Technology Stack</h2>
+                    <p>Pure D language implementation of quickly develop server-side applications and build distributed system services.  </p>
+                    <p>Main projects: </p>
+                    <ul>
+                        <li>
+                            <strong><a href="https://www.huntlabs.net/project/hunt-framework">hunt-framework</a></strong>
+                        </li>
+                        <li><a href="https://www.huntlabs.net/project/hunt">hunt</a></li>
+                        <li><a href="https://www.huntlabs.net/project/hunt-entity">hunt-entity</a></li>
+                        <li>hunt-grpc</li>
+                        <li>hunt-time</li>
+                        <li>neton</li>
+                    </ul>
+                </div>
+                <div class="col-lg-6">
+                    <img class="img-fluid rounded" src="https://placehold.it/700x450" alt="">
+                </div>
+            </div>
+            <!-- /.row -->
+            <hr>
+            <!-- Call to Action Section -->
+            <div class="row mb-4">
+                <div class="col-md-8">
+                    <p>Like spring boot / spring cloud. It mainly includes the following components: WEB framework, logging, caching, distributed algorithm, service governance, database ORM, RPC framework, distributed lock, distributed task scheduling service, etc.</p>
+                </div>
+                <div class="col-md-4">
+                    <a class="btn btn-lg btn-secondary btn-block" href="/projects">All Project</a>
+                </div>
+            </div>
+    
+        </div>
+        <!-- /.container -->
+
+        {% include "footer.html" %}

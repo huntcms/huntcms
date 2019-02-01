@@ -1,0 +1,225 @@
+{% include "../../header.html" %} 
+{% include "../../navigation.html" %}
+
+<link rel="stylesheet" href="/assets/vendor/simplemde-markdown/dist/simplemde.min.css">
+
+<div class="wrapper">
+    <div class="container-fluid">
+
+        <!-- Page-Title -->
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="page-title-box">
+                    <div class="btn-group pull-right">
+                        <h4 class="page-title">{% if editType == "edit" %}编辑{% else %}创建{% endif %}项目基本信息</h4>
+                    </div>
+                    <ol class="breadcrumb hide-phone p-0 m-0">
+                        <li class="breadcrumb-item"><a href="#">HuntCMS</a></li>
+                        <li class="breadcrumb-item"><a href="#">项目管理</a></li>
+                        <li class="breadcrumb-item"><a href="{{ url('project.project.list', '')}}">项目列表</a></li>
+                        <li class="breadcrumb-item active">{% if editType == "edit" %}编辑{% else %}创建{% endif %}项目基本信息</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+        <!-- end page title end breadcrumb -->
+
+        <div class="row">
+            <div class="col-12">
+                <div class="card-box">
+                    <h4 class="m-t-0 header-title">{% if editType == "edit" %}编辑{% else %}创建{% endif %}项目基本信息</h4>
+                    <p class="text-muted m-b-30 font-14">
+                        仅项目的基本信息，文档信息见文档管理菜单.
+                    </p>
+
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="p-20">
+                                <form class="form-horizontal" role="form" action="{{ url('ducument.ducument.edit', '')}}" method="post" id="postForm">
+                                    <div class="form-group row">
+                                        <label class="col-2 col-form-label">项目标题</label>
+                                        <div class="col-10">
+                                            <input type="text" class="form-control" required name="title" placeholder="请输入项目的标题" value="{% if editType == 'edit' %}{{ project.title }}{% endif %}">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-2 col-form-label">项目Sign(路由显示)</label>
+                                        <div class="col-10">
+                                            <input type="text" class="form-control" required name="sign" placeholder="请输入项目的标题" value="{% if editType == 'edit' %}{{ project.sign }}{% endif %}">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-2 col-form-label">项目主语言</label>
+                                        <div class="col-10">
+                                            <select class="form-control" name="main_language">
+                                                {% for language in languages %}
+                                                <option value="{{ language.id }}" {% if editType == 'edit' and language.id ==  project.main_language %} selected{% endif %}>{{ language.title }}（{{ language.sign }}）</option> 
+                                                {% endfor %}                                              
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <label class="col-2 col-form-label">LOGO图片</label>
+                                        <div class="uploder-container col-10">
+                                            <input class="number" type="hidden" name="logo_url" required value="{% if editType == 'edit' and project.logo_url != 'null' %}{{ project.logo_url }}{% endif %}">
+                                            <div class="cxuploder">
+                                                <div class="queueList">
+                                                    <div class="placeholder" style="padding-top: 50px;">
+                                                        <div class="filePicker"></div>
+                                                        <p>将照片拖到这里</p>
+                                                    </div>
+                                                </div>
+                                                <div class="statusBar" style="display:none;">
+                                                    <div class="btns">
+                                                        <div class="jxfilePicker"></div>
+                                                    </div>
+                                                    <div class="info"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <label class="col-2 col-form-label">项目简介</label>
+                                        <div class="col-10">
+                                            <input type="text" class="form-control" required id="introduction" name="introduction" placeholder="请输入项目简介" value="{% if editType == 'edit' %}{{ project.introduction }}{% endif %}">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-2 col-form-label">项目详细介绍</label>
+                                        <div class="col-10">
+                                            <textarea class="form-control" id="detail" name="detail">{% if editType == 'edit' %}{{ project.detail }}{% endif %}</textarea>
+                                            <input type="hidden" id="detail_html" name="detail_html" value="">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-2 col-form-label">项目GIT地址</label>
+                                        <div class="col-10">
+                                            <input type="text" class="form-control" required id="git_url" name="git_url" placeholder="请输入项目GIT地址" value="{% if editType == 'edit' %}{{ project.git_url }}{% endif %}">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-2 col-form-label">最新版本号</label>
+                                        <div class="col-10">
+                                            <input type="text" class="form-control" id="last_version" name="last_version" placeholder="请输入最新发布版本号" value="{% if editType == 'edit' %}{{ project.last_version }}{% endif %}">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-2 col-form-label">最新RELEASE DATE</label>
+                                        <div class="col-10">
+                                            <input type="text" class="form-control" id="release_date" name="release_date" placeholder="请输入最新RELEASE DATE（格式 YYYY-MM-DD）" value="{% if editType == 'edit' %}{{ project.release_date }}{% endif %}">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-2 col-form-label">论坛URL</label>
+                                        <div class="col-10">
+                                            <input type="text" class="form-control" id="forum_url" name="forum_url" placeholder="请输入论坛url（需包括HTTP/HTTPS）" value="{% if editType == 'edit' %}{{ project.forum_url }}{% endif %}">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-2 col-form-label">排序（前台正序显示）</label>
+                                        <div class="col-10">
+                                            <input type="number" class="form-control" id="sort" name="sort" placeholder="请输入数字排序值" value="{% if editType == 'edit' %}{{ project.sort }}{% endif %}">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <label class="col-2 col-form-label">项目状态</label>
+                                        <div class="col-10">
+                                            <div class="custom-control custom-radio">
+                                                <input type="radio" id="statusRadio1" name="status" class="custom-control-input" value="1" {% if editType == 'edit' and project.status == 1 %} checked {% endif %}>
+                                                <label class="custom-control-label" for="statusRadio1">显示</label>
+                                            </div>
+                                            <div class="custom-control custom-radio">
+                                                <input type="radio" id="statusRadio2" name="status" class="custom-control-input" value="0" {% if editType != 'edit' or project.status != 1 %} checked {% endif %}>
+                                                <label class="custom-control-label" for="statusRadio2">隐藏</label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group mb-0 justify-content-end row">
+                                        <div class="col-md-10">
+                                            {% if editType == 'edit' %}
+                                            <input type="hidden" name="id" value="{{ project.id }}">
+                                            <button type="button" id="submit-form" class="btn btn-info waves-effect waves-light">修改项目数据</button>
+                                            {% else %}
+                                            <button type="button" id="submit-form" class="btn btn-info waves-effect waves-light">新建项目数据</button>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+
+                                </form>
+                            </div>
+                        </div>
+
+                    </div>
+                    <!-- end row -->
+
+                </div>
+                <!-- end card-box -->
+            </div>
+            <!-- end col -->
+        </div>
+        <!-- end row -->
+    </div>
+    <!-- end container -->
+</div>
+<!-- end wrapper -->
+
+{% include "../../footer.html" %}
+<script src="/assets/vendor/simplemde-markdown/dist/simplemde.min.js"></script>
+<script>
+var simplemde = new SimpleMDE({
+
+        status: ["autosave", "lines", "words"],
+        spellChecker: false,
+        element: document.getElementById("detail"),
+        promptURLs: true,
+        toolbar: [
+            "bold", "italic", "strikethrough", "heading", "code", "quote", "unordered-list",
+            "ordered-list", "clean-block", "link", "image", "table", "horizontal-rule", "preview", "side-by-side", "fullscreen", "guide"]
+});
+
+</script>
+<script src="/assets/vendor/jquery/jquery.min.js"></script>
+<script>
+    $(function() {
+        $("#submit-form").click(function(e) {
+            var testPlain = simplemde.value(), 
+                testMarkdown = simplemde.markdown(testPlain);
+            $("#detail_html").val(testMarkdown);
+            $("#postForm").submit();
+        });
+
+    })
+</script>
+
+<!-- Parsleyjs -->
+<script type="text/javascript" src="/assets/vendor/parsleyjs/dist/parsley.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('form').parsley();
+    });
+</script>
+
+<script type="text/javascript" src="/assets/vendor/upload/aliyunVideo.js"></script>
+{% include "../../uploadPicRes.html" %}
+<script>
+    var config = {
+        fileNumLimit: '1',               //最大上传图片数
+        // 上传地址
+        photoServer: '/admincp/system/file/upload',
+        // 允许上传的格式
+        accept: {
+            title: 'Images',
+            extensions: 'gif,jpg,jpeg,bmp,png',
+            mimeTypes: 'image/gif,image/jpg,image/jpeg,image/bmp,image/png'
+        },
+        // 最大上传量
+        fileSizeLimit: 200 * 1024 * 1024,    // 200 M
+        // 单张最大限制
+        fileSingleSizeLimit: 50 * 1024 * 1024  // 50 M
+    }
+    picupload(config)
+</script>

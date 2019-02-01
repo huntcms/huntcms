@@ -84,22 +84,16 @@ class UserController : AdminBaseController
                 auto manager = defaultEntityManagerFactory().createEntityManager();
                 try {
                     manager.getTransaction().begin();
-
                     auto userRepository = new UserRepository(manager);
-
                     userRepository.save(user);
                     auto userRoleRepository = new UserRoleRepository(manager);
                     userRoleRepository.saves(user.id, roleIds);
-
                     manager.getTransaction().commit();
-
-                    return new RedirectResponse(request, "/admincp/system/users");
+                    // return new RedirectResponse(request, "/admincp/system/users");
+                    return new RedirectResponse(request, url("system.user.list", null, "admin"));
                 } catch(Exception e) {
-
                     errorMessages ~= "Email already existed.";
-
                     manager.getTransaction().rollback();
-
                     logError(e);
                 }
             }
@@ -110,10 +104,9 @@ class UserController : AdminBaseController
 
         view.assign("roles", (new RoleRepository).findAll());
         
-        Response response = new Response(request);
-		response.setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString());
-		response.setContent(view.render("system/user/add"));
-		return response;
+        return new Response(request)
+            .setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString())
+            .setContent(view.render("system/user/add"));
     }
 
     @Action Response edit()
@@ -143,23 +136,19 @@ class UserController : AdminBaseController
                 userRoleRepository.removes(id);
                 userRoleRepository.saves(id, roleIds);
                 manager.getTransaction().commit();
-                return new RedirectResponse(request, "/admincp/system/users");
+                // return new RedirectResponse(request, "/admincp/system/users");
+                return new RedirectResponse(request, url("system.user.list", null, "admin"));
             } catch(Exception e) {
-
                 errorMessages ~= "Email already existed.";
-
                 manager.getTransaction().rollback();
-
                 logError(e);
             }
-
-            return new RedirectResponse(request, "/admincp/system/user/edit?id="~to!string(id));
+            // return new RedirectResponse(request, "/admincp/system/user/edit?id="~to!string(id));
+            string[string] redirectParams;
+            redirectParams["id"] = to!string(id);
+            return new RedirectResponse(request, url("system.user.edit", redirectParams, "admin"));
         }
-
-
         view.assign("user", findUser);
-
-
         auto roles = (new RoleRepository).findAll();
         int[] userRoleIds = userRoleRepository.getUserRoleIds(id);
         class userRoleClass{
@@ -178,13 +167,11 @@ class UserController : AdminBaseController
             userRoles ~= tmp;
         }
         view.assign("userRoles", userRoles);
-
         view.assign("roles", (new RoleRepository).findAll());
 
-        Response response = new Response(request);
-		response.setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString());
-		response.setContent(view.render("system/user/edit"));
-		return response;
+        return new Response(request)
+            .setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString())
+            .setContent(view.render("system/user/edit"));
     }
 
     @Action string del()
@@ -245,7 +232,8 @@ class UserController : AdminBaseController
                     auto user = Application.getInstance().accessManager.addUser(find.id);
 
                     if(user !is null){
-                        return new RedirectResponse(request, "/admincp/");
+                        // return new RedirectResponse(request, "/admincp/");
+                        return new RedirectResponse(request, url("system.dashboard.dashboard", null, "admin"));
                     }
 
                 }else{
@@ -255,15 +243,15 @@ class UserController : AdminBaseController
 
         }
         
-        Response response = new Response(request);
-		response.setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString());
-		response.setContent(view.render("system/user/login"));
-		return response;
+        return new Response(request)
+            .setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString())
+            .setContent(view.render("system/user/login"));
     }
 
     @Action Response logout()
     {
         Application.getInstance().accessManager.removeAuth();
-        return new RedirectResponse(request, "/admincp/login");
+        // return new RedirectResponse(request, "/admincp/login");
+        return new RedirectResponse(request, url("system.user.login", null, "admin"));
     }
 }

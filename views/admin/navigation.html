@@ -1,6 +1,7 @@
 {% if isLogin == "NO" %}
 <script type="text/javascript">
-    window.location.href = "/admincp/login";
+    // window.location.href = "/admincp/login";
+    window.location.href = "{{ url('system.user.login', '')}}";
 </script>
 {% else %}
 <!-- Navigation Bar-->

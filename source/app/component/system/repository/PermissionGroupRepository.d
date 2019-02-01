@@ -1,14 +1,12 @@
 module app.component.system.repository.PermissionGroupRepository;
 
+import hunt.framework;
+import hunt.entity;
 import hunt.entity.repository;
-
+import hunt.entity.EntityManager;
+import hunt.logging;
 import app.component.system.model.PermissionGroup;
 
-import hunt.entity;
-import hunt.entity.EntityManager;
-
-import hunt.logging;
-import hunt.framework;
 
 class PermissionGroupRepository : EntityRepository!(PermissionGroup, int)
 {

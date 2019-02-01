@@ -1,56 +1,61 @@
 module app.lib.controller.AdminBaseController;
 
 import hunt.framework;
-
+import app.lib.cache.TmpCache;
+import app.component.system.repository.MenuRepository;
+import app.component.system.repository.UserRepository;
 import app.component.system.model.Menu;
 import app.component.system.model.User;
 
-import app.component.system.repository.MenuRepository;
-import app.component.system.repository.UserRepository;
-
 import std.json;
-import std.algorithm.sorting;
+import std.algorithm;
 import hunt.http.codec.http.model.HttpMethod;
-import hunt.logging;
 
 class AdminBaseController : Controller
 {
     protected string[] errorMessages;
 	
 	protected User thisUser;
+	private string[] _alertSuccessMessages;
+	private string[] _alertErrorMessages;
 
-    this() {
+	public TmpCache _tmpCache;
+
+    this() 
+	{
+        _tmpCache = new TmpCache();
     }
 
     override bool before() {
+
+		this.flashMessages();
+        logWarning(request.elapsed());		
 		auto repository = new MenuRepository;
 		auto cache = Application.getInstance().cache();
 		auto userInfo = Application.getInstance().accessManager.user;
-		logInfo(toJSON(userInfo));
-		if (userInfo !is null) {
 
+		if (userInfo !is null) {
 			string permissionStr;
-			User nowUser = (new UserRepository).find(userInfo.id);		
-			logInfo(toJSON(nowUser));	
+			User nowUser = (new UserRepository).find(userInfo.id);
 			view.assign("nowUser", nowUser);
 
 			auto roles = userInfo.roles;
+			// 防止 roles 丢失 当 roles 不存在且登录用户 为 supered = 1 是清除一次
+			if(!roles && nowUser.supered == 1){
+				Application.getInstance().accessManager.refresh();
+			}
 			if(roles){
 				foreach(role; roles){
-					// logInfo(toJSON(role));
 					auto permissions = role.permissions;
 					if(permissions){
 						foreach(permission; permissions){
-							// logInfo(toJSON(permission));
 							if(permissionStr.indexOf(permission.key) < 0){
 								permissionStr ~= "," ~ permission.key;
 							}
 						}
 					}
-					logInfo(permissionStr);
 				}
 			}
-
 			JSONValue[] menuData = repository.getAllMenus(permissionStr); 	
 			view.assign("menusJsonData", menuData);
 			view.assign("isLogin", "YES");
@@ -65,7 +70,41 @@ class AdminBaseController : Controller
 
 	override bool after() {
 		logWarning("---running after----");
-		view.assign("errorMessages", this.errorMessages);
+        logWarning(request.elapsed());
 		return true;
 	}
+	
+	bool assignSussess(string msg) {
+		if(!canFind(_alertSuccessMessages, msg)) {
+			_alertSuccessMessages ~= msg;
+			request.session(true).set("successMessages", toJson(_alertSuccessMessages).to!string);
+		}
+		return true;
+	}
+
+	bool assignError(string msg) {
+		if(!canFind(_alertErrorMessages, msg)) {
+			_alertErrorMessages ~= msg;
+			request.session(true).set("errorMessages", toJson(_alertErrorMessages).to!string);
+		}
+		return true;
+	}
+
+	bool flashMessages() {
+		HttpSession session = request.session(true);
+		string sessionSuccessMessages = session.get("successMessages");
+		string sessionErrorMessages = session.get("errorMessages");
+		logInfo(sessionErrorMessages);
+		logInfo(sessionSuccessMessages);
+		if(sessionSuccessMessages) {
+			session.remove("successMessages");
+			view.assign("successMessages", parseJSON(sessionSuccessMessages).array);
+		}
+		if(sessionErrorMessages) {
+			session.remove("errorMessages");
+			view.assign("errorMessages", parseJSON(sessionErrorMessages).array);
+		}
+		return true;
+	}
+	
 }

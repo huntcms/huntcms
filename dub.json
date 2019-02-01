@@ -1,5 +1,5 @@
 {
-    "name": "huntcms",
+    "name": "liu_test_huntcms_8380",
     "description": "A CMS based on hunt framework.",
     "copyright": "Copyright © 2017-2018, huntframework.com",
     "homepage": "http://www.huntframework.com/",
@@ -8,7 +8,7 @@
     "dependencies": {
         "hunt-framework": "~>2.0.0" 
     },
-    "versions":["WithDatabase", "HUNT_DEBUG"],
+    "versions":["WithDatabase"],
     "configurations": [{
         "name": "default",
         "subConfigurations": {

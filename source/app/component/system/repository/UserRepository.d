@@ -2,9 +2,8 @@ module app.component.system.repository.UserRepository;
 
 import hunt.entity;
 import hunt.entity.repository;
-
-import app.component.system.model.User;
 import hunt.logging;
+import app.component.system.model.User;
 import std.json;
 
 class UserRepository : EntityRepository!(User, int)
@@ -17,8 +16,8 @@ class UserRepository : EntityRepository!(User, int)
     }
 
     User findByEmail(string email) { 
-        auto query = _entityManager.createQuery!(User)("SELECT u FROM User u WHERE u.email = :email ");
-        query.setParameter("email", email);
-        return query.getSingleResult();
+        return _entityManager.createQuery!(User)("SELECT u FROM User u WHERE u.email = :email ")
+            .setParameter("email", email)
+            .getSingleResult();
     }
 }

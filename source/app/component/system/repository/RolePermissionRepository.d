@@ -17,10 +17,9 @@ class RolePermissionRepository : EntityRepository!(RolePermission, int)
     }
 
     Permission[] getRolePermissions(int roleId) {
-        auto query = _entityManager.createQuery!(RolePermission)(" SELECT rp FROM RolePermission rp WHERE rp.role_id = :roleId ");
-        query.setParameter("roleId", roleId);
-        RolePermission[] rolePermissions = query.getResultList();
-
+        RolePermission[] rolePermissions = _entityManager.createQuery!(RolePermission)(" SELECT rp FROM RolePermission rp WHERE rp.role_id = :roleId ")
+            .setParameter("roleId", roleId)
+            .getResultList();
         Permission[] permissions;
         auto permissionRepository = new PermissionRepository();
         foreach (rolePermission; rolePermissions) {
@@ -30,10 +29,9 @@ class RolePermissionRepository : EntityRepository!(RolePermission, int)
     }
 
     int[] getRolePermissionIds(int roleId){
-        auto query = _entityManager.createQuery!(RolePermission)(" SELECT rp FROM RolePermission rp WHERE rp.role_id = :roleId ");
-        query.setParameter("roleId", roleId);
-        RolePermission[] rolePermissions = query.getResultList();
-
+        RolePermission[] rolePermissions = _entityManager.createQuery!(RolePermission)(" SELECT rp FROM RolePermission rp WHERE rp.role_id = :roleId ")
+            .setParameter("roleId", roleId)
+            .getResultList();
         int[] ids;
         foreach (rolePermission; rolePermissions) {
             ids ~= rolePermission.permission_id;
@@ -55,9 +53,9 @@ class RolePermissionRepository : EntityRepository!(RolePermission, int)
     }
 
     bool removes(int roleId) {
-        auto query = _entityManager.createQuery!(RolePermission)(" SELECT rp FROM RolePermission rp WHERE rp.role_id = :roleId ");
-        query.setParameter("roleId", roleId);
-        RolePermission[] rolePermissions = query.getResultList();
+        RolePermission[] rolePermissions = _entityManager.createQuery!(RolePermission)(" SELECT rp FROM RolePermission rp WHERE rp.role_id = :roleId ")
+            .setParameter("roleId", roleId)
+            .getResultList();
         this.removeAll(rolePermissions);
         return true;
     }
