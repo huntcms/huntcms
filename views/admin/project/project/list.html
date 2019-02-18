@@ -33,7 +33,7 @@
                     <div class="row">
                         <div class="col-sm-6">
                             <div class="m-b-30">
-                                <a href="{{ url('project.project.edit', "")}}" id="addToTable" class="btn btn-success waves-effect waves-light">新增项目 <i class="mdi mdi-plus-circle-outline"></i></a>
+                                <a href="{{ url('project.project.edit', '')}}" id="addToTable" class="btn btn-success waves-effect waves-light">新增项目 <i class="mdi mdi-plus-circle-outline"></i></a>
                             </div>
                         </div>
                     </div>
@@ -65,9 +65,8 @@
                             <th data-toggle="true">项目名称</th>
                             <th data-hide="tablet">项目LOGO</th>
                             <th data-hide="tablet">GITHUB</th>
-                            <th data-hide="tablet">当前版本号</th>
-                            <th data-hide="tablet">RELEASE日期</th>
-                            <th data-hide="tablet">修改时间</th>
+                            <th data-hide="tablet">CURRENT文档版本</th>
+                            <th data-hide="tablet">项目修改时间</th>
                             <th data-hide="tablet">状态</th>
                             <th data-hide="tablet">管理操作</th>
                         </tr>
@@ -79,8 +78,12 @@
                                     <td>{{ project.title }}</td>
                                     <td>{% if project.logo_url != "" %}<img style="height:40px" src="{{ project.logo_url }}">{% else %}暂无图片信息{% endif %}</td>
                                     <td>{{ project.git_url }}</td>
-                                    <td>{{ project.last_version }}</td>
-                                    <td>{{ project.release_date }}</td>
+                                    <td>
+                                        {% if project.doc_id > 0 %}
+                                        <a href="{{ url('document.node.list', '')}}?doc_id={{ project.doc_id }}" title="点击编辑CURRENT文档节点">{{ project.doc_version }}</a>
+                                        （<a href="{{ url('document.document.history', '')}}?project_id={{ project.id }}">更多版本</a>）
+                                        {% endif %}
+                                    </td>
                                     <td>{% if project.updated > 0 %}{{ date('Y-m-d H:i:s', project.updated) }}{% endif %}</td>
                                     <td><span class="badge label-table {% if project.status == 1 %}badge-success{% else %}badge-danger{% endif %}">
                                         {% if project.status == 1 %}
@@ -90,14 +93,14 @@
                                         {% endif %}
                                     </span></td>
                                     <td class="actions">
-                                        <a href="{{ url('project.project.edit', "")}}?id={{ project.id }}" class="on-default edit-row" data-toggle="tooltip" 
+                                        <a href="{{ url('project.project.edit', '')}}?id={{ project.id }}" class="on-default edit-row" data-toggle="tooltip" 
                                             data-placement="top" title="" data-original-title="点击编辑项目"><i class="fa fa-pencil"></i></a>
                                         {% if project.status == 1 %}
-                                        <a href="{{ url('project.project.del', "")}}?id={{ project.id }}" onclick="javascript:if(!confirm('确定设置为无效？'))return false;" 
+                                        <a href="{{ url('project.project.del', '')}}?id={{ project.id }}" onclick="javascript:if(!confirm('确定设置为无效？'))return false;" 
                                             class="on-default remove-row" data-toggle="tooltip" data-placement="top" title="" data-original-title="点击设置为无效">
                                             <i class="fa fa-minus-circle"></i></a>
                                         {% endif %}
-                                        <a href="{{ url('project.project.del', "")}}?id={{ project.id }}&type=Physical" onclick="javascript:if(!confirm('确定彻底删除？'))return false;" 
+                                        <a href="{{ url('project.project.del', '')}}?id={{ project.id }}&type=Physical" onclick="javascript:if(!confirm('确定彻底删除？'))return false;" 
                                             class="on-default remove-row" data-toggle="tooltip" data-placement="top" title="" data-original-title="点击彻底删除">
                                             <i class="fa fa-trash-o"></i></a>
                                     </td>
@@ -119,17 +122,17 @@
         </div>
         <nav>
                 <ul class="pagination pagination-split">
-                    {% if projects.cur > 0 %}
+                    {% if projects.cur > 1 %}
                     <li class="page-item" >
-                        <a class="page-link" href="{{ url('project.project.list', "")}}?page={{ projects.prev }}" aria-label="Previous">
+                        <a class="page-link" href="{{ url('project.project.list', '')}}?page={{ projects.prev }}" aria-label="Previous">
                             <span aria-hidden="true">«</span>
                             <span class="sr-only">Previous</span>
                         </a>
                     </li>
                     {% endif %}
-                    {% if projects.cur < projects.totalPages - 1 %} 
+                    {% if projects.cur < projects.totalPages %} 
                     <li class="page-item" >
-                        <a class="page-link" href="{{ url('project.project.list', "")}}?page={{ projects.next }}" aria-label="Next">
+                        <a class="page-link" href="{{ url('project.project.list', '')}}?page={{ projects.next }}" aria-label="Next">
                             <span aria-hidden="true">»</span>
                             <span class="sr-only">Next</span>
                         </a>

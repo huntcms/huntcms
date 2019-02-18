@@ -25,8 +25,10 @@ alias AclRole = hunt.framework.security.acl.Role.Role;
 class MyAuthProxy : AuthenticateProxy {
 
     AclRole[] getAllRoles() {
+        logError(" ===== getAllRoles ===== ");
         auto roleRep = new RoleRepository();
 		auto allData = roleRep.findAll();
+        logError(toJSON(allData));
         AclRole[] roles;
         auto rpRep = new RolePermissionRepository();
         foreach(oneData; allData){
@@ -35,12 +37,15 @@ class MyAuthProxy : AuthenticateProxy {
             per.addPermissionIds(permissionIds);
             roles ~= per;
         }
+        logError(toJSON(roles));
         return roles;
     }
 
     AclPermission[] getAllPermissions() {
+        logError(" ===== getAllPermissions ===== ");
         auto repository = new PermissionRepository();
 		auto allData = repository.findAll();
+        logError(toJSON(allData));
         AclPermission[] permissions;
         foreach(oneData; allData){
             auto per = new AclPermission();
@@ -49,10 +54,12 @@ class MyAuthProxy : AuthenticateProxy {
             per.name = oneData.title;
             permissions ~= per;
         }
+        logError(toJSON(permissions));
         return permissions;
     }
 
     AclUser[] getAllUsers(int[] userIds){
+        logError(" ===== getAllUsers ===== ");
         auto userRepository = new UserRepository();
         auto urRep = new UserRoleRepository();
         AclUser[] users;
@@ -66,6 +73,7 @@ class MyAuthProxy : AuthenticateProxy {
                 users ~= per;
             }
         }
+        logError(toJSON(users));
         return users;
     }
 

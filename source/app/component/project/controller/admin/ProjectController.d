@@ -33,8 +33,14 @@ class ProjectController : AdminBaseController {
         string[string] conditions;
         int page = initInt("page", 1, "GET");
         auto pmRepo = new ProjectMiniRepository();
-        auto alldata = pageToJson!ProjectMini(pmRepo.findPageAll(conditions, page, 20));
+        // auto alldata = pageToJson!ProjectMini(pmRepo.findPageAll(conditions, page, 2));
+        auto alldata = pmRepo.pageList(conditions, page, 20);
         view.assign("projects", alldata);
+        logError(alldata);
+        // import std.algorithm.iteration;
+        // logWarning(request.referer ~ " === " ~ request.host);
+        // logWarning((request.referer).splitter(request.host));
+        // logWarning(url("project.project.list", null, "admin"));
         return view.render("project/project/list");
     }
 

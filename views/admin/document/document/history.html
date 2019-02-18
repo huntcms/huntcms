@@ -18,10 +18,17 @@
                         <h4 class="page-title">历史版本列表</h4>
                     </div>
                     <ol class="breadcrumb hide-phone p-0 m-0">
-                        <li class="breadcrumb-item"><a href="#">HuntCMS</a></li>
+                        <!-- <li class="breadcrumb-item"><a href="#">HuntCMS</a></li>
                         <li class="breadcrumb-item"><a href="#">文档管理</a></li>
                         <li class="breadcrumb-item"><a href="{{ url('document.document.list', "")}}">文档管理</a></li>
-                        <li class="breadcrumb-item active">历史版本列表</li>
+                        <li class="breadcrumb-item active">历史版本列表</li> -->
+                    {% for item in breadcrumbs %}
+                        {% if item.link and not loop.last %}
+                            <li class="breadcrumb-item"><a href="{{ item.link }}">{{ item.title }}</a></li>
+                        {% else %}
+                            <li class="breadcrumb-item active">{{ item.title }}</li>
+                        {% endif %}
+                    {% endfor %}
                     </ol>
                 </div>
             </div>
@@ -35,7 +42,7 @@
                         <div class="col-sm-6">
                             <div class="m-b-30">
                                 <a href="{{ url('document.document.edit', "")}}" class="btn btn-success waves-effect waves-light">新增文档 <i class="mdi mdi-plus-circle-outline"></i></a>
-                                <a href="{{ url('document.document.list', "")}}" class="btn btn-info waves-effect waves-light" style="margin-left: 10px;">返回CURRECT列表 <i class="mdi mdi-keyboard-backspace"></i></a>
+                                <!-- <a href="{{ url('document.document.list', "")}}" class="btn btn-info waves-effect waves-light" style="margin-left: 10px;">返回CURRECT列表 <i class="mdi mdi-keyboard-backspace"></i></a> -->
                             </div>
                         </div>
                     </div>
@@ -96,7 +103,14 @@
                                             {% endif %}
                                         {% endfor %}
                                     </td>
-                                    <td>{{ document.doc_version }}</td>
+                                    <td>
+                                        {{ document.doc_version }} &nbsp;
+                                        {% if document.currect == 1 %}
+                                        <span class="badge label-table badge-success">
+                                            CURRENT
+                                        </span>
+                                        {% endif %}
+                                    </td>
                                     <td>{% if document.updated > 0 %}{{ date('Y-m-d H:i:s', document.updated) }}{% endif %}</td>
                                     <td><span class="badge label-table {% if document.status == 1 %}badge-success{% else %}badge-danger{% endif %}">
                                         {% if document.status == 1 %}

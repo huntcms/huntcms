@@ -44,6 +44,7 @@ class AdminBaseController : Controller
 			if(!roles && nowUser.supered == 1){
 				Application.getInstance().accessManager.refresh();
 			}
+
 			if(roles){
 				foreach(role; roles){
 					auto permissions = role.permissions;

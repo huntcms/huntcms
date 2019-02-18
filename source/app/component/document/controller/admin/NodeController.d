@@ -31,21 +31,21 @@ class NodeController : AdminBaseController {
 
     mixin MakeController;
   
-    private LanguageRepository _langRepo;
-    private DocBaseRepository _docRepo;
-    private ProjectMiniRepository _pmRepo;
-    private NodeRepository _nodeRepo;
-    private ItemMiniRepository _imRepo;
-    private ItemRepository _itemRepo;
+    // private LanguageRepository _langRepo;
+    // private DocBaseRepository _docRepo;
+    // private ProjectMiniRepository _pmRepo;
+    // private NodeRepository _nodeRepo;
+    // private ItemMiniRepository _imRepo;
+    // private ItemRepository _itemRepo;
 
     this(){
         super();
-        _langRepo = new LanguageRepository();
-        _docRepo = new DocBaseRepository();
-        _pmRepo = new ProjectMiniRepository();
-        _nodeRepo = new NodeRepository();
-        _imRepo = new ItemMiniRepository();
-        _itemRepo = new ItemRepository();
+        // _langRepo = new LanguageRepository();
+        // _docRepo = new DocBaseRepository();
+        // _pmRepo = new ProjectMiniRepository();
+        // _nodeRepo = new NodeRepository();
+        // _imRepo = new ItemMiniRepository();
+        // _itemRepo = new ItemRepository();
     }
 
     /**
@@ -89,6 +89,7 @@ class NodeController : AdminBaseController {
         view.assign("document", document);
         view.assign("nodes", allNodeData);
         view.assign("docId", docId);
+        view.assign("parentId", parentId);
 
         return new Response(request)
             .setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString())
@@ -97,6 +98,9 @@ class NodeController : AdminBaseController {
 
     // @Action Response edit(NodeForm form){
     @Action Response edit(){
+        
+        auto nodeRepo = new NodeRepository();
+        auto itemRepo = new ItemRepository();
 
         if(request.methodAsString() == HttpMethod.POST.asString()){
             int now =  cast(int) time();            
@@ -106,7 +110,7 @@ class NodeController : AdminBaseController {
             auto itemData = new Item();
             int oldPid;
             if(id > 0){
-                nodeData = _nodeRepo.find(id);
+                nodeData = nodeRepo.find(id);
                 oldPid = nodeData.parent_id;
             }else{
                 nodeData.created = now;
@@ -120,10 +124,10 @@ class NodeController : AdminBaseController {
             nodeData.sign_key = request.post("sign_key", "").replace(" ", "");
             nodeData.sort = initInt("sort", 0, "POST");
             nodeData.status = cast(short) initInt("status", 0, "POST");
-            auto nodeId = (_nodeRepo.save(nodeData)).id;
+            auto nodeId = (nodeRepo.save(nodeData)).id;
                     
             if(id > 0)
-                itemData = _itemRepo.findLangItemByNodeId(nodeId, nodeData.language_id);
+                itemData = itemRepo.findLangItemByNodeId(nodeId, nodeData.language_id);
             else
                 itemData.created = now;
             itemData.updated = now;
@@ -134,21 +138,21 @@ class NodeController : AdminBaseController {
             itemData.content_html = request.post("content_html");
             itemData.node_id = nodeId;
             itemData.status = 1;
-            _itemRepo.save(itemData);
+            itemRepo.save(itemData);
 
             // 修改新旧PId状态
             if(nodeData.parent_id != 0){
-                auto newParent = _nodeRepo.find(nodeData.parent_id);
+                auto newParent = nodeRepo.find(nodeData.parent_id);
                 newParent.is_node = 0;
-                _nodeRepo.save(newParent);
+                nodeRepo.save(newParent);
             }
 
             if(oldPid > 0 && oldPid != nodeData.parent_id){
-                auto childNum = _nodeRepo.countChildNum(oldPid);
+                auto childNum = nodeRepo.countChildNum(oldPid);
                 if(childNum == 0){
-                    auto oldParent = _nodeRepo.find(oldPid);
+                    auto oldParent = nodeRepo.find(oldPid);
                     oldParent.is_node = 1;
-                    _nodeRepo.save(oldParent);
+                    nodeRepo.save(oldParent);
                 }
             }
 
@@ -176,35 +180,35 @@ class NodeController : AdminBaseController {
         if(id == 0)
             editType = "add";
             
-        auto languages = _langRepo.findAll(new EntityCondition(" %s = 1", _langRepo.Field.status));
-
+        auto langRepo = new LanguageRepository();
+        auto languages = langRepo.findAll(new EntityCondition(" %s = 1", langRepo.Field.status));
 
         Node nodeData;
         Item itemData;
         if(id > 0){
-            nodeData = _nodeRepo.find(id);
+            nodeData = nodeRepo.find(id);
             if(docId < 1 && nodeData is null){
                 this.assignError("数据不存在，请确认后重试");
                 return new RedirectResponse(request, url("document.document.list", null, "admin"));
             }
-            itemData = _itemRepo.findLangItemByNodeId(id, nodeData.language_id);
+            itemData = itemRepo.findLangItemByNodeId(id, nodeData.language_id);
         }    
 
         docId = docId > 0 ? docId : nodeData.document_id;
 
-        auto document = _docRepo.find(docId);
+        auto document = (new DocBaseRepository).find(docId);
         ProjectMini project;
         if(document !is null){
-            project = _pmRepo.find(document.project_id);
+            project = (new ProjectMiniRepository).find(document.project_id);
         }
 
-        auto firstLevels = _nodeRepo.findIdsByPid(docId, 0);
+        auto firstLevels = nodeRepo.findIdsByPid(docId, 0);
         string strIds;
         Node[] nodes;
         ItemMini[] items;
         if(firstLevels){
             strIds = firstLevels.joiner(",").to!string;
-            nodes = _nodeRepo.findAllByStrIds(strIds);
+            nodes = nodeRepo.findAllByStrIds(strIds);
             string nodeIds;
             if(nodes){
                 foreach(k, node; nodes){
@@ -213,7 +217,7 @@ class NodeController : AdminBaseController {
                     nodeIds ~= (node.id).to!string;
                 }
             }
-            items = _imRepo.findItemsByNodeIds(nodeIds, document.main_language);
+            items = (new ItemMiniRepository).findItemsByNodeIds(nodeIds, document.main_language);
         }
         
         view.assign("editType", editType);
@@ -232,13 +236,14 @@ class NodeController : AdminBaseController {
 
     @Action Response editOter(){
         
+        auto itemRepo = new ItemRepository();
         
         if(request.methodAsString() == HttpMethod.POST.asString()){
             int now =  cast(int) time();            
             int id = initInt("id", 0, "POST");
             auto postData = new Item();
             if(id > 0)
-                postData = _itemRepo.find(id);
+                postData = itemRepo.find(id);
             else
                 postData.created = now;
             postData.title = request.post("title");
@@ -246,8 +251,8 @@ class NodeController : AdminBaseController {
             postData.language_id = initInt("language_id", 0, "POST");
             postData.node_id = initInt("node_id", 0, "POST");
             postData.updated = now;
-            _itemRepo.save(postData);
-            auto node = _nodeRepo.find(postData.node_id);
+            itemRepo.save(postData);
+            auto node = (new NodeRepository).find(postData.node_id);
 
             // 清缓存
             _tmpCache.findItemByNodeSign(node.sign_key, node.document_id, postData.language_id, true);
@@ -280,7 +285,7 @@ class NodeController : AdminBaseController {
 
         Item itemData;
         if(id > 0){
-            itemData = _itemRepo.find(id);
+            itemData = itemRepo.find(id);
         }
         view.assign("itemData", itemData);
 

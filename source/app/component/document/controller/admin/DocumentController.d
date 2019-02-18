@@ -24,6 +24,8 @@ import app.component.project.repository.ProjectMiniRepository;
 import app.component.project.repository.ProjectRepository;
 import app.component.system.helper.Utils;
 
+import std.array;
+
 class DocumentController : AdminBaseController {
 
     mixin MakeController;
@@ -63,6 +65,8 @@ class DocumentController : AdminBaseController {
         view.assign("languages", languages);
         view.assign("projects", projects);
         view.assign("documents", allDocData);
+        view.assign("breadcrumbs", breadcrumbsManager.generate("documents"));
+        logWarning(breadcrumbsManager.generate("documents"));
         return view.render("document/document/history");
     }
 
@@ -85,7 +89,14 @@ class DocumentController : AdminBaseController {
                 foreach(error; errors){
                     this.assignError(error);
                 }
-                return new RedirectResponse(request, url("document.document.list", null, "admin"));
+
+                auto hostory = (request.referer).split(request.host);
+                if(hostory !is null && hostory.length == 2){
+                    return new RedirectResponse(request, hostory[1]);
+                }else{
+                    return new RedirectResponse(request, url("project.project.list", null, "admin"));
+                }
+
             }
 
             logError(toJSON(documentForm));
@@ -122,8 +133,11 @@ class DocumentController : AdminBaseController {
             else
                 this.assignSussess("文档创建成功！");
 
-
-            return new RedirectResponse(request, url("document.document.list", null, "admin"));
+            // document.document.history
+            // document.document.list
+            string[string] redirectParams;
+            redirectParams["project_id"] = to!string(documentForm.project_id);
+            return new RedirectResponse(request, url("document.document.history", redirectParams, "admin"));
         }
 
         int id = initInt("id", 0, "GET");
@@ -150,10 +164,11 @@ class DocumentController : AdminBaseController {
     @Action Response del(string id, string type = "logic"){
         auto docBaseRep = new DocBaseRepository();
         int docId;
+        int projectId = 0;
         try {
             docId = id.to!int;
             auto delData = docBaseRep.findById(docId);
-
+            projectId = delData.project_id;
             if(type == "Physical"){
                 auto num = (new NodeRepository).countAllByDocId(docId);
                 if(num == 0)
@@ -179,8 +194,14 @@ class DocumentController : AdminBaseController {
         }catch(Exception e){
             this.assignError("参数 id 类型不正确");
         }
-        
-        return new RedirectResponse(request, url("document.document.list", null, "admin"));
+        if(projectId > 0){
+            string[string] redirectParams;
+            redirectParams["project_id"] = to!string(projectId);
+            return new RedirectResponse(request, url("document.document.history", redirectParams, "admin"));
+        }else{
+            return new RedirectResponse(request, url("project.project.list", null, "admin"));
+        }
+
     }
 
 

@@ -620,4 +620,4 @@ SET FOREIGN_KEY_CHECKS = 1;
 
 
 
-ALTER TABLE `hc_system_permission` ADD COLUMN `group_id` int(0) NOT NULL DEFAULT 0 AFTER `title`;
+ALTER TABLE `hc_system_permission` ADD COLUMN `group_id` int(0) NOT NULL DEFAULT 1 AFTER `title`;

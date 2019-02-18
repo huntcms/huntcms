@@ -38,12 +38,10 @@
                         <div class="col-sm-6">
                             <div class="m-b-30">
                                 <a href="{{ url('document.node.edit', '')}}?doc_id={{ docId }}" id="addToTable" class="btn btn-success waves-effect waves-light">新增节点 <i class="mdi mdi-plus-circle-outline"></i></a>
-                                {% if document.currect == 0 %}
-                                <a href="{{ url('document.document.history', '')}}?project_id={{ document.project_id }}" class="btn btn-info waves-effect waves-light" style="margin-left: 10px;">返回历史版本列表 <i class="mdi mdi-keyboard-backspace"></i></a>
-                                {% else %}
-                                <a href="{{ url('document.document.list', '')}}" class="btn btn-info waves-effect waves-light" style="margin-left: 10px;">返回CURRECT列表 <i class="mdi mdi-keyboard-backspace"></i></a>
-                                {% endif %}
+                                <a href="{{ url('document.document.history', '')}}?project_id={{ document.project_id }}" class="btn btn-info waves-effect waves-light" style="margin-left: 10px;">返回全部版本列表 <i class="mdi mdi-keyboard-backspace"></i></a>
+                                {% if parentId > 0 %}
                                 <a href="{{ url('document.node.list', '')}}?doc_id={{ docId }}" class="btn btn-info waves-effect waves-light" style="margin-left: 10px;">返回节点管理首页 <i class="mdi mdi-keyboard-backspace"></i></a>
+                                {% endif %}
                             </div>
                         </div>
                     </div>

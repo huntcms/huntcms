@@ -7,6 +7,7 @@ import hunt.entity.criteria.Order;
 import hunt.util.Serialize;
 import hunt.logging;
 import app.component.project.model.ProjectMini;
+import app.component.document.model.DocBase;
 import std.math;
 
 class ProjectMiniRepository : EntityRepository!(ProjectMini, int)
@@ -56,6 +57,7 @@ class ProjectMiniRepository : EntityRepository!(ProjectMini, int)
         _entityManager.close();
         return res;
     }
+
     int[string] findPage(string[string] conditions, int page, int limit){
         int[string] pageInfo;
         string strConditions = " 1";
@@ -89,4 +91,50 @@ class ProjectMiniRepository : EntityRepository!(ProjectMini, int)
         _entityManager.close();
         return res;
     }
+
+    /**
+     *
+     */
+    JSONValue pageList(string[string] conditions, int page, int limit){
+        string strConditions = "WHERE 1";
+        foreach(key, condition; conditions){
+            if(condition != ""){
+                if(key == "title")
+                    strConditions ~= " AND pm." ~ key ~ " LIKE '%" ~ condition ~ "%'";
+                else
+                    strConditions ~= " AND pm." ~ key ~ " = '" ~ condition ~ "'";
+            }
+        }
+
+        JSONValue result;
+        EntityManager _entityManager = createEntityManager();
+        auto allData = _entityManager.createQuery!(ProjectMini)(" SELECT pm FROM ProjectMini pm " ~ strConditions ~ " ORDER BY pm.status DESC ", new Pageable(page - 1, limit))
+            .getPageResult();
+        result["cur"] = page;
+        result["size"] = limit;
+        result["next"] = page + 1;
+        result["prev"] = page - 1;
+        result["total"] = allData.getTotalElements();
+        result["totalPages"] = allData.getTotalPages();
+        JSONValue[] data;
+        foreach(projectMini; allData.getContent()) {
+            JSONValue tmp = toJSON(projectMini);
+            tmp["doc_version"] = "";
+            tmp["doc_id"] = 0;
+            auto curDoc = _entityManager.createQuery!(DocBase)(" SELECT doc FROM DocBase doc WHERE doc.currect = 1 and doc.project_id = :projectId ORDER BY doc.sort DESC LIMIT 1 ")
+                .setParameter("projectId", projectMini.id)
+                .getSingleResult();
+            if(curDoc){
+                tmp["doc_version"] = curDoc.doc_version;
+                tmp["doc_id"] = curDoc.id;
+            }
+            data ~= tmp;
+        }
+        _entityManager.close();
+        result["data"] = data;
+
+        return result;
+
+    }
+
 }
