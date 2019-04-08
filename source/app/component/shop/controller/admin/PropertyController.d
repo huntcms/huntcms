@@ -20,7 +20,7 @@ class PropertyController : AdminBaseController
         if(page < 1)
             page = 1;
 
-        auto repository = new ShopPropertyRepository();
+        auto repository = new ShopPropertyRepository(_cManager);
         int limit = 20 ;  // 每页显示多少条
         auto pageData = repository.findAll(new Pageable(page - 1 , limit));
         JSONValue alldata = pageToJson!ShopProperty(pageData);
@@ -37,7 +37,7 @@ class PropertyController : AdminBaseController
         if (request.methodAsString() == HttpMethod.POST.asString())
         {
             int now = cast(int) time();
-            auto repo = new ShopPropertyRepository();
+            auto repo = new ShopPropertyRepository(_cManager);
             int id = request.post("id").to!int;
             auto property = repo.findById(id);
             bool isNew = property is null;
@@ -69,7 +69,7 @@ class PropertyController : AdminBaseController
 
     @Action string edit(int id)
     {
-        auto repository = new ShopPropertyRepository();
+        auto repository = new ShopPropertyRepository(_cManager);
         view.assign("type", repository.findById(id));
 
         return view.render("shop/property/edit");
@@ -77,7 +77,7 @@ class PropertyController : AdminBaseController
 
     @Action Response del(int id)
     {
-        (new ShopPropertyRepository()).removeById(id);
+        (new ShopPropertyRepository(_cManager)).removeById(id);
         return new RedirectResponse(request, "/admincp/shop/properties");
     } 
 }

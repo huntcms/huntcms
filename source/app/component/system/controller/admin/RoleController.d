@@ -40,12 +40,11 @@ class RoleController : AdminBaseController
             int time = cast(int)time();
             int[] permissionIds = Utils.getCheckbox!int(request.all(), "permissionid");
 
-            auto manager = defaultEntityManagerFactory().createEntityManager();
+            // auto manager = defaultEntityManagerFactory().createEntityManager();
             try {
-                manager.getTransaction().begin();
+                _cManager.getTransaction().begin();
 
-                auto roleRepository = new RoleRepository(manager);
-
+                auto roleRepository = new RoleRepository(_cManager);
                 Role role = new Role();
                 role.name = name;
                 role.created = time;
@@ -53,10 +52,10 @@ class RoleController : AdminBaseController
                 role.status = status;
 
                 roleRepository.save(role);
-                auto rolePermissionRepository = new RolePermissionRepository(manager);
+                auto rolePermissionRepository = new RolePermissionRepository(_cManager);
                 rolePermissionRepository.saves(role.id, permissionIds);
 
-                manager.getTransaction().commit();
+                _cManager.getTransaction().commit();
                 Application.getInstance().accessManager.refresh();  
                 // return new RedirectResponse(request, "/admincp/system/roles");
                 return new RedirectResponse(request, url("system.role.list", null, "admin"));
@@ -64,11 +63,11 @@ class RoleController : AdminBaseController
 
                 errorMessages ~= "role already existed.";
 
-                manager.getTransaction().rollback();
+                _cManager.getTransaction().rollback();
             }
         }
-        view.assign("permissions", (new PermissionRepository).findAll());
-        view.assign("groups", (new PermissionGroupRepository).findAll());
+        view.assign("permissions", (new PermissionRepository(_cManager)).findAll());
+        view.assign("groups", (new PermissionGroupRepository(_cManager)).findAll());
 
         return new Response(request)
             .setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString())
@@ -79,9 +78,9 @@ class RoleController : AdminBaseController
     {
         int id = request.get!int("id", 0);
 
-        auto manager = defaultEntityManagerFactory().createEntityManager();
-        auto rolePermissionRepository = new RolePermissionRepository(manager);
-        auto roleRepository = new RoleRepository(manager);
+        // auto manager = defaultEntityManagerFactory().createEntityManager();
+        auto rolePermissionRepository = new RolePermissionRepository(_cManager);
+        auto roleRepository = new RoleRepository(_cManager);
 
         auto findRole = roleRepository.find(id);
         if(request.methodAsString() == HttpMethod.POST.asString())
@@ -92,19 +91,19 @@ class RoleController : AdminBaseController
             int[] permissionIds = Utils.getCheckbox!int(request.all(), "permissionid");
 
             try {
-                manager.getTransaction().begin();
+                _cManager.getTransaction().begin();
                 auto role = findRole;
                 role.name = name;
                 role.status = status;
                 roleRepository.save(role);
                 rolePermissionRepository.removes(id);
                 rolePermissionRepository.saves(id, permissionIds);
-                manager.getTransaction().commit();
+                _cManager.getTransaction().commit();
                 Application.getInstance().accessManager.refresh();  
                 return new RedirectResponse(request, "/admincp/system/roles");
             } catch(Exception e) {
                 errorMessages ~= "error.";
-                manager.getTransaction().rollback();
+                _cManager.getTransaction().rollback();
                 logError(e);
             }
 
@@ -116,7 +115,7 @@ class RoleController : AdminBaseController
         view.assign("role", findRole);
 
         //logInfo(id);
-        auto permissions = (new PermissionRepository).findAll();
+        auto permissions = (new PermissionRepository(_cManager)).findAll();
         int[] rolePermissionIds = rolePermissionRepository.getRolePermissionIds(id);
         class rolePermissionClass{
             Permission permission;
@@ -134,7 +133,7 @@ class RoleController : AdminBaseController
             rolePermissions ~= tmp;
         }
         view.assign("rolePermissions", rolePermissions);
-        view.assign("groups", (new PermissionGroupRepository).findAll());
+        view.assign("groups", (new PermissionGroupRepository(_cManager)).findAll());
 
         return new Response(request)
             .setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString())

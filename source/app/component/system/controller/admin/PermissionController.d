@@ -25,18 +25,18 @@ class PermissionController : AdminBaseController
     this()
     {
         super();   
-        this.addMiddleware(new LogMiddleware);   
+        this.addMiddleware(new LogMiddleware(_cManager));   
     }
 
     @Action string list()
     {
         uint page = request.get!uint("page" , 1);
-        auto repository = new PermissionRepository();
+        auto repository = new PermissionRepository(_cManager);
         int limit = 20 ;  // 每页显示多少条
         JSONValue alldata = pageToJson!Permission(repository.findAll(new Pageable((page-1 < 0 ? 0 : page-1 ) , limit)));
         //logDebug("permissions : ",alldata);
         view.assign("permissions", alldata);
-        auto pgList = (new PermissionGroupRepository).findAll();
+        auto pgList = (new PermissionGroupRepository(_cManager)).findAll();
         view.assign("groups", pgList);
 
         int totalPages = cast(int)alldata["totalPages"].integer ;
@@ -51,7 +51,7 @@ class PermissionController : AdminBaseController
         if (request.methodAsString() == HttpMethod.POST.asString())
         {
             int now = cast(int) time();
-            auto pr = new PermissionRepository();
+            auto pr = new PermissionRepository(_cManager);
             Permission pm = new Permission;
             pm.mca = request.post("mca");
             pm.title = request.post("title");
@@ -78,7 +78,7 @@ class PermissionController : AdminBaseController
                 // return new RedirectResponse(request, url("system.permission.list", null, "admin"));
 
         }
-        auto pgList = (new PermissionGroupRepository).findAll();
+        auto pgList = (new PermissionGroupRepository(_cManager)).findAll();
         view.assign("groups", pgList);
 
         return new Response(request)
@@ -90,16 +90,16 @@ class PermissionController : AdminBaseController
     @Action string edit(int id)
     {
         logDebug(" edit id : ", id, "  get id : ", request.get("id"));
-        auto repository = new PermissionRepository();
+        auto repository = new PermissionRepository(_cManager);
         view.assign("permission", repository.find(request.get("id").to!int));
-        auto pgList = (new PermissionGroupRepository).findAll();
+        auto pgList = (new PermissionGroupRepository(_cManager)).findAll();
         view.assign("groups", pgList);
         return view.render("system/permission/edit");
     }
 
     @Action Response del(int id)
     {
-        (new PermissionRepository()).removeById(request.get("id").to!int);
+        (new PermissionRepository(_cManager)).removeById(request.get("id").to!int);
         // return new RedirectResponse(request, "/admincp/system/permissions");
         return new RedirectResponse(request, url("system.permission.list", null, "admin"));
     }

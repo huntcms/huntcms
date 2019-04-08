@@ -29,7 +29,7 @@ class ProductCategoryController : AdminBaseController
         foreach (key, condition; conditions){
             conditions[key] = decodeComponent(condition);
         }
-        auto pcRep = new ProductCategoryRepository();
+        auto pcRep = new ProductCategoryRepository(_cManager);
         auto list = pcRep.adminList(conditions, limit);
         view.assign("data", list["data"]);
         if("title" !in conditions){
@@ -56,14 +56,14 @@ class ProductCategoryController : AdminBaseController
 
     @Action string findTypes(int pid)
     {
-        auto type_repo = new ProductTypeRepository();
+        auto type_repo = new ProductTypeRepository(_cManager);
         if(pid == 0)
         {
             return toJSON(type_repo.findAll()).toString;
         }
         else
         {
-            auto category_repo = new ProductCategoryRepository();
+            auto category_repo = new ProductCategoryRepository(_cManager);
             auto category = category_repo.findById(pid);
             return toJSON([type_repo.findById(category.type_id)]).toString;    
         }
@@ -71,7 +71,7 @@ class ProductCategoryController : AdminBaseController
 
     @Action Response add()
     {
-        auto productCategoryRepository = new ProductCategoryRepository();
+        auto productCategoryRepository = new ProductCategoryRepository(_cManager);
         if (request.methodAsString() == HttpMethod.POST.asString())
         {
             logInfo("add1 ");
@@ -116,7 +116,7 @@ class ProductCategoryController : AdminBaseController
 
     @Action Response edit(int id)
     {
-        auto productCategoryRepository = new ProductCategoryRepository();
+        auto productCategoryRepository = new ProductCategoryRepository(_cManager);
         if (request.methodAsString() == HttpMethod.POST.asString())
         {
             auto productCategoryModel = productCategoryRepository.find(id);
@@ -134,7 +134,7 @@ class ProductCategoryController : AdminBaseController
                 view.assign("errorMessages", ["操作失败"]);
             }
         }
-        auto type_repo = new ProductTypeRepository();
+        auto type_repo = new ProductTypeRepository(_cManager);
         auto data = productCategoryRepository.find(id);
 
         view.assign("type" ,type_repo.findById(data.type_id));
@@ -149,7 +149,7 @@ class ProductCategoryController : AdminBaseController
 
     @Action Response del(int id)
     {
-        auto productCategoryRepository = new ProductCategoryRepository();
+        auto productCategoryRepository = new ProductCategoryRepository(_cManager);
         if(productCategoryRepository.childrens(id))
         {
             return new RedirectResponse(request, url("admin:shop.productcategory.list"));

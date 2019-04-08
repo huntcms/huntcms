@@ -10,7 +10,7 @@ class FileInfoRepository : EntityRepository!(FileInfo, int)
 {
 
     this(EntityManager manager = null) {
-        super(manager);
+        super(manager is null ? createEntityManager() : manager);
     }
 
 }

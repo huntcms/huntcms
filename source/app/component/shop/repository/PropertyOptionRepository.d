@@ -6,11 +6,8 @@ public import app.component.shop.model.ShopPropertyOption;
 class PropertyOptionRepository:EntityRepository!(ShopPropertyOption ,int)
 {
 
-    private EntityManager _entityManager;
-
     this(EntityManager manager = null) {
-        super(manager);
-        _entityManager = manager is null ? createEntityManager() : manager;
+        super(manager is null ? createEntityManager() : manager);
     }
 
     ShopPropertyOption[] findAllByProperty(int property_id)
@@ -25,7 +22,7 @@ class PropertyOptionRepository:EntityRepository!(ShopPropertyOption ,int)
         string strIds = to!string(ids);
         strIds = strIds[1 .. $ - 1];
         // return findAll(new Condition(" %s in ( %s ) order by field(%s , %s)" , Field.id,strIds , Field.id , strIds));
-        return _entityManager.createQuery!(ShopPropertyOption)(" SELECT spo FROM ShopPropertyOption spo WHERE spo.id in (" ~ strIds ~ ") ORDER BY spo.id ASC ")
+        return _manager.createQuery!(ShopPropertyOption)(" SELECT spo FROM ShopPropertyOption spo WHERE spo.id in (" ~ strIds ~ ") ORDER BY spo.id ASC ")
             .getResultList();
     }
 
@@ -34,7 +31,7 @@ class PropertyOptionRepository:EntityRepository!(ShopPropertyOption ,int)
         string strIds = to!string(ids);
         strIds = strIds[1 .. $ - 1];
         // return findAll(new Condition(" %s in ( %s ) order by field(%s , %s)" , Field.property_id,strIds , Field.property_id , strIds));
-        return _entityManager.createQuery!(ShopPropertyOption)(" SELECT spt FROM ShopPropertyOption spt WHERE spt.property_id in (" ~ strIds ~ ") ORDER BY spt.property_id ASC ")
+        return _manager.createQuery!(ShopPropertyOption)(" SELECT spt FROM ShopPropertyOption spt WHERE spt.property_id in (" ~ strIds ~ ") ORDER BY spt.property_id ASC ")
             .getResultList();
      }
     

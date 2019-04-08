@@ -7,12 +7,9 @@ import std.json;
 
 class TagRepository : EntityRepository!(Tag, int)
 {
-    private EntityManager _entityMnagaer;
 
-    this(EntityManager manager = null)
-    {
-         _entityMnagaer = manager is null ? createEntityManager() : manager;
-        super(_entityMnagaer);
+    this(EntityManager manager = null) {
+        super(manager is null ? createEntityManager() : manager);
     }
       
 }

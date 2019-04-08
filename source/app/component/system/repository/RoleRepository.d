@@ -9,17 +9,14 @@ import app.component.system.repository.UserRoleRepository;
 
 class RoleRepository : EntityRepository!(Role, int)
 {
-    
-    private EntityManager _entityManager;
 
     this(EntityManager manager = null) {
-        super(manager);
-        _entityManager = manager;
+        super(manager is null ? createEntityManager() : manager);
     }
-
+    
     Role[] getUserRoles(int userId)
     {
-        return this.findAllById(new UserRoleRepository().getUserRoleIds(userId));
+        return this.findAllById(new UserRoleRepository(_manager).getUserRoleIds(userId));
     }
 
 

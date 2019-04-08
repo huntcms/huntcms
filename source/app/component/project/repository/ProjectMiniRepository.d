@@ -13,12 +13,9 @@ import std.math;
 class ProjectMiniRepository : EntityRepository!(ProjectMini, int)
 {
 
-    // private EntityManager _entityManager;
-
-    // this(EntityManager manager = null){
-    //     super(manager);
-    //     _entityManager = manager is null ? createEntityManager() : manager;
-    // }
+    this(EntityManager manager = null) {
+        super(manager is null ? createEntityManager() : manager);
+    }
 
     Page!(ProjectMini) findPageAll(string[string] conditions, int page, int limit) {
         string strConditions = " 1 ";
@@ -47,14 +44,12 @@ class ProjectMiniRepository : EntityRepository!(ProjectMini, int)
         if(first > 0){
             strOffset = "OFFSET " ~ first.to!string;
         }
-        // return _entityManager.createQuery!(ProjectMini)(" SELECT pm FROM ProjectMini pm " ~ strConditions ~ " ORDER BY pm.status DESC LIMIT :limit " ~ strOffset)
+        // return _manager.createQuery!(ProjectMini)(" SELECT pm FROM ProjectMini pm " ~ strConditions ~ " ORDER BY pm.status DESC LIMIT :limit " ~ strOffset)
         //     .setParameter("limit", limit)
         //     .getResultList();
-        EntityManager _entityManager = createEntityManager();
-        auto res = _entityManager.createQuery!(ProjectMini)(" SELECT pm FROM ProjectMini pm " ~ strConditions ~ " ORDER BY pm.status DESC LIMIT :limit " ~ strOffset)
+        auto res = _manager.createQuery!(ProjectMini)(" SELECT pm FROM ProjectMini pm " ~ strConditions ~ " ORDER BY pm.status DESC LIMIT :limit " ~ strOffset)
             .setParameter("limit", limit)
             .getResultList();
-        _entityManager.close();
         return res;
     }
 
@@ -84,11 +79,9 @@ class ProjectMiniRepository : EntityRepository!(ProjectMini, int)
     }
 
     ProjectMini findDetailBySign(string sign){
-        EntityManager _entityManager = createEntityManager();
-        auto res = _entityManager.createQuery!(ProjectMini)(" SELECT p FROM ProjectMini p WHERE p.sign = :sign")
+        auto res = _manager.createQuery!(ProjectMini)(" SELECT p FROM ProjectMini p WHERE p.sign = :sign")
             .setParameter("sign", sign)
             .getSingleResult();
-        _entityManager.close();
         return res;
     }
 
@@ -107,8 +100,8 @@ class ProjectMiniRepository : EntityRepository!(ProjectMini, int)
         }
 
         JSONValue result;
-        EntityManager _entityManager = createEntityManager();
-        auto allData = _entityManager.createQuery!(ProjectMini)(" SELECT pm FROM ProjectMini pm " ~ strConditions ~ " ORDER BY pm.status DESC ", new Pageable(page - 1, limit))
+        
+        auto allData = _manager.createQuery!(ProjectMini)(" SELECT pm FROM ProjectMini pm " ~ strConditions ~ " ORDER BY pm.status DESC ", new Pageable(page - 1, limit))
             .getPageResult();
         result["cur"] = page;
         result["size"] = limit;
@@ -121,7 +114,7 @@ class ProjectMiniRepository : EntityRepository!(ProjectMini, int)
             JSONValue tmp = toJSON(projectMini);
             tmp["doc_version"] = "";
             tmp["doc_id"] = 0;
-            auto curDoc = _entityManager.createQuery!(DocBase)(" SELECT doc FROM DocBase doc WHERE doc.currect = 1 and doc.project_id = :projectId ORDER BY doc.sort DESC LIMIT 1 ")
+            auto curDoc = _manager.createQuery!(DocBase)(" SELECT doc FROM DocBase doc WHERE doc.currect = 1 and doc.project_id = :projectId ORDER BY doc.sort DESC LIMIT 1 ")
                 .setParameter("projectId", projectMini.id)
                 .getSingleResult();
             if(curDoc){
@@ -130,7 +123,7 @@ class ProjectMiniRepository : EntityRepository!(ProjectMini, int)
             }
             data ~= tmp;
         }
-        _entityManager.close();
+
         result["data"] = data;
 
         return result;

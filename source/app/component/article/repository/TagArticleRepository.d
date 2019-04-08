@@ -7,21 +7,19 @@ import std.json;
 
 class TagArticleRepository : EntityRepository!(TagArticle, int)
 {
-    private EntityManager _entityManager;
 
     this(EntityManager manager = null) {
-         _entityManager = manager is null ? createEntityManager() : manager;
-        super(_entityManager);
+        super(manager is null ? createEntityManager() : manager);
     }
 
     TagArticle[] getTagArticle(int articleId) {
-        return _entityManager.createQuery!(TagArticle)(" SELECT ta FROM TagArticle ta WHERE ta.article_id = :articleId ")
+        return _manager.createQuery!(TagArticle)(" SELECT ta FROM TagArticle ta WHERE ta.article_id = :articleId ")
             .setParameter("articleId", articleId)
             .getResultList();
     }
 
     bool removes(int articleId) {
-        TagArticle[] tagArticles = _entityManager.createQuery!(TagArticle)(" SELECT ta FROM TagArticle ta WHERE ta.article_id = :articleId ")
+        TagArticle[] tagArticles = _manager.createQuery!(TagArticle)(" SELECT ta FROM TagArticle ta WHERE ta.article_id = :articleId ")
             .setParameter("articleId", articleId)
             .getResultList();
 

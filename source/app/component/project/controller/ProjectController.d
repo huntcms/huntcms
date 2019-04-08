@@ -23,8 +23,8 @@ class ProjectController : FrontBaseController{
 
     this(){
         super();
-        _pmRepo = new ProjectMiniRepository();
-        _pRepo = new ProjectRepository();
+        _pmRepo = new ProjectMiniRepository(_cManager);
+        _pRepo = new ProjectRepository(_cManager);
     }
 
     @Action Response list(){

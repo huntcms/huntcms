@@ -10,11 +10,9 @@ import app.component.shop.model.ProductCategory;
 
 class ProductCategoryRepository : EntityRepository!(ProductCategory, int)
 {
-    private EntityManager _entityManager;
 
     this(EntityManager manager = null) {
-        super(manager);
-        _entityManager = manager is null ? createEntityManager() : manager;
+        super(manager is null ? createEntityManager() : manager);
     }
 
     JSONValue adminList(string[string] conditions = null, int limit = 20) {
@@ -29,7 +27,7 @@ class ProductCategoryRepository : EntityRepository!(ProductCategory, int)
             page = page < 1 ? 1 : page;
         }
         JSONValue result;
-        auto allData = _entityManager.createQuery!(ProductCategory)(" SELECT pc FROM ProductCategory pc WHERE pc.deleted = 0 " ~ strConditions, new Pageable(page - 1, limit))
+        auto allData = _manager.createQuery!(ProductCategory)(" SELECT pc FROM ProductCategory pc WHERE pc.deleted = 0 " ~ strConditions, new Pageable(page - 1, limit))
             .getPageResult();
         logInfo(allData);
         result["total_count"] = allData.getTotalElements();
@@ -44,12 +42,12 @@ class ProductCategoryRepository : EntityRepository!(ProductCategory, int)
     }
 
     ProductCategory[] all() {
-        return _entityManager.createQuery!(ProductCategory)(" SELECT pc FROM ProductCategory pc WHERE pc.deleted = 0 ")
+        return _manager.createQuery!(ProductCategory)(" SELECT pc FROM ProductCategory pc WHERE pc.deleted = 0 ")
             .getResultList();
     }
 
     ProductCategory[] childrens(int categoryId) {
-        return _entityManager.createQuery!(ProductCategory)(" SELECT pc FROM ProductCategory pc WHERE pc.deleted = 0 AND pc.pid = :categoryId ")
+        return _manager.createQuery!(ProductCategory)(" SELECT pc FROM ProductCategory pc WHERE pc.deleted = 0 AND pc.pid = :categoryId ")
             .setParameter("categoryId", categoryId)
             .getResultList();
     }

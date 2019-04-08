@@ -14,8 +14,6 @@ import app.component.system.repository.UserRoleRepository;
 import app.component.system.helper.Password;
 import app.component.system.helper.Utils;
 
-// import app.auth.UserAuth;
-
 import hunt.entity.DefaultEntityManagerFactory;
 import hunt.logging;
 import hunt.util.DateTime;
@@ -41,7 +39,7 @@ class UserController : AdminBaseController
 
     @Action string list()
     {
-        auto repository = new UserRepository;
+        auto repository = new UserRepository(_cManager);
         view.assign("users", repository.findAll());
         return view.render("system/user/list");
     }
@@ -81,19 +79,19 @@ class UserController : AdminBaseController
 
             if (errorMessages.length == 0)
             {
-                auto manager = defaultEntityManagerFactory().createEntityManager();
+                
                 try {
-                    manager.getTransaction().begin();
-                    auto userRepository = new UserRepository(manager);
+                    _cManager.getTransaction().begin();
+                    auto userRepository = new UserRepository(_cManager);
                     userRepository.save(user);
-                    auto userRoleRepository = new UserRoleRepository(manager);
+                    auto userRoleRepository = new UserRoleRepository(_cManager);
                     userRoleRepository.saves(user.id, roleIds);
-                    manager.getTransaction().commit();
+                    _cManager.getTransaction().commit();
                     // return new RedirectResponse(request, "/admincp/system/users");
                     return new RedirectResponse(request, url("system.user.list", null, "admin"));
                 } catch(Exception e) {
                     errorMessages ~= "Email already existed.";
-                    manager.getTransaction().rollback();
+                    _cManager.getTransaction().rollback();
                     logError(e);
                 }
             }
@@ -102,7 +100,7 @@ class UserController : AdminBaseController
             view.assign("errorMessages", errorMessages);
         }
 
-        view.assign("roles", (new RoleRepository).findAll());
+        view.assign("roles", (new RoleRepository(_cManager)).findAll());
         
         return new Response(request)
             .setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString())
@@ -113,9 +111,9 @@ class UserController : AdminBaseController
     {
         int id = request.get!int("id", 0);
 
-        auto manager = defaultEntityManagerFactory().createEntityManager();
-        auto userRoleRepository = new UserRoleRepository(manager);
-        auto userRepository = new UserRepository(manager);
+        // auto manager = defaultEntityManagerFactory().createEntityManager();
+        auto userRoleRepository = new UserRoleRepository(_cManager);
+        auto userRepository = new UserRepository(_cManager);
 
         auto findUser = userRepository.find(id);
         if(request.methodAsString() == HttpMethod.POST.asString())
@@ -126,7 +124,7 @@ class UserController : AdminBaseController
             int[] roleIds = Utils.getCheckbox!int(request.all(), "roleid");
 
             try {
-                manager.getTransaction().begin();
+                _cManager.getTransaction().begin();
 
                 auto user = userRepository.find(id);
                 user.name = name;
@@ -135,12 +133,12 @@ class UserController : AdminBaseController
 
                 userRoleRepository.removes(id);
                 userRoleRepository.saves(id, roleIds);
-                manager.getTransaction().commit();
+                _cManager.getTransaction().commit();
                 // return new RedirectResponse(request, "/admincp/system/users");
                 return new RedirectResponse(request, url("system.user.list", null, "admin"));
             } catch(Exception e) {
                 errorMessages ~= "Email already existed.";
-                manager.getTransaction().rollback();
+                _cManager.getTransaction().rollback();
                 logError(e);
             }
             // return new RedirectResponse(request, "/admincp/system/user/edit?id="~to!string(id));
@@ -149,7 +147,7 @@ class UserController : AdminBaseController
             return new RedirectResponse(request, url("system.user.edit", redirectParams, "admin"));
         }
         view.assign("user", findUser);
-        auto roles = (new RoleRepository).findAll();
+        auto roles = (new RoleRepository(_cManager)).findAll();
         int[] userRoleIds = userRoleRepository.getUserRoleIds(id);
         class userRoleClass{
             Role role;
@@ -167,7 +165,7 @@ class UserController : AdminBaseController
             userRoles ~= tmp;
         }
         view.assign("userRoles", userRoles);
-        view.assign("roles", (new RoleRepository).findAll());
+        view.assign("roles", (new RoleRepository(_cManager)).findAll());
 
         return new Response(request)
             .setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString())
@@ -176,7 +174,7 @@ class UserController : AdminBaseController
 
     @Action string del()
     {
-        auto repository = new UserRepository;
+        auto repository = new UserRepository(_cManager);
         view.assign("permissions", repository.findById( request.get!int("id", 0) ));
 
         return view.render("system/user/edit");
@@ -184,7 +182,7 @@ class UserController : AdminBaseController
 
     @Action string profile()
     {
-        auto userRepository = new UserRepository;
+        auto userRepository = new UserRepository(_cManager);
         auto userInfo = Application.getInstance().accessManager.user;
         User user = userRepository.find(userInfo.id);
         // User user = userRepository.find(UserAuth.userId(request));
@@ -223,17 +221,20 @@ class UserController : AdminBaseController
                 string salt = generateSalt();
                 
                 logInfo(loginForm.username);
-                auto find = (new UserRepository).findByEmail(loginForm.username);
+                auto find = (new UserRepository(_cManager)).findByEmail(loginForm.username);
                 logInfo(find);
 
                 if(find){
+                    auto checkSalt = generateUserPassword(loginForm.password, find.salt);
+                    if(checkSalt == find.password){
+                        auto user = Application.getInstance().accessManager.addUser(find.id);
 
-                    logInfo("find id :" ~ to!string(find.id));
-                    auto user = Application.getInstance().accessManager.addUser(find.id);
-
-                    if(user !is null){
-                        // return new RedirectResponse(request, "/admincp/");
-                        return new RedirectResponse(request, url("system.dashboard.dashboard", null, "admin"));
+                        if(user !is null){
+                            // return new RedirectResponse(request, "/admincp/");
+                            return new RedirectResponse(request, url("system.dashboard.dashboard", null, "admin"));
+                        }
+                    }else{
+                        this.errorMessages ~= "password wrong!";
                     }
 
                 }else{

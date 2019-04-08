@@ -17,6 +17,7 @@ import app.lib.controller.AdminBaseController;
 import app.component.system.helper.Paginate;
 import app.component.system.helper.Utils;
 import hunt.http.codec.http.model.HttpMethod;
+import std.algorithm;
 
 class TypeFilterController : AdminBaseController
 {
@@ -35,7 +36,7 @@ class TypeFilterController : AdminBaseController
             }
         }
 
-        auto repo_property = new PropertyOptionRepository();
+        auto repo_property = new PropertyOptionRepository(_cManager);
         auto properties = repo_property.findAllByIds(optionIds);
         for( size_t i = 0 ; i < alldata["data"].array.length ; i++)
         {
@@ -58,12 +59,32 @@ class TypeFilterController : AdminBaseController
         if(page < 1)
             page = 1;
 
-        auto repository = new TypePropertyFilterRepository();
+        auto repository = new TypePropertyFilterRepository(_cManager);
         int limit = 20 ;  // 每页显示多少条
         auto pageData = repository.findAll(new Pageable(page - 1 , limit));
         JSONValue alldata = pageToJson!ShopProductTypePropertyFilter(pageData);
         logInfo(alldata);
-        PropertyOptionController.add_title!(ShopProductTypeRepository , "type_id" , "type_title")(alldata);
+        // PropertyOptionController.add_title!(ShopProductTypeRepository , "type_id" , "type_title")(alldata);
+        // ========================================================
+        int[] propertyIds;
+        foreach( o ; alldata["data"].array)
+        {
+            int tmp = cast(int) o["type_id"].integer;
+            if(!canFind(propertyIds, tmp))
+                propertyIds ~= tmp;
+        }
+        auto properties = (new ShopProductTypeRepository(_cManager)).findAllByIds(propertyIds);
+        logWarning(properties);
+        for( size_t i = 0 ; i < alldata["data"].array.length ; i++)
+        {
+            auto list = find!("a.id == b")(properties , alldata["data"][i]["type_id"].integer);
+            if(list is null)
+                alldata["data"][i]["type_title"] = "not found";
+            else
+                alldata["data"][i]["type_title"] = list[0].title;
+        }
+        // ========================================================
+
         add_option_title(alldata);
         view.assign("types", alldata);
         Paginate temPage = new Paginate("/admincp/shop/typefilters?page={page}" ,
@@ -78,7 +99,7 @@ class TypeFilterController : AdminBaseController
         if (request.methodAsString() == HttpMethod.POST.asString())
         {
             int now = cast(int) time();
-            auto repo = new TypePropertyFilterRepository();
+            auto repo = new TypePropertyFilterRepository(_cManager);
             int id = request.post("id").to!int;
             auto property = repo.findById(id);
             bool isNew = property is null;
@@ -100,7 +121,7 @@ class TypeFilterController : AdminBaseController
 
             return new RedirectResponse(request, "/admincp/shop/typefilters");
         }
-        auto repo_type = new ShopProductTypeRepository();
+        auto repo_type = new ShopProductTypeRepository(_cManager);
         auto types = repo_type.findAll();
         view.assign("types", types);
 
@@ -113,9 +134,9 @@ class TypeFilterController : AdminBaseController
 
     @Action string edit(int id)
     {
-        auto repository = new TypePropertyFilterRepository();
+        auto repository = new TypePropertyFilterRepository(_cManager);
         view.assign("type", repository.findById(id));
-        auto repo_type = new ShopProductTypeRepository();
+        auto repo_type = new ShopProductTypeRepository(_cManager);
         auto types = repo_type.findAll();
         view.assign("types", types);
         return view.render("shop/typefilter/edit");
@@ -123,7 +144,7 @@ class TypeFilterController : AdminBaseController
 
     @Action Response del(int id)
     {
-        (new TypePropertyFilterRepository()).removeById(id);
+        (new TypePropertyFilterRepository(_cManager)).removeById(id);
         return new RedirectResponse(request, "/admincp/shop/typefilters");
     } 
 }

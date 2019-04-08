@@ -9,19 +9,14 @@ import hunt.logging;
 class ProjectRepository : EntityRepository!(Project, int)
 {
 
-    // private EntityManager _entityManager;
-
-    // this(EntityManager manager = null){
-    //     super(manager);
-    //     _entityManager = manager is null ? createEntityManager() : manager;
-    // }
+    this(EntityManager manager = null) {
+        super(manager is null ? createEntityManager() : manager);
+    }
 
     Project findDetailBySign(string sign){
-        EntityManager _entityManager = createEntityManager();
-        auto res = _entityManager.createQuery!(Project)(" SELECT p FROM Project p WHERE p.sign = :sign")
+        auto res = _manager.createQuery!(Project)(" SELECT p FROM Project p WHERE p.sign = :sign")
             .setParameter("sign", sign)
             .getSingleResult();
-        _entityManager.close();
         return res;
     }
 

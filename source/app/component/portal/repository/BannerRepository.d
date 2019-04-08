@@ -9,28 +9,25 @@ import app.component.portal.model.Banner;
 
 class BannerRepository : EntityRepository!(Banner, int)
 {
-    private EntityManager _entityManager;
 
-    this(EntityManager manager = null)
-    {
-         _entityManager = manager is null ? createEntityManager() : manager;
-        super(_entityManager);
+    this(EntityManager manager = null) {
+        super(manager is null ? createEntityManager() : manager);
     }
 
     Banner[] getBannersByPid(int parentId) {
-        return _entityManager.createQuery!(Banner)(" SELECT b FROM Banner b WHERE b.pid = :parentId ")
+        return _manager.createQuery!(Banner)(" SELECT b FROM Banner b WHERE b.pid = :parentId ")
             .setParameter("parentId", parentId)
             .getResultList();
     }
 
     Banner[] findAllData(){
-        return _entityManager.createQuery!(Banner)(" SELECT b FROM Banner b WHERE b.status = 1 AND deleted = 0 ORDER BY b.sort=0 asc, b.sort ")
+        return _manager.createQuery!(Banner)(" SELECT b FROM Banner b WHERE b.status = 1 AND deleted = 0 ORDER BY b.sort=0 asc, b.sort ")
             .getResultList();
     }
 
     JSONValue[] findAllJsonData(){
         JSONValue[] jsonData;
-        auto banners = _entityManager.createQuery!(Banner)(" SELECT b FROM Banner b WHERE b.status = 1 AND deleted = 0 ORDER BY b.sort=0 asc, b.sort ")
+        auto banners = _manager.createQuery!(Banner)(" SELECT b FROM Banner b WHERE b.status = 1 AND deleted = 0 ORDER BY b.sort=0 asc, b.sort ")
             .getResultList();
         foreach(banner; banners){
             JSONValue tmp;

@@ -67,10 +67,10 @@ class NodeController : AdminBaseController {
         conditions["parent_id"] = parentId.to!string;
         conditions["document_id"] = docId.to!string;
 
-        auto languages = (new LanguageRepository).findAll();
-        auto projects = (new ProjectMiniRepository).findAll();
-        auto document = (new DocBaseRepository).find(docId);
-        auto pageData = (new NodeRepository).findPageAll(conditions, page, 20);
+        auto languages = (new LanguageRepository(_cManager)).findAll();
+        auto projects = (new ProjectMiniRepository(_cManager)).findAll();
+        auto document = (new DocBaseRepository(_cManager)).find(docId);
+        auto pageData = (new NodeRepository(_cManager)).findPageAll(conditions, page, 20);
         auto allNodeData = pageToJson!Node(pageData);
 
         string[] nodeIds;
@@ -99,8 +99,8 @@ class NodeController : AdminBaseController {
     // @Action Response edit(NodeForm form){
     @Action Response edit(){
         
-        auto nodeRepo = new NodeRepository();
-        auto itemRepo = new ItemRepository();
+        auto nodeRepo = new NodeRepository(_cManager);
+        auto itemRepo = new ItemRepository(_cManager);
 
         if(request.methodAsString() == HttpMethod.POST.asString()){
             int now =  cast(int) time();            
@@ -180,7 +180,7 @@ class NodeController : AdminBaseController {
         if(id == 0)
             editType = "add";
             
-        auto langRepo = new LanguageRepository();
+        auto langRepo = new LanguageRepository(_cManager);
         auto languages = langRepo.findAll(new EntityCondition(" %s = 1", langRepo.Field.status));
 
         Node nodeData;
@@ -196,10 +196,10 @@ class NodeController : AdminBaseController {
 
         docId = docId > 0 ? docId : nodeData.document_id;
 
-        auto document = (new DocBaseRepository).find(docId);
+        auto document = (new DocBaseRepository(_cManager)).find(docId);
         ProjectMini project;
         if(document !is null){
-            project = (new ProjectMiniRepository).find(document.project_id);
+            project = (new ProjectMiniRepository(_cManager)).find(document.project_id);
         }
 
         auto firstLevels = nodeRepo.findIdsByPid(docId, 0);
@@ -217,7 +217,7 @@ class NodeController : AdminBaseController {
                     nodeIds ~= (node.id).to!string;
                 }
             }
-            items = (new ItemMiniRepository).findItemsByNodeIds(nodeIds, document.main_language);
+            items = (new ItemMiniRepository(_cManager)).findItemsByNodeIds(nodeIds, document.main_language);
         }
         
         view.assign("editType", editType);
@@ -236,7 +236,7 @@ class NodeController : AdminBaseController {
 
     @Action Response editOter(){
         
-        auto itemRepo = new ItemRepository();
+        auto itemRepo = new ItemRepository(_cManager);
         
         if(request.methodAsString() == HttpMethod.POST.asString()){
             int now =  cast(int) time();            
@@ -252,7 +252,7 @@ class NodeController : AdminBaseController {
             postData.node_id = initInt("node_id", 0, "POST");
             postData.updated = now;
             itemRepo.save(postData);
-            auto node = (new NodeRepository).find(postData.node_id);
+            auto node = (new NodeRepository(_cManager)).find(postData.node_id);
 
             // 清缓存
             _tmpCache.findItemByNodeSign(node.sign_key, node.document_id, postData.language_id, true);
@@ -301,7 +301,7 @@ class NodeController : AdminBaseController {
      *  ---- 修复跳转 / 修复父级节点是否为内容节点的标记
      */
     @Action Response del(string id, string type = "logic"){
-        auto nodeRepo = new NodeRepository();
+        auto nodeRepo = new NodeRepository(_cManager);
         int docId;
         try {
             int nodeId = id.to!int;
@@ -312,7 +312,7 @@ class NodeController : AdminBaseController {
                 if(num == 0){
                     nodeRepo.removeById(nodeId);
                     this.assignSussess("删除成功！");
-                    (new ItemMiniRepository).delItemsByNodeIds(nodeId);
+                    (new ItemMiniRepository(_cManager)).delItemsByNodeIds(nodeId);
                 }else{
                     this.assignError("存在子节点，请先删除子节点");
                 }

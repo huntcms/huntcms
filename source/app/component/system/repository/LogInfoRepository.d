@@ -8,11 +8,9 @@ import app.component.system.model.LogInfo;
 
 class LogInfoRepository : EntityRepository!(LogInfo, int)
 {
-    private EntityManager _entityManager;
 
     this(EntityManager manager = null) {
-        super(manager);
-        _entityManager = manager;
+        super(manager is null ? createEntityManager() : manager);
     }
 
 }

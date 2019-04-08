@@ -16,7 +16,7 @@ import app.component.system.helper.Paginate;
 import app.component.system.helper.Utils;
 import app.component.shop.controller.admin.PropertyOptionController;
 import hunt.http.codec.http.model.HttpMethod;
-
+import std.algorithm;
 
 class TypeRelationPropertyController : AdminBaseController
 {
@@ -29,15 +29,45 @@ class TypeRelationPropertyController : AdminBaseController
         if(page < 1)
             page = 1;
 
-        auto repository = new TypeRelationPropertyRepository();
+        auto repository = new TypeRelationPropertyRepository(_cManager);
         int limit = 20 ;  // 每页显示多少条
         auto pageData = repository.findAll(new Pageable(page - 1 , limit));
         JSONValue alldata = pageToJson!ShopProductTypeRelationProperty(pageData);
         view.assign("types", alldata);
 
-        PropertyOptionController.add_title!(ShopProductTypeRepository , "type_id" , "type_title")(alldata);
-        PropertyOptionController.add_title!(ShopPropertyRepository , "property_id" , "property_title")(alldata);
-        
+        // PropertyOptionController.add_title!(ShopProductTypeRepository , "type_id" , "type_title")(alldata);
+        // PropertyOptionController.add_title!(ShopPropertyRepository , "property_id" , "property_title")(alldata);
+        // ========================================================
+        int[] typeIds, propertyIds;
+        foreach( o ; alldata["data"].array){
+            int tmpTypeId = cast(int) o["type_id"].integer;
+            if(!canFind(typeIds, tmpTypeId))
+                typeIds ~= tmpTypeId;
+            int tmpPropertyId = cast(int) o["property_id"].integer;
+            if(!canFind(propertyIds, tmpPropertyId))
+                propertyIds ~= tmpPropertyId;
+        }
+        auto typeProperties = (new ShopProductTypeRepository(_cManager)).findAllByIds(typeIds);
+        logWarning(typeProperties);
+        for( size_t i = 0 ; i < alldata["data"].array.length ; i++)
+        {
+            auto list = find!("a.id == b")(typeProperties , alldata["data"][i]["type_id"].integer);
+            if(list is null)
+                alldata["data"][i]["type_title"] = "not found";
+            else
+                alldata["data"][i]["type_title"] = list[0].title;
+        }
+
+        auto properties = (new ShopPropertyRepository(_cManager)).findAllByIds(propertyIds);
+        for( size_t i = 0 ; i < alldata["data"].array.length ; i++)
+        {
+            auto list = find!("a.id == b")(properties , alldata["data"][i]["property_id"].integer);
+            if(list is null)
+                alldata["data"][i]["property_title"] = "not found";
+            else
+                alldata["data"][i]["property_title"] = list[0].title;
+        }
+        // ========================================================
 
         Paginate temPage = new Paginate("/admincp/shop/typeproperties?page={page}" ,
          page , pageData.getTotalPages());
@@ -48,7 +78,7 @@ class TypeRelationPropertyController : AdminBaseController
 
     @Action string listByType(int type_id)
     {
-        auto type_repo = new  TypeRelationPropertyRepository();
+        auto type_repo = new  TypeRelationPropertyRepository(_cManager);
         auto typeRaltionproperties = type_repo.findAllByType(type_id);
         int[] property_ids;
         foreach( t ; typeRaltionproperties)
@@ -56,7 +86,7 @@ class TypeRelationPropertyController : AdminBaseController
             property_ids ~= t.property_id;
         }
 
-        auto option_repo = new PropertyOptionRepository();
+        auto option_repo = new PropertyOptionRepository(_cManager);
         auto options = option_repo.findAllByPropertyIds(property_ids);
         return toJson(options).toString;
     }
@@ -66,7 +96,7 @@ class TypeRelationPropertyController : AdminBaseController
         if (request.methodAsString() == HttpMethod.POST.asString())
         {
             int now = cast(int) time();
-            auto repo = new TypeRelationPropertyRepository();
+            auto repo = new TypeRelationPropertyRepository(_cManager);
             int id = request.post("id").to!int;
             auto type = repo.findById(id);
             bool isNew = type is null;
@@ -86,10 +116,10 @@ class TypeRelationPropertyController : AdminBaseController
 
             return "ok";
         }
-        auto repo_property = new ShopPropertyRepository();
+        auto repo_property = new ShopPropertyRepository(_cManager);
         auto properties = repo_property.findAll();
         view.assign("properties", properties);
-        auto repo_type = new ShopProductTypeRepository();
+        auto repo_type = new ShopProductTypeRepository(_cManager);
         auto types = repo_type.findAll();
         view.assign("types", types);
         return view.render("shop/type_property/add");
@@ -98,12 +128,12 @@ class TypeRelationPropertyController : AdminBaseController
 
     @Action string edit(int id)
     {
-        auto repository = new TypeRelationPropertyRepository();
+        auto repository = new TypeRelationPropertyRepository(_cManager);
         view.assign("type", repository.findById(id));
-        auto repo_property = new ShopPropertyRepository();
+        auto repo_property = new ShopPropertyRepository(_cManager);
         auto properties = repo_property.findAll();
         view.assign("properties", properties);
-        auto repo_type = new ShopProductTypeRepository();
+        auto repo_type = new ShopProductTypeRepository(_cManager);
         auto types = repo_type.findAll();
         view.assign("types", types);
         return view.render("shop/type_property/edit");
@@ -111,7 +141,7 @@ class TypeRelationPropertyController : AdminBaseController
 
     @Action Response del(int id)
     {
-        (new TypeRelationPropertyRepository()).removeById(id);
+        (new TypeRelationPropertyRepository(_cManager)).removeById(id);
         return new RedirectResponse(request, "/admincp/shop/typeproperties");
     } 
 

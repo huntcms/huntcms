@@ -6,8 +6,9 @@ import hunt.framework;
 
 class ArticleRepository : EntityRepository!(Article, int)
 {
-    this(EntityManager manager = null)
-    {
-        super(manager);
+
+    this(EntityManager manager = null) {
+        super(manager is null ? createEntityManager() : manager);
     }
+    
 }

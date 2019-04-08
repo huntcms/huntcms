@@ -32,7 +32,7 @@ class ProjectController : AdminBaseController {
     @Action string list(){
         string[string] conditions;
         int page = initInt("page", 1, "GET");
-        auto pmRepo = new ProjectMiniRepository();
+        auto pmRepo = new ProjectMiniRepository(_cManager);
         // auto alldata = pageToJson!ProjectMini(pmRepo.findPageAll(conditions, page, 2));
         auto alldata = pmRepo.pageList(conditions, page, 20);
         view.assign("projects", alldata);
@@ -51,7 +51,7 @@ class ProjectController : AdminBaseController {
      */
     @Action Response edit(ProjectForm projectForm){
         
-        auto pRepo = new ProjectRepository();
+        auto pRepo = new ProjectRepository(_cManager);
 
         if(request.methodAsString() == HttpMethod.POST.asString()){
 
@@ -110,7 +110,7 @@ class ProjectController : AdminBaseController {
         view.assign("editType", editType);
 
         auto project = pRepo.find(id);
-        auto lRepo = new LanguageRepository();
+        auto lRepo = new LanguageRepository(_cManager);
         auto languages = lRepo.findAll();
         view.assign("project", project);
         view.assign("languages", languages);
@@ -125,12 +125,12 @@ class ProjectController : AdminBaseController {
      *  ---- update: 增加 sussessMessages / errorMessages 的提示信息
      */
     @Action Response del(string id, string type = "logic"){
-        auto pRepo = new ProjectRepository();
+        auto pRepo = new ProjectRepository(_cManager);
         int projectId;
         try {
             projectId = id.to!int;
             if(type == "Physical"){
-                auto childNum = (new DocumentRepository).countAllByProjectId(projectId);
+                auto childNum = (new DocumentRepository(_cManager)).countAllByProjectId(projectId);
                 if(childNum == 0){
                     pRepo.removeById(projectId);
                     this.assignSussess("删除成功！");

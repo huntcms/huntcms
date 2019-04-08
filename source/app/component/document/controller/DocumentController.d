@@ -43,13 +43,13 @@ class DocumentController : FrontBaseController{
 
     this(){
         super();
-        _pmRepo = new ProjectMiniRepository();
-        _docRepo = new DocumentRepository();
-        _docbaseRepo = new DocBaseRepository();
-        _nRepo = new NodeRepository();
-        _imRepo = new ItemMiniRepository();
-        _iRepo = new ItemRepository();
-        _langRepo = new LanguageRepository();
+        _pmRepo = new ProjectMiniRepository(_cManager);
+        _docRepo = new DocumentRepository(_cManager);
+        _docbaseRepo = new DocBaseRepository(_cManager);
+        _nRepo = new NodeRepository(_cManager);
+        _imRepo = new ItemMiniRepository(_cManager);
+        _iRepo = new ItemRepository(_cManager);
+        _langRepo = new LanguageRepository(_cManager);
     }
 
     /**

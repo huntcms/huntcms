@@ -1,7 +1,7 @@
 {
-    "name": "huntcms",
+    "name": "liu_test_huntcms_8380",
     "description": "A CMS based on hunt framework.",
-    "copyright": "Copyright © 2017-2018, huntframework.com",
+    "copyright": "Copyright © 2017-2019, huntframework.com",
     "homepage": "http://www.huntframework.com/",
     "license": "Apache-2.0",
     "targetType": "executable",

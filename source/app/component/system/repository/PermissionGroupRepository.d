@@ -11,4 +11,8 @@ import app.component.system.model.PermissionGroup;
 class PermissionGroupRepository : EntityRepository!(PermissionGroup, int)
 {
 
+    this(EntityManager manager = null) {
+        super(manager is null ? createEntityManager() : manager);
+    }
+
 }

@@ -19,10 +19,18 @@ import app.component.document.model.Node;
 import app.component.document.repository.DocumentRepository;
 import app.component.document.model.Document;
 import app.component.document.helper.TopMenu;
+import hunt.entity.DefaultEntityManagerFactory;
 
 class TestController : Controller {
 
     mixin MakeController;
+
+    public EntityManager _cManager;
+
+    this() 
+	{
+        _cManager = defaultEntityManagerFactory().createEntityManager();
+    }
 
     override bool before(){
         return true;
@@ -55,7 +63,7 @@ class TestController : Controller {
         Banner[] allDatas;
         if(!cacheData || isReset){
             logInfo("非缓存-banner");
-            allDatas = (new BannerRepository).findAllData();
+            allDatas = (new BannerRepository(_cManager)).findAllData();
             _cache.put("banners", allDatas, 86400);//缓存1天
         }else{
             logInfo("缓存-banner");
@@ -82,8 +90,8 @@ class TestController : Controller {
         if(!result || isReset){
 
             logInfo("非缓存数据-" ~ cacheKey);
-            auto currect = (new DocumentRepository).currectList();
-            auto languages = (new LanguageRepository).findAll();
+            auto currect = (new DocumentRepository(_cManager)).currectList();
+            auto languages = (new LanguageRepository(_cManager)).findAll();
 
             foreach(doc; currect){
                 TopMenu tmp = new TopMenu();
@@ -93,7 +101,7 @@ class TestController : Controller {
 
                     if(language.id == doc.main_language){
                         tmp.url = "docs/" ~ doc.project.sign ~ "-current/";
-                        auto sign = (new NodeRepository).findFirstNodeSignByDocId(doc.id);
+                        auto sign = (new NodeRepository(_cManager)).findFirstNodeSignByDocId(doc.id);
                         if(sign)
                             tmp.url ~= sign.sign_key;
                         continue;

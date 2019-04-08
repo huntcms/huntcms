@@ -7,17 +7,14 @@ import std.json;
 
 class MenuRepository : EntityRepository!(Menu, int)
 {
-    private EntityManager _entityManager;
 
-    this(EntityManager manager = null)
-    {
-         _entityManager = manager is null ? createEntityManager() : manager;
-        super(_entityManager);
+    this(EntityManager manager = null) {
+        super(manager is null ? createEntityManager() : manager);
     }
 
     Menu[] getMenusByPid(int parentId)
     {
-        return _entityManager.createQuery!(Menu)(" SELECT m FROM Menu m WHERE b.pid = :parentId ")
+        return _manager.createQuery!(Menu)(" SELECT m FROM Menu m WHERE b.pid = :parentId ")
             .setParameter("parentId", parentId)
             .getResultList();
     }

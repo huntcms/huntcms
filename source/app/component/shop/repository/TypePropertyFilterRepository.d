@@ -5,6 +5,11 @@ public import app.component.shop.model.ShopProductTypePropertyFilter;
 
 class TypePropertyFilterRepository:EntityRepository!(ShopProductTypePropertyFilter ,int)
 {
+
+    this(EntityManager manager = null) {
+        super(manager is null ? createEntityManager() : manager);
+    }
+    
     ShopProductTypePropertyFilter[] findAllByType(int type_id)
     {        
         auto sortCondition = new Sort();

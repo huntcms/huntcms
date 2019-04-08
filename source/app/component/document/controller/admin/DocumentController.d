@@ -41,9 +41,9 @@ class DocumentController : AdminBaseController {
         string[string] conditions;
         conditions["currect"] = "1";
         int page = initInt("page", 1, "GET");
-        auto languages = (new LanguageRepository).findAll();
-        auto projects = (new ProjectMiniRepository).findAll();
-        auto allDocData = pageToJson!DocBase((new DocBaseRepository).findPageAll(conditions, page, 20));
+        auto languages = (new LanguageRepository(_cManager)).findAll();
+        auto projects = (new ProjectMiniRepository(_cManager)).findAll();
+        auto allDocData = pageToJson!DocBase((new DocBaseRepository(_cManager)).findPageAll(conditions, page, 20));
         view.assign("languages", languages);
         view.assign("projects", projects);
         view.assign("documents", allDocData);
@@ -59,9 +59,9 @@ class DocumentController : AdminBaseController {
         int projectId = initInt("project_id", 0, "GET");
         conditions["project_id"] = projectId.to!string;
         int page = initInt("page", 1, "GET");
-        auto languages = (new LanguageRepository).findAll();
-        auto projects = (new ProjectMiniRepository).findAll();
-        auto allDocData = pageToJson!DocBase((new DocBaseRepository).findPageAll(conditions, page, 20));
+        auto languages = (new LanguageRepository(_cManager)).findAll();
+        auto projects = (new ProjectMiniRepository(_cManager)).findAll();
+        auto allDocData = pageToJson!DocBase((new DocBaseRepository(_cManager)).findPageAll(conditions, page, 20));
         view.assign("languages", languages);
         view.assign("projects", projects);
         view.assign("documents", allDocData);
@@ -78,7 +78,7 @@ class DocumentController : AdminBaseController {
      */
     @Action Response edit(DocumentForm documentForm){
 
-        auto docBaseRepo = new DocBaseRepository();
+        auto docBaseRepo = new DocBaseRepository(_cManager);
 
         if(request.methodAsString() == HttpMethod.POST.asString()){
 
@@ -124,8 +124,8 @@ class DocumentController : AdminBaseController {
             docBaseRepo.makeCurrect(postData.project_id);
             _tmpCache.getTopMenu(true);
             if(docId){
-                int[int] newNodes = (new NodeRepository).copyNode(realId, docId, now);
-                (new ItemRepository).copyItem(newNodes, now);
+                int[int] newNodes = (new NodeRepository(_cManager)).copyNode(realId, docId, now);
+                (new ItemRepository(_cManager)).copyItem(newNodes, now);
             }
 
             if(postId > 0)
@@ -148,8 +148,8 @@ class DocumentController : AdminBaseController {
             editType = "edit";
         }
         view.assign("editType", editType);
-        auto languages = (new LanguageRepository).findAll();
-        auto projects = (new ProjectRepository).findAll();
+        auto languages = (new LanguageRepository(_cManager)).findAll();
+        auto projects = (new ProjectRepository(_cManager)).findAll();
         view.assign("projects", projects);
         view.assign("languages", languages);
         return new Response(request)
@@ -162,7 +162,7 @@ class DocumentController : AdminBaseController {
      *  ---- update: 增加 sussessMessages / errorMessages 的提示信息
      */
     @Action Response del(string id, string type = "logic"){
-        auto docBaseRep = new DocBaseRepository();
+        auto docBaseRep = new DocBaseRepository(_cManager);
         int docId;
         int projectId = 0;
         try {
@@ -170,7 +170,7 @@ class DocumentController : AdminBaseController {
             auto delData = docBaseRep.findById(docId);
             projectId = delData.project_id;
             if(type == "Physical"){
-                auto num = (new NodeRepository).countAllByDocId(docId);
+                auto num = (new NodeRepository(_cManager)).countAllByDocId(docId);
                 if(num == 0)
                     docBaseRep.removeById(docId);
                 

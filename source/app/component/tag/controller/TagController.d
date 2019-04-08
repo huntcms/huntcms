@@ -13,7 +13,7 @@ class TagController : AdminBaseController
     @Action string list()
     {
         uint page = request.get!uint("page" , 0);
-        auto repository = new TagRepository();
+        auto repository = new TagRepository(_cManager);
         auto alldata = pageToJson!Tag(repository.findAll(new Pageable(page , 20)));
         logDebug("tags : ", alldata);
         view.assign("tags", alldata);
@@ -26,7 +26,7 @@ class TagController : AdminBaseController
         if (request.methodAsString() == HttpMethod.POST.asString())
         {
             int now = cast(int) time();
-            auto tr = new TagRepository;
+            auto tr = new TagRepository(_cManager);
             Tag tag = new Tag;
             tag.name = request.post("name");
 
@@ -46,7 +46,7 @@ class TagController : AdminBaseController
             if (saveRes !is null)
                 return new RedirectResponse(request, "/admincp/tag/tags");
         }
-        auto repository = new TagRepository;
+        auto repository = new TagRepository(_cManager);
 
         Response response = new Response(request);
 		response.setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString());
@@ -57,7 +57,7 @@ class TagController : AdminBaseController
     @Action string edit(int id)
     {
         logDebug(" edit id : ", id, "  get id : ", request.get("id"));
-        auto repository = new TagRepository;
+        auto repository = new TagRepository(_cManager);
         view.assign("tag", repository.find(id));
 
         return view.render("tag/tag/edit");
@@ -65,7 +65,7 @@ class TagController : AdminBaseController
 
     @Action Response del(int id)
     {
-        (new TagRepository).removeById(id);
+        (new TagRepository(_cManager)).removeById(id);
         return new RedirectResponse(request, "/admincp/tag/tags");
     }
 }

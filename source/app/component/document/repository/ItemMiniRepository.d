@@ -8,30 +8,21 @@ import hunt.logging;
 
 class ItemMiniRepository : EntityRepository!(ItemMini, int){
 
-    // private EntityManager _entityManager;
-
-    // this(EntityManager manager = null){
-    //     super(manager);
-    //     _entityManager = manager is null ? createEntityManager() : manager;
-    // }
+    this(EntityManager manager = null) {
+        super(manager is null ? createEntityManager() : manager);
+    }
 
     ItemMini[] findAllByStrIds(string ids){
-        // return _entityManager.createQuery!(ItemMini)("SELECT im FROM ItemMini im WHERE im.node_id in (:node_id) ")
-            // .setParameter("node_id", ids)
-        EntityManager _entityManager = createEntityManager();
-        auto res = _entityManager.createQuery!(ItemMini)("SELECT im FROM ItemMini im WHERE im.node_id in ( " ~ ids ~ " ) ")
+        auto res = _manager.createQuery!(ItemMini)("SELECT im FROM ItemMini im WHERE im.node_id in ( " ~ ids ~ " ) ")
             .getResultList();
-        _entityManager.close();    
         return res;
     }
 
     ItemMini[int] findAllByNodeIds(string ids, int languageId){
         ItemMini[int] items;
-        EntityManager _entityManager = createEntityManager();
-        auto itemMinis = _entityManager.createQuery!(ItemMini)("SELECT im FROM ItemMini im WHERE im.node_id in ( " ~ ids ~ " ) and im.language_id = :languageId ")
+        auto itemMinis = _manager.createQuery!(ItemMini)("SELECT im FROM ItemMini im WHERE im.node_id in ( " ~ ids ~ " ) and im.language_id = :languageId ")
             .setParameter("languageId", languageId)
-            .getResultList(); 
-        _entityManager.close();    
+            .getResultList();  
         foreach(item; itemMinis){
             items[item.node_id] = item;
         }
@@ -39,14 +30,12 @@ class ItemMiniRepository : EntityRepository!(ItemMini, int){
     }
 
     ItemMini[] findItemsByNodeIds(string ids, int languageId){
-        EntityManager _entityManager = createEntityManager();
         ItemMini[] res;
         if(ids){
-            res = _entityManager.createQuery!(ItemMini)("SELECT im FROM ItemMini im WHERE im.node_id in ( " ~ ids ~ " ) and im.language_id = :languageId ")
+            res = _manager.createQuery!(ItemMini)("SELECT im FROM ItemMini im WHERE im.node_id in ( " ~ ids ~ " ) and im.language_id = :languageId ")
                 .setParameter("languageId", languageId)
                 .getResultList();
         }
-        _entityManager.close();    
         return res; 
     }
 
@@ -55,12 +44,9 @@ class ItemMiniRepository : EntityRepository!(ItemMini, int){
     }
 
     void delItemsByNodeIds(int nodeId){
-        EntityManager _entityManager = createEntityManager();
-        auto del = _entityManager.createQuery!(ItemMini)(" delete ItemMini im where im.node_id = :nodeId ")
+        auto del = _manager.createQuery!(ItemMini)(" delete ItemMini im where im.node_id = :nodeId ")
             .setParameter("nodeId", nodeId)
 	        .exec();
-        // logInfo(del);
-        _entityManager.close();    
     }
     
 }

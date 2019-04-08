@@ -22,7 +22,7 @@ class PromotionController : AdminBaseController
     @Action string list()
     {
         uint page = request.get!uint("page" , 0);
-        auto repository = new PromotionRepository();
+        auto repository = new PromotionRepository(_cManager);
         auto alldata = pageToJson!Promotion(repository.findAll(new Pageable(page , 20)));
         //logDebug("menus : ", alldata);
         view.assign("promotions", alldata);
@@ -35,7 +35,7 @@ class PromotionController : AdminBaseController
         if (request.methodAsString() == HttpMethod.POST.asString())
         {
             int now = cast(int) time();
-            auto pr = new PromotionRepository;
+            auto pr = new PromotionRepository(_cManager);
             Promotion promotion = new Promotion;
             promotion.title = request.post("title");
             promotion.subtitle = request.post("subtitle");
@@ -86,7 +86,7 @@ class PromotionController : AdminBaseController
 
     @Action Response edit(int id)
     {
-        auto repository = new PromotionRepository;
+        auto repository = new PromotionRepository(_cManager);
         view.assign("promotion", repository.find(id));
 
         Response response = new Response(request);
@@ -97,7 +97,7 @@ class PromotionController : AdminBaseController
 
     @Action Response del(int id)
     {
-        (new PromotionRepository).removeById(id);
+        (new PromotionRepository(_cManager)).removeById(id);
         return new RedirectResponse(request, "/admincp/portal/promotions");
     }
 }

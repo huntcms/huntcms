@@ -10,6 +10,8 @@ import app.component.system.model.User;
 import std.json;
 import std.algorithm;
 import hunt.http.codec.http.model.HttpMethod;
+import hunt.framework.security.acl.Permission;
+import hunt.entity.DefaultEntityManagerFactory;
 
 class AdminBaseController : Controller
 {
@@ -20,23 +22,25 @@ class AdminBaseController : Controller
 	private string[] _alertErrorMessages;
 
 	public TmpCache _tmpCache;
+    public EntityManager _cManager;
 
     this() 
 	{
         _tmpCache = new TmpCache();
+        _cManager = defaultEntityManagerFactory().createEntityManager();
     }
 
     override bool before() {
 
 		this.flashMessages();
         logWarning(request.elapsed());		
-		auto repository = new MenuRepository;
+		auto repository = new MenuRepository(_cManager);
 		auto cache = Application.getInstance().cache();
 		auto userInfo = Application.getInstance().accessManager.user;
 
 		if (userInfo !is null) {
 			string permissionStr;
-			User nowUser = (new UserRepository).find(userInfo.id);
+			User nowUser = (new UserRepository(_cManager)).find(userInfo.id);
 			view.assign("nowUser", nowUser);
 
 			auto roles = userInfo.roles;
@@ -71,6 +75,10 @@ class AdminBaseController : Controller
 
 	override bool after() {
 		logWarning("---running after----");
+		///请求结束自动销毁本次数据库连接
+		if(_cManager){
+			_cManager.close();
+		}
         logWarning(request.elapsed());
 		return true;
 	}

@@ -17,15 +17,18 @@ import app.component.document.model.Node;
 import app.component.document.repository.DocumentRepository;
 import app.component.document.model.Document;
 import app.component.document.helper.TopMenu;
+import hunt.entity.DefaultEntityManagerFactory;
 
 class BaseController : Controller{
 
     private ConfigBuilder _configFront;
     public UCache _cache;
+    public EntityManager _cManager;
 
     this(){
         _configFront = configManager().config("hunt");
         _cache = Application.getInstance().cache();
+        _cManager = defaultEntityManagerFactory().createEntityManager();
     }
 
     override bool before() {
@@ -36,6 +39,10 @@ class BaseController : Controller{
     }
 
     override bool after(){
+        ///请求结束自动销毁本次数据库连接
+        if(_cManager){
+            _cManager.close();
+        }
         return true;
     }
 
@@ -54,8 +61,8 @@ class BaseController : Controller{
         if(!result || isReset){
 
             logInfo("非缓存数据-" ~ cacheKey);
-            auto currect = (new DocumentRepository).currectList();
-            auto languages = (new LanguageRepository).findAll();
+            auto currect = (new DocumentRepository(_cManager)).currectList();
+            auto languages = (new LanguageRepository(_cManager)).findAll();
 
             foreach(doc; currect){
                 TopMenu tmp = new TopMenu();
@@ -65,7 +72,7 @@ class BaseController : Controller{
 
                     if(language.id == doc.main_language){
                         tmp.url = "docs/" ~ doc.project.sign ~ "-current/";
-                        auto sign = (new NodeRepository).findFirstNodeSignByDocId(doc.id);
+                        auto sign = (new NodeRepository(_cManager)).findFirstNodeSignByDocId(doc.id);
                         if(sign)
                             tmp.url ~= sign.sign_key;
                         continue;

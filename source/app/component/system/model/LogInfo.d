@@ -20,6 +20,8 @@ class LogInfo : Model
 
     string params;
 
+    string ipaddr;
+
     string type;
 
     // timestamp

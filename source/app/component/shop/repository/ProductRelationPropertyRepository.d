@@ -9,6 +9,11 @@ public import app.component.shop.model.ShopPropertyOption;
 
 class ProductRelationPropertyRepository:EntityRepository!(ProductRelationProperty ,int)
 {
+
+    this(EntityManager manager = null) {
+        super(manager is null ? createEntityManager() : manager);
+    }
+    
     ProductRelationProperty[] findAllByProdcutId(int productId)
     {
         return findAll(new Condition(" %s =  %s " , Field.product_id , productId));

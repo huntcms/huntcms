@@ -18,8 +18,8 @@ class VersionController : Controller
         message.description = "test version";
         message.released = 1234567890;
 
-        auto res = new JsonResponse(request);
-        res.json(toJson(message));
+        auto res = new Response(request);
+        // res.json(toJson(message));
 
         return res;
     }

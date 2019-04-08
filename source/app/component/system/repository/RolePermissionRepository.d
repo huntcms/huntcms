@@ -9,19 +9,17 @@ import app.component.system.repository.PermissionRepository;
 
 class RolePermissionRepository : EntityRepository!(RolePermission, int)
 {
-    private EntityManager _entityManager;
 
     this(EntityManager manager = null) {
-        super(manager);
-        _entityManager = manager is null ? createEntityManager() : manager;
+        super(manager is null ? createEntityManager() : manager);
     }
 
     Permission[] getRolePermissions(int roleId) {
-        RolePermission[] rolePermissions = _entityManager.createQuery!(RolePermission)(" SELECT rp FROM RolePermission rp WHERE rp.role_id = :roleId ")
+        RolePermission[] rolePermissions = _manager.createQuery!(RolePermission)(" SELECT rp FROM RolePermission rp WHERE rp.role_id = :roleId ")
             .setParameter("roleId", roleId)
             .getResultList();
         Permission[] permissions;
-        auto permissionRepository = new PermissionRepository();
+        auto permissionRepository = new PermissionRepository(_manager);
         foreach (rolePermission; rolePermissions) {
             permissions ~= permissionRepository.findById(rolePermission.permission_id);
         }
@@ -29,7 +27,7 @@ class RolePermissionRepository : EntityRepository!(RolePermission, int)
     }
 
     int[] getRolePermissionIds(int roleId){
-        RolePermission[] rolePermissions = _entityManager.createQuery!(RolePermission)(" SELECT rp FROM RolePermission rp WHERE rp.role_id = :roleId ")
+        RolePermission[] rolePermissions = _manager.createQuery!(RolePermission)(" SELECT rp FROM RolePermission rp WHERE rp.role_id = :roleId ")
             .setParameter("roleId", roleId)
             .getResultList();
         int[] ids;
@@ -53,7 +51,7 @@ class RolePermissionRepository : EntityRepository!(RolePermission, int)
     }
 
     bool removes(int roleId) {
-        RolePermission[] rolePermissions = _entityManager.createQuery!(RolePermission)(" SELECT rp FROM RolePermission rp WHERE rp.role_id = :roleId ")
+        RolePermission[] rolePermissions = _manager.createQuery!(RolePermission)(" SELECT rp FROM RolePermission rp WHERE rp.role_id = :roleId ")
             .setParameter("roleId", roleId)
             .getResultList();
         this.removeAll(rolePermissions);

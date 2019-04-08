@@ -40,10 +40,10 @@ class ProductController : AdminBaseController
         {
             conditions[key] = decodeComponent(condition);
         }
-        auto productRepository = new ProductRepository();
+        auto productRepository = new ProductRepository(_cManager);
         auto list = productRepository.adminList(conditions, limit);
-        auto tpr = new TagProductRepository;
-        auto tr  = new TagRepository;
+        auto tpr = new TagProductRepository(_cManager);
+        auto tr  = new TagRepository(_cManager);
         auto tagproducts = tpr.findAll();
         auto tags = tr.findAll();
         view.assign("data", list["data"]);
@@ -72,11 +72,11 @@ class ProductController : AdminBaseController
 
     @Action Response add()
     {
-        auto pcRepository = new ProductCategoryRepository();
+        auto pcRepository = new ProductCategoryRepository(_cManager);
         if (request.methodAsString() == HttpMethod.POST.asString())
         {
             auto productModel = new Product();
-            auto productRepository = new ProductRepository();
+            auto productRepository = new ProductRepository(_cManager);
             int time = cast(int) time();
 
             productModel.pc_picurl = request.post("pc_picurl");
@@ -101,7 +101,7 @@ class ProductController : AdminBaseController
             productModel.updated  = time;
             productModel.created  = time;
 
-            auto tr = new TagRepository;
+            auto tr = new TagRepository(_cManager);
             auto tags = tr.findAll();
             int[] tagarr;
             tagarr.length = tags.length; 
@@ -112,7 +112,7 @@ class ProductController : AdminBaseController
                 tagarr[key] = request.post("tag"~tag_id , "").to!int;
             }
 
-            auto tpr = new TagProductRepository;
+            auto tpr = new TagProductRepository(_cManager);
             TagProduct tp = new TagProduct;
 
             auto save = productRepository.save(productModel);
@@ -130,7 +130,7 @@ class ProductController : AdminBaseController
                 view.assign("errorMessages", ["操作失败"]);
             }
         }
-        auto tr = new TagRepository;
+        auto tr = new TagRepository(_cManager);
         auto tags = tr.findAll();
         view.assign("tags", tags);
         view.assign("categorys", pcRepository.all());
@@ -143,8 +143,8 @@ class ProductController : AdminBaseController
 
     @Action Response edit(int id, string action)
     {
-        auto productRepository = new ProductRepository();
-        auto productCategory = new ProductCategoryRepository();
+        auto productRepository = new ProductRepository(_cManager);
+        auto productCategory = new ProductCategoryRepository(_cManager);
         auto productModel = productRepository.find(id);
         
         JSONValue picurls;
@@ -159,7 +159,7 @@ class ProductController : AdminBaseController
             {
 
                 ProductRelationProperty[] productRelationPropertys;
-                auto productRelationPropertyRepository = new ProductRelationPropertyRepository();
+                auto productRelationPropertyRepository = new ProductRelationPropertyRepository(_cManager);
                 // auto params = request.postForm.formMap();
                 int time = cast(int) time();
                 logInfo(id);
@@ -197,12 +197,12 @@ class ProductController : AdminBaseController
                     productRelationPropertyRepository.saveAll(productRelationPropertys);
                 }
             }
-            auto propertyIds = (new TypeRelationPropertyRepository).findAllByPropertyIds(productCategoryModel.type_id);
-            auto propertys = (new ShopPropertyRepository).findAllByIds(propertyIds);
-            auto propertyOptions = (new PropertyOptionRepository).findAllByPropertyIds(propertyIds);
-            view.assign("productPropertyInputs",  (new ProductRelationPropertyRepository).findInputsByProductId(id));
+            auto propertyIds = (new TypeRelationPropertyRepository(_cManager)).findAllByPropertyIds(productCategoryModel.type_id);
+            auto propertys = (new ShopPropertyRepository(_cManager)).findAllByIds(propertyIds);
+            auto propertyOptions = (new PropertyOptionRepository(_cManager)).findAllByPropertyIds(propertyIds);
+            view.assign("productPropertyInputs",  (new ProductRelationPropertyRepository(_cManager)).findInputsByProductId(id));
             view.assign("propertys",  propertys);
-            view.assign("propertyOptions",  (new ProductRelationPropertyRepository).findChecked(id, propertyOptions));
+            view.assign("propertyOptions",  (new ProductRelationPropertyRepository(_cManager)).findChecked(id, propertyOptions));
             view.assign("category",  productCategoryModel);
             view.assign("data",  productModel);
 
@@ -236,7 +236,7 @@ class ProductController : AdminBaseController
                 }
                 productModel.picurls = toJSON(picurlarr).toString;
 
-                auto tr = new TagRepository;
+                auto tr = new TagRepository(_cManager);
                 auto tags = tr.findAll();
                 int[] tagarr;
                 tagarr.length = tags.length;
@@ -247,7 +247,7 @@ class ProductController : AdminBaseController
                         tagarr[key] = request.post("tag"~tag_id , "").to!int;
                 }
 
-                auto tpr = new TagProductRepository;
+                auto tpr = new TagProductRepository(_cManager);
                 TagProduct tp = new TagProduct;
                 tpr.removes(id.to!int);
 
@@ -267,9 +267,9 @@ class ProductController : AdminBaseController
                     view.assign("errorMessages", ["操作失败"]);
                 }
             }
-            auto tr = new TagRepository;
+            auto tr = new TagRepository(_cManager);
             auto tags = tr.findAll();
-            auto tpr  = new TagProductRepository;
+            auto tpr  = new TagProductRepository(_cManager);
 
             view.assign("tags", tags);
             view.assign("tagproducts", tpr.getTagProduct(id));
@@ -286,10 +286,10 @@ class ProductController : AdminBaseController
 
     @Action Response del(int id)
     {
-        auto productRepository = new ProductRepository();
+        auto productRepository = new ProductRepository(_cManager);
         auto productModel = productRepository.find(id);
         productRepository.remove(productModel);
-        auto tpr = new TagProductRepository;
+        auto tpr = new TagProductRepository(_cManager);
         tpr.removes(id.to!int); 
         return new RedirectResponse(request, url("admin:shop.product.list"));
     }

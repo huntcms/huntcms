@@ -45,7 +45,7 @@ class Test2Controller : BaseController{
         Banner[] allDatas;
         if(!cacheData || isReset){
             logInfo("非缓存-banner");
-            allDatas = (new BannerRepository).findAllData();
+            allDatas = (new BannerRepository(_cManager)).findAllData();
             _cache.put("banners", allDatas, 86400);//缓存1天
         }else{
             logInfo("缓存-banner");

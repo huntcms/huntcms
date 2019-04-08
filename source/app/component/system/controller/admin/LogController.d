@@ -27,7 +27,7 @@ class LogController : AdminBaseController
     @Action string list()
     {
         uint page = request.get!uint("page" , 0);
-        auto repository = new LogInfoRepository();
+        auto repository = new LogInfoRepository(_cManager);
         auto alldata = pageToJson!LogInfo(repository.findAll(new Pageable(page , 20)));
         logDebug("page logs : ", alldata);
         view.assign("logs", alldata);
@@ -38,7 +38,7 @@ class LogController : AdminBaseController
 
     @Action Response del(int id)
     {
-        (new LogInfoRepository()).removeById(id);
+        (new LogInfoRepository(_cManager)).removeById(id);
         return new RedirectResponse(request, "/admincp/system/logs");
         // return new RedirectResponse(request, url("system.log.list", null, "admin"));
     }

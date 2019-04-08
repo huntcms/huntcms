@@ -8,12 +8,9 @@ import hunt.logging;
 
 class NodeRepository : EntityRepository!(Node, int){
 
-    // private EntityManager _entityManager;
-
-    // this(EntityManager manager = null){
-    //     super(manager);
-    //     _entityManager = manager is null ? createEntityManager() : manager;
-    // }
+    this(EntityManager manager = null) {
+        super(manager is null ? createEntityManager() : manager);
+    }
 
     Page!(Node) findPageAll(string[string] conditions, int page, int limit) {
         string strConditions = " 1 ";
@@ -30,12 +27,10 @@ class NodeRepository : EntityRepository!(Node, int){
     }
 
     string[] findIdsByPid(int docId, int id){
-        EntityManager _entityManager = createEntityManager();
-        auto nodes = _entityManager.createQuery!(Node)("SELECT n FROM Node n WHERE n.parent_id = :parentId AND n.document_id = :documentId ")
+        auto nodes = _manager.createQuery!(Node)("SELECT n FROM Node n WHERE n.parent_id = :parentId AND n.document_id = :documentId ")
             .setParameter("documentId", docId)
             .setParameter("parentId", id)
-            .getResultList();
-        _entityManager.close();    
+            .getResultList(); 
         string[] ids;
         foreach (node; nodes) {
             ids ~= (node.id).to!string;
@@ -44,60 +39,46 @@ class NodeRepository : EntityRepository!(Node, int){
     }
 
     Node[] findAllByStrIds(string ids){
-        EntityManager _entityManager = createEntityManager();
-        auto res = _entityManager.createQuery!(Node)("SELECT n FROM Node n WHERE n.parent_id in ( " ~ ids ~ " ) OR n.id in ( " ~ ids ~ " ) ")
-            .getResultList();
-        _entityManager.close();    
+        auto res = _manager.createQuery!(Node)("SELECT n FROM Node n WHERE n.parent_id in ( " ~ ids ~ " ) OR n.id in ( " ~ ids ~ " ) ")
+            .getResultList(); 
         return res;
     }
 
     Node[] findAllByDocId(int docId){
-        EntityManager _entityManager = createEntityManager();
-        auto res = _entityManager.createQuery!(Node)(" SELECT n FROM Node n WHERE n.document_id = :documentId ")
+        auto res = _manager.createQuery!(Node)(" SELECT n FROM Node n WHERE n.document_id = :documentId ")
             .setParameter("documentId", docId)
             .getResultList();
-        _entityManager.close();    
         return res;
     }
 
     Node[] findAllSortByDocId(int docId){
-        EntityManager _entityManager = createEntityManager();
-        auto res = _entityManager.createQuery!(Node)(" SELECT n FROM Node n WHERE n.document_id = :documentId AND n.status = 1 ORDER BY n.sort=0 ASC, n.sort ")
+        auto res = _manager.createQuery!(Node)(" SELECT n FROM Node n WHERE n.document_id = :documentId AND n.status = 1 ORDER BY n.sort=0 ASC, n.sort ")
             .setParameter("documentId", docId)
             .getResultList();
-        _entityManager.close();    
         return res;
     }
 
     Node findCurrectNode(string sign, int docId){
-        EntityManager _entityManager = createEntityManager();
-        auto res = _entityManager.createQuery!(Node)(" SELECT p FROM Node p WHERE p.sign_key = :sign AND p.document_id = :docId AND p.status = 1 ")
+        auto res = _manager.createQuery!(Node)(" SELECT p FROM Node p WHERE p.sign_key = :sign AND p.document_id = :docId AND p.status = 1 ")
             .setParameter("sign", sign)
             .setParameter("docId", docId)
             .getSingleResult();
-        _entityManager.close();    
         return res;
     }
 
     Node findFirstNodeSignByDocId(int docId){
-        EntityManager _entityManager = createEntityManager();
-        auto res = _entityManager.createQuery!(Node)(" SELECT p FROM Node p WHERE p.document_id = :docId AND p.status = 1 ORDER BY sort=0 ASC,sort ")
+        auto res = _manager.createQuery!(Node)(" SELECT p FROM Node p WHERE p.document_id = :docId AND p.status = 1 ORDER BY sort=0 ASC,sort ")
             .setParameter("docId", docId)
             .getSingleResult();
-            
-        _entityManager.close();    
         return res;
     }
 
     Node[][int] findAllNodesByDocId(int docId){
 
         Node[][int] initNodes;
-        EntityManager _entityManager = createEntityManager();
-        auto nodes = _entityManager.createQuery!(Node)(" SELECT n FROM Node n WHERE n.status = 1 AND n.document_id = :docId ")
+        auto nodes = _manager.createQuery!(Node)(" SELECT n FROM Node n WHERE n.status = 1 AND n.document_id = :docId ")
             .setParameter("docId", docId)
-            .getResultList();
-
-        _entityManager.close();    
+            .getResultList(); 
         foreach(node; nodes){
             initNodes[node.parent_id] ~= node;
         }
@@ -106,12 +87,9 @@ class NodeRepository : EntityRepository!(Node, int){
 
     string findAllIdsByDocId(int docId){
         string resIds;
-        EntityManager _entityManager = createEntityManager();
-        auto nodes = _entityManager.createQuery!(Node)(" SELECT n FROM Node n WHERE n.status = 1 AND n.document_id = :docId ")
+        auto nodes = _manager.createQuery!(Node)(" SELECT n FROM Node n WHERE n.status = 1 AND n.document_id = :docId ")
             .setParameter("docId", docId)
             .getResultList();
-            
-        _entityManager.close();    
         foreach(k, node; nodes){
             if(k > 0)
                 resIds ~= ", ";
@@ -121,9 +99,7 @@ class NodeRepository : EntityRepository!(Node, int){
     }
 
     int[int] copyNode(int newDocId, int oldDocId, int now){
-        
-        EntityManager _entityManager = createEntityManager();
-        auto oldNodes = _entityManager.createQuery!(Node)(" SELECT n FROM Node n WHERE n.document_id = :documentId ORDER BY n.parent_id ASC ")
+        auto oldNodes = _manager.createQuery!(Node)(" SELECT n FROM Node n WHERE n.document_id = :documentId ORDER BY n.parent_id ASC ")
             .setParameter("documentId", oldDocId)
             .getResultList();
 
@@ -149,7 +125,6 @@ class NodeRepository : EntityRepository!(Node, int){
             res[newId] = oldNode.id;
             tmp[oldNode.id] = newId;
         }
-        _entityManager.close();    
         return res;
     }
 

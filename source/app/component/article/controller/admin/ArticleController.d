@@ -10,6 +10,7 @@ import app.component.tag.repository.TagRepository;
 import app.component.article.repository.TagArticleRepository;
 import app.lib.controller.AdminBaseController;
 import app.component.system.helper.Utils;
+import app.component.system.controller.admin.LogMiddleware;
 import app.lib.yun.YunUpLoad;
 import std.digest.sha;
 import std.file;
@@ -28,13 +29,14 @@ class ArticleController : AdminBaseController
     this()
     {
         super();      
+        this.addMiddleware(new LogMiddleware(_cManager));
     }
 
     @Action string list()
     {    
-        auto repository = new ArticleRepository;
-        auto tae = new TagArticleRepository;
-        auto tr  = new TagRepository;
+        auto repository = new ArticleRepository(_cManager);
+        auto tae = new TagArticleRepository(_cManager);
+        auto tr  = new TagRepository(_cManager);
         auto alldata = repository.findAll();
         auto tagarticles = tae.findAll();
         auto tags = tr.findAll();
@@ -53,9 +55,9 @@ class ArticleController : AdminBaseController
             int now = cast(int) time();
 
             Article art = new Article;
-            ArticleRepository are = new ArticleRepository;
+            ArticleRepository are = new ArticleRepository(_cManager);
 
-            art.category = (new CategoryRepository).findById( to!int(request.post("category","0")) );    
+            art.category = (new CategoryRepository((_cManager))).findById( to!int(request.post("category","0")) );    
             art.title = request.post("title");      
             art.summary = request.post("summary");   
             art.author = request.post("author"); 
@@ -64,7 +66,7 @@ class ArticleController : AdminBaseController
             art.status = to!short(request.post("customRadio","0"));  
             art.picture = request.post("imageFile");
 
-            auto tr = new TagRepository;
+            auto tr = new TagRepository(_cManager);
             auto tags = tr.findAll();
             int[] tagarr;
             tagarr.length = tags.length; 
@@ -94,7 +96,7 @@ class ArticleController : AdminBaseController
 
             int article_id = (are.save(art)).id;
             
-            auto tae = new TagArticleRepository;
+            auto tae = new TagArticleRepository(_cManager);
             if(id.length != 0)
             {
                 tae.removes(id.to!int);    
@@ -109,9 +111,9 @@ class ArticleController : AdminBaseController
             }
             return new RedirectResponse(request, "/admincp/article/articles");
         }
-        auto cr = new CategoryRepository;
+        auto cr = new CategoryRepository(_cManager);
         auto categories = cr.findAll();
-        auto tr = new TagRepository;
+        auto tr = new TagRepository(_cManager);
         auto tags = tr.findAll();
         view.assign("categories", categories);
         view.assign("tags", tags);
@@ -123,13 +125,13 @@ class ArticleController : AdminBaseController
 
     @Action string edit(int id)
     {   
-        auto article = new ArticleRepository;
+        auto article = new ArticleRepository(_cManager);
         view.assign("article", article.find(id));
-        auto cr = new CategoryRepository;
+        auto cr = new CategoryRepository(_cManager);
         auto categories = cr.findAll();
-        auto tr = new TagRepository;
+        auto tr = new TagRepository(_cManager);
         auto tags = tr.findAll();
-        auto tar  = new TagArticleRepository;
+        auto tar  = new TagArticleRepository(_cManager);
 
         view.assign("categories", categories);      
         view.assign("tags", tags);
@@ -140,8 +142,8 @@ class ArticleController : AdminBaseController
 
     @Action Response del(int id)
     {
-        (new ArticleRepository).removeById(id);
-        auto tar = new TagArticleRepository;
+        (new ArticleRepository(_cManager)).removeById(id);
+        auto tar = new TagArticleRepository(_cManager);
         tar.removes(id.to!int);  
         return new RedirectResponse(request, "/admincp/article/articles");
     }

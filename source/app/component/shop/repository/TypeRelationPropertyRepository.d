@@ -5,6 +5,11 @@ public import app.component.shop.model.ShopProductTypeRelationProperty;
 
 class TypeRelationPropertyRepository:EntityRepository!(ShopProductTypeRelationProperty ,int)
 {
+
+    this(EntityManager manager = null) {
+        super(manager is null ? createEntityManager() : manager);
+    }
+    
     ShopProductTypeRelationProperty[] findAllByType(int type_id)
     {
         auto sortCondition = new Sort();

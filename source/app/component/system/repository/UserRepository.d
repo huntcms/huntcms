@@ -8,15 +8,13 @@ import std.json;
 
 class UserRepository : EntityRepository!(User, int)
 {
-    private EntityManager _entityManager;
 
     this(EntityManager manager = null) {
-        super(manager);
-        _entityManager = manager is null ? createEntityManager() : manager;
+        super(manager is null ? createEntityManager() : manager);
     }
 
     User findByEmail(string email) { 
-        return _entityManager.createQuery!(User)("SELECT u FROM User u WHERE u.email = :email ")
+        return _manager.createQuery!(User)("SELECT u FROM User u WHERE u.email = :email ")
             .setParameter("email", email)
             .getSingleResult();
     }

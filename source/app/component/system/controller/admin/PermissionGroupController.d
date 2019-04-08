@@ -23,13 +23,13 @@ class PermissionGroupController : AdminBaseController
     this()
     {
         super();   
-        this.addMiddleware(new LogMiddleware);   
+        this.addMiddleware(new LogMiddleware(_cManager));   
     }
 
     @Action string list()
     {
         uint page = request.get!uint("page" , 1);
-        auto repository = new PermissionGroupRepository();
+        auto repository = new PermissionGroupRepository(_cManager);
         int limit = 20 ;  // 每页显示多少条
         JSONValue alldata = pageToJson!PermissionGroup(repository.findAll(new Pageable((page-1 < 0 ? 0 : page-1 ) , limit)));
         //logDebug("permissions : ",alldata);
@@ -46,7 +46,7 @@ class PermissionGroupController : AdminBaseController
 
         if (request.methodAsString() == HttpMethod.POST.asString()){
             int now = cast(int) time();
-            auto pr = new PermissionGroupRepository();
+            auto pr = new PermissionGroupRepository(_cManager);
             PermissionGroup pm = new PermissionGroup;
             pm.sign = request.post("sign");
             pm.title = request.post("title");
@@ -78,7 +78,7 @@ class PermissionGroupController : AdminBaseController
     @Action string edit(int id)
     {
         logDebug(" edit id : ", id, "  get id : ", request.get("id"));
-        auto repository = new PermissionGroupRepository();
+        auto repository = new PermissionGroupRepository(_cManager);
         view.assign("group", repository.find(request.get("id").to!int));
 
         return view.render("system/permissiongroup/edit");
@@ -86,7 +86,7 @@ class PermissionGroupController : AdminBaseController
 
     @Action Response del(int id)
     {
-        (new PermissionGroupRepository()).removeById(request.get("id").to!int);
+        (new PermissionGroupRepository(_cManager)).removeById(request.get("id").to!int);
             //return new RedirectResponse(request, url("system.permissiongroup.list", null, "admin"));
             return new RedirectResponse(request, "/admincp/system/permission/groups");
     }

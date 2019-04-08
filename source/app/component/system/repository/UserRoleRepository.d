@@ -12,16 +12,13 @@ import std.algorithm;
 class UserRoleRepository : EntityRepository!(UserRole, int)
 {
 
-    private EntityManager _entityManager;
-
     this(EntityManager manager = null) {
-        super(manager);
-        _entityManager = manager is null ? createEntityManager() : manager;
+        super(manager is null ? createEntityManager() : manager);
     }
 
     int[] getUserRoleIds(int userId) 
     {
-        auto userRoles = _entityManager.createQuery!(UserRole)(" SELECT ur FROM UserRole ur WHERE ur.user_id = :userId ")
+        auto userRoles = _manager.createQuery!(UserRole)(" SELECT ur FROM UserRole ur WHERE ur.user_id = :userId ")
             .setParameter("userId", userId)
             .getResultList();
         int[] ids;
@@ -47,7 +44,7 @@ class UserRoleRepository : EntityRepository!(UserRole, int)
     }
 
     bool removes(int userId) {
-        auto query = _entityManager.createQuery!(UserRole)(" SELECT ur FROM UserRole ur WHERE ur.user_id = :userId ");
+        auto query = _manager.createQuery!(UserRole)(" SELECT ur FROM UserRole ur WHERE ur.user_id = :userId ");
         query.setParameter("userId", userId);
         UserRole[] userRoles = query.getResultList();
         this.removeAll(userRoles);

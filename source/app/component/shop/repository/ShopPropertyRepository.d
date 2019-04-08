@@ -9,20 +9,17 @@ import hunt.logging;
 class ShopPropertyRepository: EntityRepository!(ShopProperty, int)
 {
 
-    private EntityManager _entityManager;
-
     this(EntityManager manager = null) {
-        super(manager);
-        _entityManager = manager is null ? createEntityManager() : manager;
+        super(manager is null ? createEntityManager() : manager);
     }
-    
+
     ShopProperty[] findAllByIds(int[] ids)
     {
         string strIds = to!string(ids);
         strIds = strIds[1 .. $ - 1];
         logInfo(strIds);
         // return findAll(new Condition(" %s in ( %s ) order by field(%s, %s)", Field.id,strIds, Field.id, strIds));
-        return _entityManager.createQuery!(ShopProperty)(" SELECT sp FROM ShopProperty sp WHERE sp.id in (" ~ strIds ~ ") ORDER BY sp.id ASC ")
+        return _manager.createQuery!(ShopProperty)(" SELECT sp FROM ShopProperty sp WHERE sp.id in (" ~ strIds ~ ") ORDER BY sp.id ASC ")
             .getResultList();
     }
 }

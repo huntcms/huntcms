@@ -31,7 +31,7 @@ class MenuController : AdminBaseController
     @Action string list()
     {
         uint page = request.get!uint("page" , 0);
-        auto repository = new MenuRepository();
+        auto repository = new MenuRepository(_cManager);
         auto alldata = pageToJson!Menu(repository.findAll(new Pageable(page , 20, repository.Field.sort , OrderBy.ASC)));
         //logDebug("menus : ", alldata);
         view.assign("menus", alldata);
@@ -44,7 +44,7 @@ class MenuController : AdminBaseController
         if (request.methodAsString() == HttpMethod.POST.asString())
         {
             int now = cast(int) time();
-            auto mr = new MenuRepository;
+            auto mr = new MenuRepository(_cManager);
             Menu mn = new Menu;
             mn.pid = request.post("pid").to!int;
             mn.name = request.post("name");
@@ -79,7 +79,7 @@ class MenuController : AdminBaseController
             if (saveRes !is null)
                 return new RedirectResponse(request, "/admincp/portal/menus");
         }
-        auto repository = new MenuRepository;
+        auto repository = new MenuRepository(_cManager);
         view.assign("firstLevelMenus", repository.getMenusByPid(1));
         //view.assign("routes", routes());
 
@@ -92,7 +92,7 @@ class MenuController : AdminBaseController
     @Action string edit(int id)
     {
         logDebug(" edit id : ", id, "  get id : ", request.get("id"));
-        auto repository = new MenuRepository;
+        auto repository = new MenuRepository(_cManager);
         view.assign("menu", repository.find(id));
         view.assign("firstLevelMenus", repository.getMenusByPid(1));
         //view.assign("routes", routes());
@@ -103,7 +103,7 @@ class MenuController : AdminBaseController
     
     @Action Response del(int id)
     {
-        (new MenuRepository).removeById(id);
+        (new MenuRepository(_cManager)).removeById(id);
         return new RedirectResponse(request, "/admincp/portal/menus");
     }
 

@@ -26,6 +26,7 @@ import app.component.project.repository.ProjectRepository;
 import app.component.project.model.Project;
 import app.component.project.repository.ProjectMiniRepository;
 import app.component.project.model.ProjectMini;
+import hunt.entity.DefaultEntityManagerFactory;
 
 import std.math;
 
@@ -45,7 +46,9 @@ class TmpCache {
         Banner[] allDatas;
         if(!cacheData || isReset){
             logInfo("非缓存-banner");
-            allDatas = (new BannerRepository).findAllData();
+            EntityManager manager = defaultEntityManagerFactory().createEntityManager();
+            allDatas = (new BannerRepository(manager)).findAllData();
+            manager.close();
             _cache.put("banners", allDatas, 86400);//缓存1天
         }else{
             logInfo("缓存-banner");
@@ -68,7 +71,9 @@ class TmpCache {
 
         if(!result || isReset){
             logInfo("非缓存数据-" ~ cacheKey);
-            result = (new NodeRepository).findAllIdsByDocId(docId);
+            EntityManager manager = defaultEntityManagerFactory().createEntityManager();
+            result = (new NodeRepository(manager)).findAllIdsByDocId(docId);
+            manager.close();
             _cache.put(cacheKey, result, 2592000); //缓存30天
         }else{
             logInfo("缓存数据-" ~ cacheKey);
@@ -88,11 +93,13 @@ class TmpCache {
         if(!result || isReset){
             logInfo("非缓存数据-" ~ cacheKey);
             logInfo("findCurrectNode - " ~ nodeSign ~ "~~~~" ~ docId.to!string);
-            auto node = (new NodeRepository).findCurrectNode(nodeSign, docId);
+            EntityManager manager = defaultEntityManagerFactory().createEntityManager();
+            auto node = (new NodeRepository(manager)).findCurrectNode(nodeSign, docId);
             if(node){
-                result = (new ItemRepository).findItemByNodeId(node.id);
+                result = (new ItemRepository(manager)).findItemByNodeId(node.id);
                 _cache.put(cacheKey, result, 2592000); //缓存30天
             }
+            manager.close();
         }else{
             logInfo("缓存数据-" ~ cacheKey);
         }
@@ -118,13 +125,14 @@ class TmpCache {
         
         if(!result || isReset){
             logInfo("非缓存数据-" ~ cacheKey);
-            Node[] allNodes = (new NodeRepository).findAllSortByDocId(docId);
+            EntityManager manager = defaultEntityManagerFactory().createEntityManager();
+            Node[] allNodes = (new NodeRepository(manager)).findAllSortByDocId(docId);
 
             string allIds = this.getNodeIdsByDocumentId(docId);
-            auto tmpLang = (new ItemMiniRepository).findItemsByNodeIds(allIds, findLang);
+            auto tmpLang = (new ItemMiniRepository(manager)).findItemsByNodeIds(allIds, findLang);
             ItemMini[] items;
             if(findLang != mainLang){
-                auto tmpMain = (new ItemMiniRepository).findItemsByNodeIds(allIds, mainLang);
+                auto tmpMain = (new ItemMiniRepository(manager)).findItemsByNodeIds(allIds, mainLang);
                 foreach(itemMini; tmpMain){
                     int isFound = 0;
                     foreach(tmp; tmpLang){
@@ -180,6 +188,7 @@ class TmpCache {
                     result ~= fMenuL1;
                 }
             }
+            manager.close();
             _cache.put(cacheKey, result, 2592000); //缓存30天
         }else{
             logInfo("缓存数据-" ~ cacheKey);
@@ -199,8 +208,9 @@ class TmpCache {
         if(!result || isReset){
 
             logInfo("非缓存数据-" ~ cacheKey);
-            auto currect = (new DocumentRepository).currectList();
-            auto languages = (new LanguageRepository).findAll();
+            EntityManager manager = defaultEntityManagerFactory().createEntityManager();
+            auto currect = (new DocumentRepository(manager)).currectList();
+            auto languages = (new LanguageRepository(manager)).findAll();
 
             foreach(doc; currect){
                 TopMenu tmp = new TopMenu();
@@ -210,7 +220,7 @@ class TmpCache {
 
                     if(language.id == doc.main_language){
                         tmp.url = "docs/" ~ doc.project.sign ~ "-current/";
-                        auto sign = (new NodeRepository).findFirstNodeSignByDocId(doc.id);
+                        auto sign = (new NodeRepository(manager)).findFirstNodeSignByDocId(doc.id);
                         if(sign)
                             tmp.url ~= sign.sign_key;
                         continue;
@@ -218,6 +228,7 @@ class TmpCache {
                 }
                 result ~= tmp;
             }
+            manager.close();
             _cache.put(cacheKey, result, 2592000); //缓存30天
         }else{
             logInfo("缓存数据-" ~ cacheKey);
@@ -234,7 +245,9 @@ class TmpCache {
 
         if(!result || isReset){
             logInfo("非缓存数据 - " ~ cacheKey);
-            result = (new ProjectRepository).findDetailBySign(sign);
+            EntityManager manager = defaultEntityManagerFactory().createEntityManager();
+            result = (new ProjectRepository(manager)).findDetailBySign(sign);
+            manager.close();
             _cache.put(cacheKey, result, 2592000); //缓存30天
         }else{
             logInfo("缓存数据 - " ~ cacheKey);
@@ -254,7 +267,9 @@ class TmpCache {
 
         if(!result || isReset){
             logInfo("非缓存数据 - " ~ cacheKey);
-            result = (new ProjectMiniRepository).findCount();
+            EntityManager manager = defaultEntityManagerFactory().createEntityManager();
+            result = (new ProjectMiniRepository(manager)).findCount();
+            manager.close();
             _cache.put(cacheKey, result, 2592000); //缓存30天
         }else{
             logInfo("缓存数据 - " ~ cacheKey);
@@ -275,7 +290,9 @@ class TmpCache {
         Language[] allDatas;
         if(!cacheData || isReset){
             logInfo("非缓存 - all_language");
-            allDatas = (new LanguageRepository).findAll();
+            EntityManager manager = defaultEntityManagerFactory().createEntityManager();
+            allDatas = (new LanguageRepository(manager)).findAll();
+            manager.close();
             _cache.put("all_language", allDatas, 86400);//缓存1天
         }else{
             logInfo("缓存 - all_language");

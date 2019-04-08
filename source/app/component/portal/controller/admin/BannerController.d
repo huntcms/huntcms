@@ -21,7 +21,7 @@ class BannerController : AdminBaseController
     @Action string list()
     {
         uint page = request.get!uint("page" , 0);
-        auto repository = new BannerRepository();
+        auto repository = new BannerRepository(_cManager);
         auto alldata = pageToJson!Banner(repository.findAll(new Pageable(page , 20)));
         logDebug("banners : ", alldata);
         view.assign("banners", alldata);
@@ -34,7 +34,7 @@ class BannerController : AdminBaseController
         if (request.methodAsString() == HttpMethod.POST.asString())
         {
             int now = cast(int) time();
-            auto br = new BannerRepository;
+            auto br = new BannerRepository(_cManager);
             Banner banner = new Banner;
             banner.title = request.post("title");
             banner.subtitle = request.post("subtitle");
@@ -63,7 +63,7 @@ class BannerController : AdminBaseController
                 return new RedirectResponse(request, "/admincp/portal/banners");
         }
         
-        auto repository = new BannerRepository;
+        auto repository = new BannerRepository(_cManager);
         view.assign("groups", repository.getBannersByPid(1));
 
         return new Response(request)
@@ -74,13 +74,13 @@ class BannerController : AdminBaseController
     @Action string edit(int id)
     {
         logDebug(" edit id : ", id, "  get id : ", request.get("id"));
-        auto repository = new BannerRepository;
+        auto repository = new BannerRepository(_cManager);
         view.assign("banner", repository.find(id));
         return view.render("portal/banner/edit");
     }
 
     @Action Response del(int id){
-        (new BannerRepository).removeById(id);
+        (new BannerRepository(_cManager)).removeById(id);
         _tmpCache.getBanner("index", true);
         return new RedirectResponse(request, url("portal.banner.list", null, "admin"));
     }

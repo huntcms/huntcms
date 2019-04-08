@@ -8,10 +8,17 @@ import app.component.system.model.LogInfo;
 import hunt.framework;
 import hunt.util.DateTime;
 import hunt.entity.DefaultEntityManagerFactory;
-
+import app.lib.functions;
 
 class LogMiddleware : MiddlewareInterface
 {
+    
+    EntityManager mManager;
+
+    this(EntityManager manager)
+    {
+        mManager = manager;
+    }
 
     string name()
     {
@@ -29,9 +36,8 @@ class LogMiddleware : MiddlewareInterface
                 logError("no user info");
                 return null;
             }
-            auto manager = defaultEntityManagerFactory().createEntityManager();
 
-            auto userRepository = new UserRepository(manager);
+            auto userRepository = new UserRepository(mManager);
 
             logDebug("id : ", userInfo.id);
             LogInfo li = new LogInfo;
@@ -40,7 +46,8 @@ class LogMiddleware : MiddlewareInterface
             li.type = req.method().asString();
             li.time = cast(int) time();
             li.action = req.route.getRoute();
-            auto lir = new LogInfoRepository();
+            li.ipaddr = client_ip();
+            auto lir = new LogInfoRepository(mManager);
             if (lir.save(li) is null)
             {
                 logError("log middleware error  ");

@@ -7,8 +7,9 @@ import app.component.system.model.Permission;
 
 class PermissionRepository : EntityRepository!(Permission, int)
 {
-    this(EntityManager manager = null)
-    {
-        super(manager);
+
+    this(EntityManager manager = null) {
+        super(manager is null ? createEntityManager() : manager);
     }
+    
 }

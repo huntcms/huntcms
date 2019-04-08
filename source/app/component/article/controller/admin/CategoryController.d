@@ -6,6 +6,7 @@ import app.component.article.model.Category;
 import hunt.util.DateTime;
 import app.lib.controller.AdminBaseController;
 import hunt.http.codec.http.model.HttpMethod;
+import app.component.system.controller.admin.LogMiddleware;
 
 class CategoryController : AdminBaseController
 {
@@ -14,11 +15,12 @@ class CategoryController : AdminBaseController
     this()
     {
         super();      
+        this.addMiddleware(new LogMiddleware(_cManager));
     }
     
     @Action string list()
     {      
-       auto repository = new CategoryRepository;
+       auto repository = new CategoryRepository(_cManager);
        auto alldata = repository.findAll();
        //logDebug("categories : ", toJSON(alldata).toString);
        view.assign("categories", alldata); 
@@ -32,7 +34,7 @@ class CategoryController : AdminBaseController
             int now = cast(int) time();
 
             Category pm = new Category;
-            CategoryRepository cr = new CategoryRepository;
+            CategoryRepository cr = new CategoryRepository(_cManager);
             pm.name = request.post("name");          
             pm.sort = to!int(request.post("sort" , "0")) ;
             pm.status = to!short(request.post("statusRadio","0"));  
@@ -62,14 +64,14 @@ class CategoryController : AdminBaseController
 
     @Action string edit(int id)
     {   
-        auto category = new CategoryRepository;
+        auto category = new CategoryRepository(_cManager);
         view.assign("category", category.find(id));
         return view.render("article/category/edit");       
     } 
 
     @Action Response del(int id)
     {
-        CategoryRepository cr = new CategoryRepository;
+        CategoryRepository cr = new CategoryRepository(_cManager);
         auto exsit_data = cr.findById(id);      
         exsit_data.status = 0; 
         cr.save(exsit_data);

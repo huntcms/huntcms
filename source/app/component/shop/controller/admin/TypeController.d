@@ -20,7 +20,7 @@ class TypeController : AdminBaseController
         if(page < 1)
             page = 1;
 
-        auto repository = new ShopProductTypeRepository();
+        auto repository = new ShopProductTypeRepository(_cManager);
         int limit = 20 ;  // 每页显示多少条
         auto pageData = repository.findAll(new Pageable(page - 1 , limit));
         JSONValue alldata = pageToJson!ShopProductType(pageData);
@@ -38,7 +38,7 @@ class TypeController : AdminBaseController
         if (request.methodAsString() == HttpMethod.POST.asString())
         {
             int now = cast(int) time();
-            auto repo = new ShopProductTypeRepository();
+            auto repo = new ShopProductTypeRepository(_cManager);
             int id = request.post("id").to!int;
             auto type = repo.findById(id);
             bool isNew = type is null;
@@ -67,7 +67,7 @@ class TypeController : AdminBaseController
 
     @Action string edit(int id)
     {
-        auto repository = new ShopProductTypeRepository();
+        auto repository = new ShopProductTypeRepository(_cManager);
         view.assign("type", repository.findById(id));
 
         return view.render("shop/type/edit");
@@ -75,7 +75,7 @@ class TypeController : AdminBaseController
 
     @Action Response del(int id)
     {
-        (new ShopProductTypeRepository()).removeById(id);
+        (new ShopProductTypeRepository(_cManager)).removeById(id);
         return new RedirectResponse(request, "/admincp/shop/types");
     } 
 

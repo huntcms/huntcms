@@ -20,7 +20,7 @@ class PropertyOptionController : AdminBaseController
 
     static void add_title(T ,alias ID,alias TITLE)(ref JSONValue alldata)
     {
-         /// add property title in data.
+        // add property title in data.
         int[] propertyIds;
         foreach( o ; alldata["data"].array)
         {
@@ -28,6 +28,7 @@ class PropertyOptionController : AdminBaseController
             if(!canFind(propertyIds, tmp))
                 propertyIds ~= tmp;
         }
+        logError(_cManager);
         auto repo_property = new T();
         logInfo(repo_property);
         auto properties = repo_property.findAllByIds(propertyIds);
@@ -50,12 +51,32 @@ class PropertyOptionController : AdminBaseController
         if(page < 1)
             page = 1;
 
-        auto repository = new PropertyOptionRepository();
+        auto repository = new PropertyOptionRepository(_cManager);
         int limit = 20 ;  // 每页显示多少条
         auto pageData = repository.findAll(new Pageable(page - 1 , limit));
         JSONValue alldata = pageToJson!ShopPropertyOption(pageData);
         // logError(alldata);
-        add_title!(ShopPropertyRepository, "property_id", "property_title")(alldata);
+
+        // add_title!(ShopPropertyRepository, "property_id", "property_title")(alldata);
+        // ========================================================
+        int[] propertyIds;
+        foreach( o ; alldata["data"].array)
+        {
+            int tmp = cast(int) o["property_id"].integer;
+            if(!canFind(propertyIds, tmp))
+                propertyIds ~= tmp;
+        }
+        auto properties = (new ShopPropertyRepository(_cManager)).findAllByIds(propertyIds);
+        logWarning(properties);
+        for( size_t i = 0 ; i < alldata["data"].array.length ; i++)
+        {
+            auto list = find!("a.id == b")(properties , alldata["data"][i]["property_id"].integer);
+            if(list is null)
+                alldata["data"][i]["property_title"] = "not found";
+            else
+                alldata["data"][i]["property_title"] = list[0].title;
+        }
+        // ========================================================
        
         view.assign("types", alldata);
         Paginate temPage = new Paginate("/admincp/shop/propertyoption?page={page}", page , pageData.getTotalPages());
@@ -69,7 +90,7 @@ class PropertyOptionController : AdminBaseController
         if (request.methodAsString() == HttpMethod.POST.asString())
         {
             int now = cast(int) time();
-            auto repo = new PropertyOptionRepository();
+            auto repo = new PropertyOptionRepository(_cManager);
             int id = request.post("id").to!int;
             auto property = repo.findById(id);
             bool isNew = property is null;
@@ -90,7 +111,7 @@ class PropertyOptionController : AdminBaseController
 
             return new RedirectResponse(request, "/admincp/shop/propertyoptions");
         }
-        auto repo_property = new ShopPropertyRepository();
+        auto repo_property = new ShopPropertyRepository(_cManager);
         auto properties = repo_property.findAll();
         view.assign("properties", properties);
 
@@ -103,9 +124,9 @@ class PropertyOptionController : AdminBaseController
 
     @Action string edit(int id)
     {
-        auto repository = new PropertyOptionRepository();
+        auto repository = new PropertyOptionRepository(_cManager);
         view.assign("type", repository.findById(id));
-        auto repo_property = new ShopPropertyRepository();
+        auto repo_property = new ShopPropertyRepository(_cManager);
         auto properties = repo_property.findAll();
         view.assign("properties", properties);
         return view.render("shop/propertyoption/edit");
@@ -113,7 +134,7 @@ class PropertyOptionController : AdminBaseController
 
     @Action Response del(int id)
     {
-        (new PropertyOptionRepository()).removeById(id);
+        (new PropertyOptionRepository(_cManager)).removeById(id);
         return new RedirectResponse(request, "/admincp/shop/propertyoptions");
     } 
 }

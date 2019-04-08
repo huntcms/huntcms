@@ -11,11 +11,9 @@ import app.component.shop.model.ProductType;
 
 class ProductTypeRepository : EntityRepository!(ProductType, int)
 {
-    private EntityManager _entityManager;
 
     this(EntityManager manager = null) {
-        super(manager);
-        _entityManager = manager is null ? createEntityManager() : manager;
+        super(manager is null ? createEntityManager() : manager);
     }
 
 }

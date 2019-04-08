@@ -22,6 +22,20 @@ class FileController : Controller
 {
     mixin MakeController;
 
+    public EntityManager _cManager;
+
+    this(){
+        _cManager = defaultEntityManagerFactory().createEntityManager();
+    }
+
+    override bool after(){
+        ///请求结束自动销毁本次数据库连接
+        if(_cManager){
+            _cManager.close();
+        }
+        return true;
+    }
+    
     @Action JSONValue upload() {
         JSONValue res;
         res["error_code"] = 0;
@@ -54,8 +68,8 @@ class FileController : Controller
                             return res;
                         }
 
-                        fi.user = (new UserRepository).find(userInfo.id);
-                        auto fir = new FileInfoRepository();
+                        fi.user = (new UserRepository(_cManager)).find(userInfo.id);
+                        auto fir = new FileInfoRepository(_cManager);
                         if (fir.save(fi) is null) {
                             res["error_code"] = 10001;
                         }
