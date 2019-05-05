@@ -3,29 +3,41 @@ module app.component.system.model.Setting;
 import hunt.entity;
 
 @Table("system_setting")
-class Setting : Model 
+class Setting : Model
 {
     mixin MakeModel;
 
-    // exmple: site_name
+    // @OneToMany("role")
+    // UserRole[] userRoles;
     @PrimaryKey
     string key;
 
-    // example: Site name
-    string name;
-
-    // example: The website title
-    string description;
-
-    // example: input
-    short type;
-
-    // example: My Site
+    // 1: enabled, 0: disabled
     string value;
 
-    // have selection values
-    string options;
+}
 
-    // 1: enabled, 0: disabled
-    short status;
+struct SettingItem
+{
+    string key;
+}
+
+class SettingObject
+{
+    @SettingItem("site_name")
+    string siteName = "葡萄科技";
+
+    @SettingItem("site_url")
+    string siteUrl = "https://localhost/";
+
+    @SettingItem("site_keyworkds")
+    string siteKeywords = "葡萄科技";
+
+    @SettingItem("site_description")
+    string siteDescription = "A huntcms based website.";
+
+    @SettingItem("site_author")
+    string siteAuthor = "葡萄科技";
+    // @SettingItem("site_status")
+    // bool siteStatus = true;
 }
