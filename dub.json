@@ -6,13 +6,7 @@
     "license": "Apache-2.0",
     "targetType": "executable",
     "dependencies": {
-        "hunt-framework": "~>2.0.2" 
+        "hunt-framework": "~>2.1.0" 
     },
-    "versions":["WithDatabase"],
-    "configurations": [{
-        "name": "default",
-        "subConfigurations": {
-            "hunt-framework":"mysql"
-        }
-    }]
+    "versions":["WithDatabase"]
 }

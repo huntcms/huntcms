@@ -1,6 +1,5 @@
 module app.component.shop.controller.admin.TypeFilterController;
 
-
 import hunt.framework;
 import hunt.entity;
 import app.component.shop.model.ShopProperty;
@@ -14,6 +13,7 @@ import app.component.shop.repository.ShopProductTypeRepository;
 
 import app.component.shop.controller.admin.PropertyOptionController;
 import app.lib.controller.AdminBaseController;
+import app.lib.functions;
 import app.component.system.helper.Paginate;
 import app.component.system.helper.Utils;
 import hunt.http.codec.http.model.HttpMethod;
@@ -88,10 +88,10 @@ class TypeFilterController : AdminBaseController
         add_option_title(alldata);
         view.assign("types", alldata);
         Paginate temPage = new Paginate("/admincp/shop/typefilters?page={page}" ,
-         page , pageData.getTotalPages());
+            page , pageData.getTotalPages());
         view.assign("pageView", temPage.showPages());
-
-         return view.render("shop/typefilter/list");
+        string lang = findLocal();
+        return view.setLocale(lang).render("shop/typefilter/list");
     }
 
     @Action Response add()
@@ -125,10 +125,10 @@ class TypeFilterController : AdminBaseController
         auto types = repo_type.findAll();
         view.assign("types", types);
 
-        Response response = new Response(request);
-		response.setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString());
-		response.setContent(view.render("shop/typefilter/add"));
-		return response;
+        string lang = findLocal();
+        return new Response(request)
+            .setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString())
+            .setContent(view.setLocale(lang).render("shop/typefilter/add"));
     }
 
 
@@ -139,7 +139,8 @@ class TypeFilterController : AdminBaseController
         auto repo_type = new ShopProductTypeRepository(_cManager);
         auto types = repo_type.findAll();
         view.assign("types", types);
-        return view.render("shop/typefilter/edit");
+        string lang = findLocal();
+        return view.setLocale(lang).render("shop/typefilter/edit");
     }
 
     @Action Response del(int id)

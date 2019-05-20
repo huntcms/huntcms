@@ -3,6 +3,7 @@ module app.component.system.controller.admin.RoleController;
 import hunt.framework;
 
 import app.lib.controller.AdminBaseController;
+import app.lib.functions;
 
 import app.component.system.model.RolePermission;
 import app.component.system.model.Role;
@@ -28,8 +29,8 @@ class RoleController : AdminBaseController
     @Action string list()
     {
         view.assign("roles", (new RoleRepository).findAll());
-
-        return view.render("system/role/list");
+        string lang = findLocal();
+        return view.setLocale(lang).render("system/role/list");
     }
 
     @Action Response add()
@@ -69,9 +70,10 @@ class RoleController : AdminBaseController
         view.assign("permissions", (new PermissionRepository(_cManager)).findAll());
         view.assign("groups", (new PermissionGroupRepository(_cManager)).findAll());
 
+        string lang = findLocal();
         return new Response(request)
             .setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString())
-            .setContent(view.render("system/role/add"));
+            .setContent(view.setLocale(lang).render("system/role/add"));
     }
 
     @Action Response edit()
@@ -135,8 +137,9 @@ class RoleController : AdminBaseController
         view.assign("rolePermissions", rolePermissions);
         view.assign("groups", (new PermissionGroupRepository(_cManager)).findAll());
 
+        string lang = findLocal();
         return new Response(request)
             .setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString())
-            .setContent(view.render("system/role/edit"));
+            .setContent(view.setLocale(lang).render("system/role/edit"));
     }
 }

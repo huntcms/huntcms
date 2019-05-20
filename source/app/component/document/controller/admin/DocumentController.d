@@ -8,6 +8,7 @@ import hunt.http.codec.http.model.HttpMethod;
 import hunt.entity.domain;
 
 import app.lib.controller.AdminBaseController;
+import app.lib.functions;
 import app.component.system.model.Language;
 import app.component.document.model.Document;
 import app.component.document.model.DocBase;
@@ -47,7 +48,8 @@ class DocumentController : AdminBaseController {
         view.assign("languages", languages);
         view.assign("projects", projects);
         view.assign("documents", allDocData);
-        return view.render("document/document/list");
+        string lang = findLocal();
+        return view.setLocale(lang).render("document/document/list");
     }
 
     /**
@@ -67,7 +69,8 @@ class DocumentController : AdminBaseController {
         view.assign("documents", allDocData);
         view.assign("breadcrumbs", breadcrumbsManager.generate("documents"));
         logWarning(breadcrumbsManager.generate("documents"));
-        return view.render("document/document/history");
+        string lang = findLocal();
+        return view.setLocale(lang).render("document/document/history");
     }
 
 
@@ -152,9 +155,10 @@ class DocumentController : AdminBaseController {
         auto projects = (new ProjectRepository(_cManager)).findAll();
         view.assign("projects", projects);
         view.assign("languages", languages);
+        string lang = findLocal();
         return new Response(request)
             .setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString())
-            .setContent(view.render("document/document/edit"));
+            .setContent(view.setLocale(lang).render("document/document/edit"));
     }
 
     /**

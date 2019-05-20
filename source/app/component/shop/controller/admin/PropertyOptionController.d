@@ -9,6 +9,7 @@ import app.component.shop.repository.PropertyOptionRepository;
 import app.component.shop.repository.ShopPropertyRepository;
 import app.component.shop.repository.ShopProductTypeRepository;
 import app.lib.controller.AdminBaseController;
+import app.lib.functions;
 import app.component.system.helper.Paginate;
 import app.component.system.helper.Utils;
 import hunt.http.codec.http.model.HttpMethod;
@@ -82,7 +83,8 @@ class PropertyOptionController : AdminBaseController
         Paginate temPage = new Paginate("/admincp/shop/propertyoption?page={page}", page , pageData.getTotalPages());
         view.assign("pageView", temPage.showPages());
 
-        return view.render("shop/propertyoption/list");
+        string lang = findLocal();
+        return view.setLocale(lang).render("shop/propertyoption/list");
     }
 
     @Action Response add()
@@ -115,10 +117,10 @@ class PropertyOptionController : AdminBaseController
         auto properties = repo_property.findAll();
         view.assign("properties", properties);
 
-        Response response = new Response(request);
-		response.setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString());
-		response.setContent(view.render("shop/propertyoption/add"));
-		return response;
+        string lang = findLocal();
+        return new Response(request)
+            .setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString())
+            .setContent(view.setLocale(lang).render("shop/propertyoption/add"));
     }
 
 
@@ -129,7 +131,8 @@ class PropertyOptionController : AdminBaseController
         auto repo_property = new ShopPropertyRepository(_cManager);
         auto properties = repo_property.findAll();
         view.assign("properties", properties);
-        return view.render("shop/propertyoption/edit");
+        string lang = findLocal();
+        return view.setLocale(lang).render("shop/propertyoption/edit");
     }
 
     @Action Response del(int id)

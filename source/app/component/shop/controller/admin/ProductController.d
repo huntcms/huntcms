@@ -16,6 +16,7 @@ import app.component.tag.repository.TagRepository;
 import app.component.shop.repository.TagProductRepository;
 import app.lib.other.Paginate;
 import app.lib.yun.YunUpLoad;
+import app.lib.functions;
 import app.component.system.helper.Utils;
 import app.component.shop.repository.TypeRelationPropertyRepository;
 import app.component.shop.repository.ShopPropertyRepository;
@@ -67,7 +68,8 @@ class ProductController : AdminBaseController
         }
         Paginate pageView = new Paginate(linkUrl , (cast(int) page <= 0 ? 1 : cast(int) page) , to!int(list["total_page"].integer), limit);
         view.assign("pageView", pageView.showPages());
-        return view.render("shop/product/list");
+        string lang = findLocal();
+        return view.setLocale(lang).render("shop/product/list");
     }
 
     @Action Response add()
@@ -135,9 +137,10 @@ class ProductController : AdminBaseController
         view.assign("tags", tags);
         view.assign("categorys", pcRepository.all());
 
+        string lang = findLocal();
         Response response = new Response(request);
         response.setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString());
-        response.setContent(view.render("shop/product/add"));
+        response.setContent(view.setLocale(lang).render("shop/product/add"));
         return response;
     }
 
@@ -152,6 +155,7 @@ class ProductController : AdminBaseController
             picurls = parseJSON(productModel.picurls).array;
         }
 
+        string lang = findLocal();
         auto productCategoryModel = productCategory.find(productModel.category_id);
         if(action == "property")
         {
@@ -208,7 +212,7 @@ class ProductController : AdminBaseController
 
             Response response = new Response(request);
             response.setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString());
-            response.setContent(view.render("shop/product/property"));
+            response.setContent(view.setLocale(lang).render("shop/product/property"));
             return response;
 
         }else{
@@ -279,7 +283,7 @@ class ProductController : AdminBaseController
 
             Response response = new Response(request);
             response.setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString());
-            response.setContent(view.render("shop/product/edit"));
+            response.setContent(view.setLocale(lang).render("shop/product/edit"));
             return response;
         }
     }

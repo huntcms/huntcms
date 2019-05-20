@@ -20,4 +20,10 @@ class LanguageRepository : EntityRepository!(Language, int) {
         return res;
     }
 
+    Language[] findEnable(){
+        return _manager.createQuery!(Language)(" SELECT m FROM Language m WHERE m.status = 1 ORDER BY m.id ASC ")
+            .getResultList();
+    }
+
+
 }

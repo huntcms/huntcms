@@ -12,6 +12,7 @@ import app.component.shop.repository.ShopPropertyRepository;
 import app.component.shop.repository.PropertyOptionRepository;
 
 import app.lib.controller.AdminBaseController;
+import app.lib.functions;
 import app.component.system.helper.Paginate;
 import app.component.system.helper.Utils;
 import app.component.shop.controller.admin.PropertyOptionController;
@@ -70,10 +71,10 @@ class TypeRelationPropertyController : AdminBaseController
         // ========================================================
 
         Paginate temPage = new Paginate("/admincp/shop/typeproperties?page={page}" ,
-         page , pageData.getTotalPages());
+            page , pageData.getTotalPages());
         view.assign("pageView", temPage.showPages());
-
-         return view.render("shop/type_property/list");
+        string lang = findLocal();
+        return view.setLocale(lang).render("shop/type_property/list");
     }
 
     @Action string listByType(int type_id)
@@ -122,7 +123,8 @@ class TypeRelationPropertyController : AdminBaseController
         auto repo_type = new ShopProductTypeRepository(_cManager);
         auto types = repo_type.findAll();
         view.assign("types", types);
-        return view.render("shop/type_property/add");
+        string lang = findLocal();
+        return view.setLocale(lang).render("shop/type_property/add");
     }
 
 
@@ -136,7 +138,8 @@ class TypeRelationPropertyController : AdminBaseController
         auto repo_type = new ShopProductTypeRepository(_cManager);
         auto types = repo_type.findAll();
         view.assign("types", types);
-        return view.render("shop/type_property/edit");
+        string lang = findLocal();
+        return view.setLocale(lang).render("shop/type_property/edit");
     }
 
     @Action Response del(int id)

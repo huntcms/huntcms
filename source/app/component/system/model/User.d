@@ -5,8 +5,8 @@ import hunt.entity;
 public import app.component.system.model.UserRole;
 
 @Table("system_user")
-class User : Model 
-{
+class User : Model {
+
     mixin MakeModel;
 
     @AutoIncrement
@@ -38,4 +38,7 @@ class User : Model
     short status;
 
     short supered;
+
+    string language;
+
 }

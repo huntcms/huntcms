@@ -14,6 +14,7 @@ class UserRepository : EntityRepository!(User, int)
     }
 
     User findByEmail(string email) { 
+        logError(email);
         return _manager.createQuery!(User)("SELECT u FROM User u WHERE u.email = :email ")
             .setParameter("email", email)
             .getSingleResult();

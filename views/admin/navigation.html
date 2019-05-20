@@ -127,7 +127,7 @@
                             {% if v.menus and length(v.menus) > 0 %}
                                 <ul class="submenu">
                                     {% for m in v.menus %}
-                                    <li><a href="{{m.user_link}}">{{m.name}}</a></li>
+                                    <li><a href="{{m.user_link}}">{% if m.keyword %}{{ trans(m.keyword) }}{% else %}{{m.name}}{% endif %}</a></li>
                                     {% endfor %}
                                 </ul>
                             {% endif %}                                                    

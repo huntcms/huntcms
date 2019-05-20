@@ -8,6 +8,7 @@ import hunt.http.codec.http.model.HttpMethod;
 import hunt.entity.domain;
 
 import app.lib.controller.AdminBaseController;
+import app.lib.functions;
 import app.component.project.repository.ProjectRepository;
 import app.component.project.repository.ProjectMiniRepository;
 import app.component.project.model.Project;
@@ -41,7 +42,8 @@ class ProjectController : AdminBaseController {
         // logWarning(request.referer ~ " === " ~ request.host);
         // logWarning((request.referer).splitter(request.host));
         // logWarning(url("project.project.list", null, "admin"));
-        return view.render("project/project/list");
+        string lang = findLocal();
+        return view.setLocale(lang).render("project/project/list");
     }
 
     /**
@@ -115,9 +117,10 @@ class ProjectController : AdminBaseController {
         view.assign("project", project);
         view.assign("languages", languages);
 
+        string lang = findLocal();
         return new Response(request)
             .setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString())
-            .setContent(view.render("project/project/edit"));
+            .setContent(view.setLocale(lang).render("project/project/edit"));
     }
 
     /**

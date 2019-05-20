@@ -4,6 +4,7 @@ import hunt.framework;
 import app.component.portal.model.Menu;
 import app.component.portal.repository.MenuRepository;
 import app.lib.controller.AdminBaseController;
+import app.lib.functions;
 import hunt.util.Serialize;
 import hunt.util.DateTime;
 import app.component.system.helper.Utils;
@@ -35,12 +36,13 @@ class MenuController : AdminBaseController
         auto alldata = pageToJson!Menu(repository.findAll(new Pageable(page , 20, repository.Field.sort , OrderBy.ASC)));
         //logDebug("menus : ", alldata);
         view.assign("menus", alldata);
-
-        return view.render("portal/menu/list");
+        string lang = findLocal();
+        return view.setLocale(lang).render("portal/menu/list");
     }
 
     @Action Response add()
     {
+        string lang = findLocal();
         if (request.methodAsString() == HttpMethod.POST.asString())
         {
             int now = cast(int) time();
@@ -50,10 +52,9 @@ class MenuController : AdminBaseController
             mn.name = request.post("name");
             if(mn.name is null){
                 view.assign("errorMessages", ["name required!"]);
-                Response response = new Response(request);
-                response.setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString());
-                response.setContent(view.render("portal/menu/add"));
-                return response;
+                return new Response(request)
+                    .setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString())
+                    .setContent(view.setLocale(lang).render("portal/menu/add"));
             }
             //mn.mca = request.post("mca");
             mn.linkUrl = request.post("linkUrl");
@@ -82,11 +83,10 @@ class MenuController : AdminBaseController
         auto repository = new MenuRepository(_cManager);
         view.assign("firstLevelMenus", repository.getMenusByPid(1));
         //view.assign("routes", routes());
+        return new Response(request)
+            .setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString())
+            .setContent(view.setLocale(lang).render("portal/menu/add"));
 
-        Response response = new Response(request);
-        response.setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString());
-        response.setContent(view.render("portal/menu/add"));
-        return response;
     }
 
     @Action string edit(int id)
@@ -96,8 +96,8 @@ class MenuController : AdminBaseController
         view.assign("menu", repository.find(id));
         view.assign("firstLevelMenus", repository.getMenusByPid(1));
         //view.assign("routes", routes());
-
-        return view.render("portal/menu/edit");
+        string lang = findLocal();
+        return view.setLocale(lang).render("portal/menu/edit");
     }
 
     

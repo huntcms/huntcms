@@ -10,6 +10,7 @@ import hunt.util.Serialize;
 import hunt.util.DateTime;
 import app.component.system.controller.admin.LogMiddleware;
 import app.lib.controller.AdminBaseController;
+import app.lib.functions;
 import app.component.system.helper.Utils;
 import app.component.system.helper.Paginate;
 
@@ -38,8 +39,8 @@ class PermissionGroupController : AdminBaseController
         int totalPages = cast(int)alldata["totalPages"].integer ;
         Paginate temPage = new Paginate("/admincp/system/permission/groups?page={page}" , (cast(int) page <= 0 ? 1 : cast(int) page) , totalPages);
         view.assign("pageView", temPage.showPages());
-
-        return view.render("system/permissiongroup/list");
+        string lang = findLocal();
+        return view.setLocale(lang).render("system/permissiongroup/list");
     }
 
     @Action Response add(){
@@ -66,12 +67,11 @@ class PermissionGroupController : AdminBaseController
             if (saveRes !is null)
                 //return new RedirectResponse(request, url("system.permissiongroup.list", null, "admin"));
                 return new RedirectResponse(request, "/admincp/system/permission/groups");
-
         }
-
+        string lang = findLocal();
         return new Response(request)
 		    .setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString())
-		    .setContent(view.render("system/permissiongroup/add"));
+		    .setContent(view.setLocale(lang).render("system/permissiongroup/add"));
     }
 
 
@@ -80,8 +80,8 @@ class PermissionGroupController : AdminBaseController
         logDebug(" edit id : ", id, "  get id : ", request.get("id"));
         auto repository = new PermissionGroupRepository(_cManager);
         view.assign("group", repository.find(request.get("id").to!int));
-
-        return view.render("system/permissiongroup/edit");
+        string lang = findLocal();
+        return view.setLocale(lang).render("system/permissiongroup/edit");
     }
 
     @Action Response del(int id)

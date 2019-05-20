@@ -4,6 +4,7 @@ import hunt.framework;
 import app.component.portal.repository.BannerRepository;
 import app.component.portal.model.Banner;
 import app.lib.controller.AdminBaseController;
+import app.lib.functions;
 import std.digest.sha;
 import std.file;
 import hunt.util.Configuration;
@@ -25,8 +26,8 @@ class BannerController : AdminBaseController
         auto alldata = pageToJson!Banner(repository.findAll(new Pageable(page , 20)));
         logDebug("banners : ", alldata);
         view.assign("banners", alldata);
-
-        return view.render("portal/banner/list");
+        string lang = findLocal();
+        return view.setLocale(lang).render("portal/banner/list");
     }
     
     @Action Response add()
@@ -65,10 +66,10 @@ class BannerController : AdminBaseController
         
         auto repository = new BannerRepository(_cManager);
         view.assign("groups", repository.getBannersByPid(1));
-
+        string lang = findLocal();
         return new Response(request)
             .setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString())
-            .setContent(view.render("portal/banner/add"));
+            .setContent(view.setLocale(lang).render("portal/banner/add"));
     }
 
     @Action string edit(int id)
@@ -76,7 +77,8 @@ class BannerController : AdminBaseController
         logDebug(" edit id : ", id, "  get id : ", request.get("id"));
         auto repository = new BannerRepository(_cManager);
         view.assign("banner", repository.find(id));
-        return view.render("portal/banner/edit");
+        string lang = findLocal();
+        return view.setLocale(lang).render("portal/banner/edit");
     }
 
     @Action Response del(int id){

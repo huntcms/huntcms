@@ -2,6 +2,8 @@ module app.component.system.controller.admin.DashboardController;
 
 import hunt.framework;
 import app.lib.controller.AdminBaseController;
+import hunt.logging;
+import app.lib.functions;
 
 class DashboardController : AdminBaseController
 {
@@ -14,6 +16,7 @@ class DashboardController : AdminBaseController
     
     @Action string dashboard()
     {
-        return view.render("system/dashboard/dashboard");
+        string lang = findLocal();
+        return view.setLocale(lang).render("system/dashboard/dashboard");
     }
 }

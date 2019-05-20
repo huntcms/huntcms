@@ -4,6 +4,7 @@ import hunt.framework;
 import app.component.portal.model.Promotion;
 import app.component.portal.repository.PromotionRepository;
 import app.lib.controller.AdminBaseController;
+import app.lib.functions;
 import app.component.system.helper.Utils;
 import app.lib.yun.YunUpLoad;
 import app.component.system.helper.Utils;
@@ -26,8 +27,8 @@ class PromotionController : AdminBaseController
         auto alldata = pageToJson!Promotion(repository.findAll(new Pageable(page , 20)));
         //logDebug("menus : ", alldata);
         view.assign("promotions", alldata);
-
-        return view.render("portal/promotion/list");
+        string lang = findLocal();
+        return view.setLocale(lang).render("portal/promotion/list");
     }
 
     @Action Response add()
@@ -78,10 +79,10 @@ class PromotionController : AdminBaseController
                 return new RedirectResponse(request, "/admincp/portal/promotions");
         }
 
-        Response response = new Response(request);
-        response.setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString());
-        response.setContent(view.render("portal/promotion/add"));
-        return response;
+        string lang = findLocal();
+        return new Response(request)
+            .setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString())
+            .setContent(view.setLocale(lang).render("portal/promotion/add"));
     }
 
     @Action Response edit(int id)
@@ -89,10 +90,10 @@ class PromotionController : AdminBaseController
         auto repository = new PromotionRepository(_cManager);
         view.assign("promotion", repository.find(id));
 
-        Response response = new Response(request);
-        response.setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString());
-        response.setContent(view.render("portal/promotion/edit"));
-        return response;
+        string lang = findLocal();
+        return new Response(request)
+            .setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString())
+            .setContent(view.setLocale(lang).render("portal/promotion/edit"));
     }
 
     @Action Response del(int id)

@@ -9,6 +9,7 @@ import hunt.util.Serialize;
 import hunt.util.DateTime;
 import app.component.system.controller.admin.LogMiddleware;
 import app.lib.controller.AdminBaseController;
+import app.lib.functions;
 import app.component.system.helper.Utils;
 
 import hunt.entity.domain;
@@ -32,7 +33,8 @@ class LogController : AdminBaseController
         logDebug("page logs : ", alldata);
         view.assign("logs", alldata);
 
-        return view.render("system/log/list");
+        string lang = findLocal();
+        return view.setLocale(lang).render("system/log/list");
     }
 
 

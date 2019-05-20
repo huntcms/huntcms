@@ -172,3 +172,9 @@ GET         /document/nodes               document.node.list
 GET         /document/node/edit           document.node.edit
 POST        /document/node/edit           document.node.edit
 GET         /document/node/del            document.node.del
+
+GET         /language/package                   system.langpackage.list
+GET         /language/package/add               system.langpackage.add
+POST        /language/package/add               system.langpackage.add
+GET         /language/package/edit              system.langpackage.edit
+GET         /language/package/del               system.langpackage.del

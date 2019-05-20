@@ -7,6 +7,7 @@ import std.uri;
 import hunt.logging;
 import hunt.util.DateTime;
 import app.lib.controller.AdminBaseController;
+import app.lib.functions;
 import app.component.shop.repository.ProductCategoryRepository;
 import app.component.shop.model.ProductCategory;
 import app.component.shop.repository.ProductTypeRepository;
@@ -51,7 +52,8 @@ class ProductCategoryController : AdminBaseController
         Paginate pageView = new Paginate(linkUrl , (cast(int) page <= 0 ? 1 : cast(int) page) , to!int(list["total_page"].integer), limit);
         view.assign("pageView", pageView.showPages());
         view.assign("categorys", pcRep.all());
-        return view.render("shop/productCategory/list");
+        string lang = findLocal();
+        return view.setLocale(lang).render("shop/productCategory/list");
     }
 
     @Action string findTypes(int pid)
@@ -107,11 +109,10 @@ class ProductCategoryController : AdminBaseController
 
         }
         view.assign("categorys", productCategoryRepository.all());
-
-        Response response = new Response(request);
-        response.setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString());
-        response.setContent(view.render("shop/productCategory/add"));
-        return response;
+        string lang = findLocal();
+        return new Response(request)
+            .setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString())
+            .setContent(view.setLocale(lang).render("shop/productCategory/add"));
     }
 
     @Action Response edit(int id)
@@ -141,10 +142,10 @@ class ProductCategoryController : AdminBaseController
         view.assign("data",  data);
         view.assign("categorys", productCategoryRepository.all());
 
-        Response response = new Response(request);
-        response.setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString());
-        response.setContent(view.render("shop/productCategory/edit"));
-        return response;
+        string lang = findLocal();
+        return new Response(request)
+            .setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString())
+            .setContent(view.setLocale(lang).render("shop/productCategory/edit"));
     }
 
     @Action Response del(int id)

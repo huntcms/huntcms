@@ -3,17 +3,19 @@ module app.component.system.controller.admin.UserController;
 import hunt.framework;
 import hunt.framework.http.RedirectResponse;
 import app.lib.controller.AdminBaseController;
+import app.lib.functions;
 
 import app.component.system.model.User;
 import app.component.system.model.Role;
+import app.component.system.model.Language;
 import app.component.system.form.LoginForm;
 
 import app.component.system.repository.UserRepository;
 import app.component.system.repository.RoleRepository;
 import app.component.system.repository.UserRoleRepository;
+import app.component.system.repository.LanguageRepository;
 import app.component.system.helper.Password;
 import app.component.system.helper.Utils;
-
 import hunt.entity.DefaultEntityManagerFactory;
 import hunt.logging;
 import hunt.util.DateTime;
@@ -41,7 +43,8 @@ class UserController : AdminBaseController
     {
         auto repository = new UserRepository(_cManager);
         view.assign("users", repository.findAll());
-        return view.render("system/user/list");
+        string lang = findLocal();
+        return view.setLocale(lang).render("system/user/list");
     }
 
     @Action Response add()
@@ -101,10 +104,13 @@ class UserController : AdminBaseController
         }
 
         view.assign("roles", (new RoleRepository(_cManager)).findAll());
+        view.assign("languages", (new LanguageRepository(_cManager)).findEnable());
+        logError((new LanguageRepository(_cManager)).findEnable());
         
+        string lang = findLocal();
         return new Response(request)
             .setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString())
-            .setContent(view.render("system/user/add"));
+            .setContent(view.setLocale(lang).render("system/user/add"));
     }
 
     @Action Response edit()
@@ -116,6 +122,7 @@ class UserController : AdminBaseController
         auto userRepository = new UserRepository(_cManager);
 
         auto findUser = userRepository.find(id);
+        logError(toJson(findUser));
         if(request.methodAsString() == HttpMethod.POST.asString())
         {
             auto params = request.all();
@@ -166,10 +173,13 @@ class UserController : AdminBaseController
         }
         view.assign("userRoles", userRoles);
         view.assign("roles", (new RoleRepository(_cManager)).findAll());
+        view.assign("languages", (new LanguageRepository(_cManager)).findEnable());
+        logError(toJson((new LanguageRepository(_cManager)).findEnable()));
 
+        string lang = findLocal();
         return new Response(request)
             .setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString())
-            .setContent(view.render("system/user/edit"));
+            .setContent(view.setLocale(lang).render("system/user/edit"));
     }
 
     @Action string del()
@@ -177,7 +187,8 @@ class UserController : AdminBaseController
         auto repository = new UserRepository(_cManager);
         view.assign("permissions", repository.findById( request.get!int("id", 0) ));
 
-        return view.render("system/user/edit");
+        string lang = findLocal();
+        return view.setLocale(lang).render("system/user/edit");
     }
 
     @Action string profile()
@@ -208,7 +219,8 @@ class UserController : AdminBaseController
         }
 
         view.assign("user", user);
-        return view.render("system/user/profile");
+        string lang = findLocal();
+        return view.setLocale(lang).render("system/user/profile");
     }
 
     @Action Response login(LoginForm loginForm) {
@@ -231,6 +243,10 @@ class UserController : AdminBaseController
 
                         if(user !is null){
                             // return new RedirectResponse(request, "/admincp/");
+                            logError(find.language);
+                            setLocale(find.language);
+                            auto userInfo = Application.getInstance().accessManager.user;
+                            logError(toJson(userInfo));
                             return new RedirectResponse(request, url("system.dashboard.dashboard", null, "admin"));
                         }
                     }else{
@@ -244,6 +260,9 @@ class UserController : AdminBaseController
 
         }
         
+        logInfo("------------------------------");
+        string lang = findLocal();
+        logInfo(lang);
         return new Response(request)
             .setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString())
             .setContent(view.render("system/user/login"));

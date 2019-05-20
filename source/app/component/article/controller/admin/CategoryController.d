@@ -7,6 +7,7 @@ import hunt.util.DateTime;
 import app.lib.controller.AdminBaseController;
 import hunt.http.codec.http.model.HttpMethod;
 import app.component.system.controller.admin.LogMiddleware;
+import app.lib.functions;
 
 class CategoryController : AdminBaseController
 {
@@ -20,11 +21,12 @@ class CategoryController : AdminBaseController
     
     @Action string list()
     {      
-       auto repository = new CategoryRepository(_cManager);
-       auto alldata = repository.findAll();
-       //logDebug("categories : ", toJSON(alldata).toString);
-       view.assign("categories", alldata); 
-       return view.render("article/category/list");
+        auto repository = new CategoryRepository(_cManager);
+        auto alldata = repository.findAll();
+        //logDebug("categories : ", toJSON(alldata).toString);
+        view.assign("categories", alldata); 
+        string lang = findLocal();
+        return view.setLocale(lang).render("article/category/list");
     }
 
     @Action Response add()
@@ -57,16 +59,18 @@ class CategoryController : AdminBaseController
             return new RedirectResponse(request, "/admincp/article/categories");
         }
 
+        string lang = findLocal();
         return new Response(request)
             .setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString())
-            .setContent(view.render("article/category/add"));
+            .setContent(view.setLocale(lang).render("article/category/add"));
     }
 
     @Action string edit(int id)
     {   
         auto category = new CategoryRepository(_cManager);
         view.assign("category", category.find(id));
-        return view.render("article/category/edit");       
+        string lang = findLocal();
+        return view.setLocale(lang).render("article/category/edit");       
     } 
 
     @Action Response del(int id)

@@ -21,6 +21,8 @@ class Menu : Model
     // mca is Module + Controller + Action
     // example: system.user.add
     string mca;
+    
+    string keyword;
 
     @Column("link_url")
     string linkUrl;

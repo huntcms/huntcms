@@ -21,6 +21,7 @@ import hunt.http.codec.http.model.HttpHeader;
 import hunt.http.codec.http.model.MultipartFormInputStream;
 import std.format;
 import hunt.text;
+import app.lib.functions;
 
 class ArticleController : AdminBaseController
 {
@@ -44,8 +45,8 @@ class ArticleController : AdminBaseController
         view.assign("articles", alldata);
         view.assign("tagarticles", tagarticles);
         view.assign("tags", tags);
-
-        return view.render("article/article/list");
+        string lang = findLocal();
+        return view.setLocale(lang).render("article/article/list");
     }
 
     @Action Response add()
@@ -118,9 +119,10 @@ class ArticleController : AdminBaseController
         view.assign("categories", categories);
         view.assign("tags", tags);
         
+        string lang = findLocal();
         return new Response(request)
             .setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString())
-            .setContent(view.render("article/article/add"));
+            .setContent(view.setLocale(lang).render("article/article/add"));
     }
 
     @Action string edit(int id)
@@ -137,7 +139,8 @@ class ArticleController : AdminBaseController
         view.assign("tags", tags);
         view.assign("tagarticles", tar.getTagArticle(id));
 
-        return view.render("article/article/edit");
+        string lang = findLocal();
+        return view.setLocale(lang).render("article/article/edit");
     }   
 
     @Action Response del(int id)

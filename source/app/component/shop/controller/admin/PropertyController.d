@@ -5,6 +5,7 @@ import hunt.entity;
 import app.component.shop.model.ShopProperty;
 import app.component.shop.repository.ShopPropertyRepository;
 import app.lib.controller.AdminBaseController;
+import app.lib.functions;
 import app.component.system.helper.Paginate;
 import app.component.system.helper.Utils;
 import hunt.http.codec.http.model.HttpMethod;
@@ -28,8 +29,8 @@ class PropertyController : AdminBaseController
         Paginate temPage = new Paginate("/admincp/shop/propertyies?page={page}" ,
          page , pageData.getTotalPages());
         view.assign("pageView", temPage.showPages());
-
-        return view.render("shop/property/list");
+        string lang = findLocal();
+        return view.setLocale(lang).render("shop/property/list");
     }
 
     @Action Response add()
@@ -60,10 +61,10 @@ class PropertyController : AdminBaseController
             return new RedirectResponse(request, "/admincp/shop/properties");
         }
 
-        Response response = new Response(request);
-		response.setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString());
-		response.setContent(view.render("shop/property/add"));
-		return response;
+        string lang = findLocal();
+        return new Response(request)
+            .setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString())
+            .setContent(view.setLocale(lang).render("shop/property/add"));
     }
 
 
@@ -71,8 +72,8 @@ class PropertyController : AdminBaseController
     {
         auto repository = new ShopPropertyRepository(_cManager);
         view.assign("type", repository.findById(id));
-
-        return view.render("shop/property/edit");
+        string lang = findLocal();
+        return view.setLocale(lang).render("shop/property/edit");
     }
 
     @Action Response del(int id)

@@ -5,6 +5,7 @@ import hunt.framework;
 import hunt.entity;
 import app.component.shop.repository.ShopProductTypeRepository;
 import app.lib.controller.AdminBaseController;
+import app.lib.functions;
 import app.component.system.helper.Paginate;
 import app.component.system.helper.Utils;
 import hunt.http.codec.http.model.HttpMethod;
@@ -26,10 +27,10 @@ class TypeController : AdminBaseController
         JSONValue alldata = pageToJson!ShopProductType(pageData);
         view.assign("types", alldata);
         Paginate temPage = new Paginate("/admincp/shop/types?page={page}" ,
-         page , pageData.getTotalPages());
+            page , pageData.getTotalPages());
         view.assign("pageView", temPage.showPages());
-
-         return view.render("shop/type/list");
+        string lang = findLocal();
+        return view.setLocale(lang).render("shop/type/list");
     }
 
 
@@ -58,10 +59,10 @@ class TypeController : AdminBaseController
             return new RedirectResponse(request, "/admincp/shop/types");
         }
 
-        Response response = new Response(request);
-		response.setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString());
-		response.setContent(view.render("shop/type/add"));
-		return response;
+        string lang = findLocal();
+        return new Response(request)
+            .setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString())
+            .setContent(view.setLocale(lang).render("shop/type/add"));
     }
 
 
@@ -69,8 +70,8 @@ class TypeController : AdminBaseController
     {
         auto repository = new ShopProductTypeRepository(_cManager);
         view.assign("type", repository.findById(id));
-
-        return view.render("shop/type/edit");
+        string lang = findLocal();
+        return view.setLocale(lang).render("shop/type/edit");
     }
 
     @Action Response del(int id)

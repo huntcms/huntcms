@@ -8,6 +8,7 @@ import hunt.http.codec.http.model.HttpMethod;
 import hunt.entity.domain;
 
 import app.lib.controller.AdminBaseController;
+import app.lib.functions;
 import app.component.system.model.Language;
 import app.component.project.model.ProjectMini;
 import app.component.document.model.DocBase;
@@ -91,9 +92,10 @@ class NodeController : AdminBaseController {
         view.assign("docId", docId);
         view.assign("parentId", parentId);
 
+        string lang = findLocal();
         return new Response(request)
             .setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString())
-            .setContent(view.render("document/node/list"));
+            .setContent(view.setLocale(lang).render("document/node/list"));
     }
 
     // @Action Response edit(NodeForm form){
@@ -229,9 +231,10 @@ class NodeController : AdminBaseController {
         view.assign("nodes", nodes);
         view.assign("items", items);
 
+        string lang = findLocal();
         return new Response(request)
             .setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString())
-            .setContent(view.render("document/node/edit"));
+            .setContent(view.setLocale(lang).render("document/node/edit"));
     }
 
     @Action Response editOter(){
@@ -289,9 +292,10 @@ class NodeController : AdminBaseController {
         }
         view.assign("itemData", itemData);
 
+        string lang = findLocal();
         return new Response(request)
             .setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString())
-            .setContent(view.render("document/node/editOther"));
+            .setContent(view.setLocale(lang).render("document/node/editOther"));
 
     }
 

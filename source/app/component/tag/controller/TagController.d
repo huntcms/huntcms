@@ -4,6 +4,7 @@ import hunt.framework;
 import app.component.tag.repository.TagRepository;
 import app.component.tag.model.Tag;
 import app.lib.controller.AdminBaseController;
+import app.lib.functions;
 import app.component.tag.helper.Utils;
 import hunt.http.codec.http.model.HttpMethod;
 
@@ -18,7 +19,8 @@ class TagController : AdminBaseController
         logDebug("tags : ", alldata);
         view.assign("tags", alldata);
 
-        return view.render("tag/tag/list");
+        string lang = findLocal();
+        return view.setLocale(lang).render("tag/tag/list");
     }
 
     @Action Response add()
@@ -48,10 +50,10 @@ class TagController : AdminBaseController
         }
         auto repository = new TagRepository(_cManager);
 
-        Response response = new Response(request);
-		response.setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString());
-		response.setContent(view.render("tag/tag/add"));
-		return response;
+        string lang = findLocal();
+        return new Response(request)
+            .setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString())
+            .setContent(view.setLocale(lang).render("tag/tag/add"));
     }
 
     @Action string edit(int id)
@@ -60,7 +62,8 @@ class TagController : AdminBaseController
         auto repository = new TagRepository(_cManager);
         view.assign("tag", repository.find(id));
 
-        return view.render("tag/tag/edit");
+        string lang = findLocal();
+        return view.setLocale(lang).render("tag/tag/edit");
     }
 
     @Action Response del(int id)

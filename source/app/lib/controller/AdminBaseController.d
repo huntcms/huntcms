@@ -12,6 +12,7 @@ import std.algorithm;
 import hunt.http.codec.http.model.HttpMethod;
 import hunt.framework.security.acl.Permission;
 import hunt.entity.DefaultEntityManagerFactory;
+import app.lib.functions;
 
 class AdminBaseController : Controller
 {
@@ -67,6 +68,7 @@ class AdminBaseController : Controller
 		} else {
 			view.assign("isLogin", "NO");
 		}
+        logWarning(request.elapsed());		
 		// if (cmp(toUpper(request.method), HttpMethod.OPTIONS.asString()) == 0)
 		if (request.methodAsString() == HttpMethod.OPTIONS.asString())
 			return false;
