@@ -14,6 +14,9 @@ import app.component.system.model.LangPackage;
 import app.component.system.repository.LangPackageRepository;
 import app.component.system.repository.LanguageRepository;
 
+import hunt.shiro;
+import app.lib.CmsRealm;
+
 void main()
 {
     DateTimeHelper.startClock();
@@ -59,3 +62,13 @@ void main()
 	app.run();
 }
 
+
+
+void initializeShiro() {
+		CmsRealm realm = new CmsRealm();
+		// DefaultWebSecurityManager sm = new DefaultWebSecurityManager();
+        // sm.setSessionMode(DefaultWebSecurityManager.NATIVE_SESSION_MODE);
+		DefaultSecurityManager sm = new DefaultSecurityManager();
+		sm.setRealm(realm);
+        SecurityUtils.setSecurityManager(sm);
+}

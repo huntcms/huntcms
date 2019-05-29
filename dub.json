@@ -6,7 +6,8 @@
     "license": "Apache-2.0",
     "targetType": "executable",
     "dependencies": {
-        "hunt-framework": "~>2.1.0" 
+		"hunt-shiro" : {"path": "../hunt-shiro"},
+        "hunt-framework": {"path": "../hunt-framework"}
     },
-    "versions":["WithDatabase"]
+    "versions":["HUNT_DEBUG1", "HUNT_SHIRO_DEBUG"]
 }
