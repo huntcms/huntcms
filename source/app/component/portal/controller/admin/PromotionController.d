@@ -10,6 +10,7 @@ import app.lib.yun.YunUpLoad;
 import app.component.system.helper.Utils;
 import std.digest.sha;
 import hunt.http.codec.http.model.HttpMethod;
+import std.json;
 
 class PromotionController : AdminBaseController
 {

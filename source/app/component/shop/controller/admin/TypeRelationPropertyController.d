@@ -19,6 +19,8 @@ import app.component.shop.controller.admin.PropertyOptionController;
 import hunt.http.codec.http.model.HttpMethod;
 import std.algorithm;
 
+import std.json;
+
 class TypeRelationPropertyController : AdminBaseController
 {
     mixin MakeController;

@@ -9,6 +9,7 @@ import hunt.logging;
 import app.component.project.model.ProjectMini;
 import app.component.document.model.DocBase;
 import std.math;
+import std.json;
 
 class ProjectMiniRepository : EntityRepository!(ProjectMini, int)
 {

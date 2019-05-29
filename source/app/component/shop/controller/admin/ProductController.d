@@ -24,6 +24,8 @@ import app.component.shop.repository.PropertyOptionRepository;
 import app.component.shop.repository.ProductRelationPropertyRepository;
 import app.component.shop.model.ProductRelationProperty;
 import std.array;
+import std.json;
+
 class ProductController : AdminBaseController
 {
     mixin MakeController;
