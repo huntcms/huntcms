@@ -257,6 +257,7 @@ class UserController : AdminBaseController
                     setLocale(user.language);
                     info("user logined: ", toJson(user));
                     // Application.getInstance().accessManager.addUser(user.id);
+                    trace("isPermitted: ", subject.isPermitted("system.file.upload"));
                     return new RedirectResponse(request, url("system.dashboard.dashboard", null, "admin"));
                 }
             }

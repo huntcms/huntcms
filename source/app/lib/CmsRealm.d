@@ -3,7 +3,16 @@ module app.lib.CmsRealm;
 import app.lib.Exceptions;
 import app.component.system.helper.Password;
 import app.component.system.model.User;
+import app.component.system.model.Permission;
+import app.component.system.model.Menu;
+import app.component.system.model.Role;
+import app.component.system.model.UserRole;
+
+import app.component.system.repository.PermissionRepository;
+import app.component.system.repository.RoleRepository;
+import app.component.system.repository.RolePermissionRepository;
 import app.component.system.repository.UserRepository;
+import app.component.system.repository.UserRoleRepository;
 
 import hunt.shiro;
 
@@ -12,6 +21,8 @@ import hunt.entity;
 import hunt.entity.DefaultEntityManagerFactory;
 import hunt.logging.ConsoleLogger;
 import hunt.String;
+
+alias PermissionModel = app.component.system.model.Permission.Permission;
 
 /**
 https://blog.csdn.net/eaphyy/article/details/70918792
@@ -47,56 +58,57 @@ class CmsRealm : AuthorizingRealm {
             if(checkSalt == userModel.password) {
                 String credentials = new String(password);
                 SimpleAuthenticationInfo info = new SimpleAuthenticationInfo(userModel, credentials, getName());
-                return info;                
-                // auto user = Application.getInstance().accessManager.addUser(find.id);
-
-                // if(user !is null){
-                //     // return new RedirectResponse(request, "/admincp/");
-                //     logError(find.language);
-                //     setLocale(find.language);
-                //     auto userInfo = Application.getInstance().accessManager.user;
-                //     logError(toJson(userInfo));
-                //     return new RedirectResponse(request, url("system.dashboard.dashboard", null, "admin"));
-                // }
-            }else{
+                return info;  
+            } else {
                 warning("Wrong password!");
                 throw new WrongPasswordException(username);
             }
         } 
-        
+
         warning("Your email has not been found or has been banned");
         throw new WrongEmailException(username);
 
-        // User userModel = userHelper.findAccount(UserHelper.USERNAME_ACCOUNT, username);
-        // bool r1 = userHelper.checkAccountLogin(userModel);
-        
-        // bool r2 = userHelper.checkPassword(userModel, password);
-        // if(userModel !is null && r1 && r2) {
-        //     String credentials = new String(password);
-        //     SimpleAuthenticationInfo info = new SimpleAuthenticationInfo(userModel, credentials, getName());
-        //     return info;
-        // }
         // return null;
     }
 
     override protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
         initEntityManager();
-        infof("principals: %s", typeid(cast(Object)principals).name);
-        // User user = cast(User) principals.getPrimaryPrincipal();
-        // if(user !is null) {
-        //     SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
-        //     List!string permiss = getPermiss(user.username);
-        //     info.addStringPermissions(permiss);
-        //     // authorizationInfo.setRoles(userDao.getRoles(con,userName));
-        //     return info;
-        // }
+        // infof("principals: %s", typeid(cast(Object)principals).name);
+        // infof("principals: %s", typeid(cast(Object)principals).toString());
 
-        return null;
+        // TODO: Tasks pending completion -@zhangxueping at 2019/5/30 12:30:04 pm
+        // To cache the user's roles and permissions
+        User user = cast(User) principals.getPrimaryPrincipal();
+        if(user is null) {
+            warning("no principals");
+            return null;
+        }
+        infof("principals: %s", user.name);
+
+        SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
+
+        RoleRepository roleRep = new RoleRepository(_cManager);
+        Role[] userRoles = roleRep.getUserRoles(user.id);
+
+        RolePermissionRepository rpRep = new RolePermissionRepository(_cManager);
+        foreach(Role r; userRoles) {
+
+            // roles
+            info.addRole(r.name);
+            tracef("Role: id=%d, name=%s", r.id,  r.name);
+
+            // permissions
+            if(r.name == "admin" || r.name == "administrator" || r.name == "超级管理员" )  {
+                info.addStringPermission("*"); // for administrator
+            } else {
+                foreach(PermissionModel p; rpRep.getRolePermissions(r.id)) {
+                    // tracef("Permission: id=%d, uid=%s, title=%s", p.id, p.mca, p.title);
+                    info.addStringPermission(p.mca);
+                }
+            }
+        }
+
+        return info;
     }
-    
-    private List!string getPermiss(string userName) {
-        List!string permiss = new ArrayList!string();
-        permiss.add("user:profile");
-        return permiss;
-    }
+
 }
