@@ -59,6 +59,7 @@ void main()
 
     });
 
+    initializeShiro();
 	app.run();
 }
 

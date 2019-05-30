@@ -3,6 +3,7 @@ module app.component.system.controller.admin.UserController;
 import hunt.framework;
 import hunt.framework.http.RedirectResponse;
 import app.lib.controller.AdminBaseController;
+import app.lib.Exceptions;
 import app.lib.functions;
 
 import app.component.system.model.User;
@@ -20,15 +21,16 @@ import hunt.entity.DefaultEntityManagerFactory;
 import hunt.logging;
 import hunt.util.DateTime;
 
-import std.string;
-import std.json;
-
 import hunt.database.DatabaseException;
 import hunt.http.codec.http.model.HttpMethod;
 import hunt.http.codec.http.model.HttpHeader;
 import hunt.util.MimeType;
 
+import hunt.shiro;
+
 import std.algorithm;
+import std.string;
+import std.json;
 
 class UserController : AdminBaseController
 {
@@ -229,35 +231,35 @@ class UserController : AdminBaseController
             auto result = loginForm.valid();
             logInfo(result);
 
-            if(result.isValid() == true){
-                string salt = generateSalt();
-                
-                logInfo(loginForm.username);
-                auto find = (new UserRepository(_cManager)).findByEmail(loginForm.username);
-                logInfo(find);
-
-                if(find){
-                    auto checkSalt = generateUserPassword(loginForm.password, find.salt);
-                    if(checkSalt == find.password){
-                        auto user = Application.getInstance().accessManager.addUser(find.id);
-
-                        if(user !is null){
-                            // return new RedirectResponse(request, "/admincp/");
-                            logError(find.language);
-                            setLocale(find.language);
-                            auto userInfo = Application.getInstance().accessManager.user;
-                            logError(toJson(userInfo));
-                            return new RedirectResponse(request, url("system.dashboard.dashboard", null, "admin"));
-                        }
-                    }else{
-                        this.errorMessages ~= "password wrong!";
-                    }
-
-                }else{
+            if(result.isValid()) {
+                string username = loginForm.username;
+                string password = loginForm.password;     
+                UsernamePasswordToken token = new UsernamePasswordToken(username, password);
+                // token.setRememberMe(true);
+                Subject subject = SecurityUtils.newSubject("", request.host()); 
+                try {
+                    subject.login(token);
+                } catch (WrongEmailException e) {
                     this.errorMessages ~= "Your email has not been found or has been banned";
+                } catch (WrongPasswordException e) {
+                    this.errorMessages ~= "Wrong password!";
+                } catch (AuthenticationException e) {
+                    warning(e.msg);
+                    this.errorMessages ~= "Login failed.";
+                } catch(Exception ex) {
+                    warning(ex.msg);
+                    this.errorMessages ~= "Unknown error";
+                }
+
+                if(subject.isAuthenticated()) {
+                    PrincipalCollection principals = subject.getPrincipals();
+                    User user = cast(User) principals.getPrimaryPrincipal();
+                    setLocale(user.language);
+                    info("user logined: ", toJson(user));
+                    // Application.getInstance().accessManager.addUser(user.id);
+                    return new RedirectResponse(request, url("system.dashboard.dashboard", null, "admin"));
                 }
             }
-
         }
         
         logInfo("------------------------------");

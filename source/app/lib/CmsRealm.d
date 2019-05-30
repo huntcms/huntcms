@@ -1,5 +1,10 @@
 module app.lib.CmsRealm;
 
+import app.lib.Exceptions;
+import app.component.system.helper.Password;
+import app.component.system.model.User;
+import app.component.system.repository.UserRepository;
+
 import hunt.shiro;
 
 import hunt.collection;
@@ -35,6 +40,33 @@ class CmsRealm : AuthorizingRealm {
         string username = token.getPrincipal();
         string password = cast(string)token.getCredentials();
         infof("principal: %s", username);
+        User userModel = (new UserRepository(_cManager)).findByEmail(username);
+
+        if(userModel !is null) { 
+            string checkSalt = generateUserPassword(password, userModel.salt);
+            if(checkSalt == userModel.password) {
+                String credentials = new String(password);
+                SimpleAuthenticationInfo info = new SimpleAuthenticationInfo(userModel, credentials, getName());
+                return info;                
+                // auto user = Application.getInstance().accessManager.addUser(find.id);
+
+                // if(user !is null){
+                //     // return new RedirectResponse(request, "/admincp/");
+                //     logError(find.language);
+                //     setLocale(find.language);
+                //     auto userInfo = Application.getInstance().accessManager.user;
+                //     logError(toJson(userInfo));
+                //     return new RedirectResponse(request, url("system.dashboard.dashboard", null, "admin"));
+                // }
+            }else{
+                warning("Wrong password!");
+                throw new WrongPasswordException(username);
+            }
+        } 
+        
+        warning("Your email has not been found or has been banned");
+        throw new WrongEmailException(username);
+
         // User userModel = userHelper.findAccount(UserHelper.USERNAME_ACCOUNT, username);
         // bool r1 = userHelper.checkAccountLogin(userModel);
         
@@ -44,7 +76,7 @@ class CmsRealm : AuthorizingRealm {
         //     SimpleAuthenticationInfo info = new SimpleAuthenticationInfo(userModel, credentials, getName());
         //     return info;
         // }
-        return null;
+        // return null;
     }
 
     override protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {

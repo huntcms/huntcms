@@ -46,7 +46,6 @@ class LangPackageRepository : EntityRepository!(LangPackage, int) {
             }
             if(tmp !is null) res[language.sign] = tmp;
         }
-        logError(res);
         return res;
     }
 
