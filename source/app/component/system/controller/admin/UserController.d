@@ -256,16 +256,23 @@ class UserController : AdminBaseController
                     User user = cast(User) principals.getPrimaryPrincipal();
                     setLocale(user.language);
                     info("user logined: ", toJson(user));
-                    // Application.getInstance().accessManager.addUser(user.id);
-                    trace("isPermitted: ", subject.isPermitted("system.file.upload"));
-                    return new RedirectResponse(request, url("system.dashboard.dashboard", null, "admin"));
+                    Application.getInstance().accessManager.addUser(user.id);
+                    // trace("isPermitted: ", subject.isPermitted("system.file.upload"));
+
+			        Cookie langCookie = new Cookie("Content-Language", user.language);
+                    ShiroSession se = subject.getSession();
+			        Cookie sessionCookie = new Cookie("ShiroSessionId", se.getId());
+
+                    return new RedirectResponse(request, url("system.dashboard.dashboard", null, "admin"))
+                        .withCookie(langCookie)
+                        .withCookie(sessionCookie);
                 }
             }
         }
         
         logInfo("------------------------------");
-        string lang = findLocal();
-        logInfo(lang);
+        // string lang = findLocal();
+        // logInfo(lang);
         return new Response(request)
             .setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString())
             .setContent(view.render("system/user/login"));

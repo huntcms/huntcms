@@ -14,6 +14,8 @@ import hunt.framework.security.acl.Permission;
 import hunt.entity.DefaultEntityManagerFactory;
 import app.lib.functions;
 
+import hunt.shiro;
+
 class AdminBaseController : Controller
 {
     protected string[] errorMessages;
@@ -37,37 +39,61 @@ class AdminBaseController : Controller
         logWarning(request.elapsed());		
 		auto repository = new MenuRepository(_cManager);
 		auto cache = Application.getInstance().cache();
-		auto userInfo = Application.getInstance().accessManager.user;
 
-		if (userInfo !is null) {
-			string permissionStr;
-			User nowUser = (new UserRepository(_cManager)).find(userInfo.id);
-			view.assign("nowUser", nowUser);
+		string sessionId = this.request.cookie("ShiroSessionId");
+		Subject subject = SecurityUtils.newSubject(sessionId, request.host()); 
+		infof("sessionId: %s, isAuthenticated: %s", sessionId, subject.isAuthenticated());
 
-			auto roles = userInfo.roles;
-			// 防止 roles 丢失 当 roles 不存在且登录用户 为 supered = 1 是清除一次
-			if(!roles && nowUser.supered == 1){
-				Application.getInstance().accessManager.refresh();
-			}
-
-			if(roles){
-				foreach(role; roles){
-					auto permissions = role.permissions;
-					if(permissions){
-						foreach(permission; permissions){
-							if(permissionStr.indexOf(permission.key) < 0){
-								permissionStr ~= "," ~ permission.key;
-							}
-						}
-					}
-				}
-			}
-			JSONValue[] menuData = repository.getAllMenus(permissionStr); 	
-			view.assign("menusJsonData", menuData);
+		if(subject.isAuthenticated()) {
 			view.assign("isLogin", "YES");
+			User currentUser = cast(User)subject.getPrincipal();
+			assert(currentUser !is null);
+			view.assign("nowUser", currentUser);
+
+			MenuItemViewModel[] menuData = repository.getAllowdMenus(subject); 	
+			view.assign("menusJsonData", menuData);			
+
 		} else {
 			view.assign("isLogin", "NO");
 		}
+
+		// auto userInfo = Application.getInstance().accessManager.user;
+
+		// if (userInfo !is null) {
+		// 	string permissionStr;
+		// 	User nowUser = (new UserRepository(_cManager)).find(userInfo.id);
+		// 	view.assign("nowUser", nowUser);
+
+		// 	auto roles = userInfo.roles;
+		// 	// 防止 roles 丢失 当 roles 不存在且登录用户 为 supered = 1 是清除一次
+		// 	if(!roles && nowUser.supered == 1){
+		// 		Application.getInstance().accessManager.refresh();
+		// 	}
+
+		// 	if(roles){
+		// 		foreach(role; roles){
+		// 			auto permissions = role.permissions;
+
+		// 	// info(permissions);
+
+		// 			if(permissions){
+		// 				foreach(permission; permissions){
+		// 					if(permissionStr.indexOf(permission.key) < 0){
+		// 						permissionStr ~= "," ~ permission.key;
+		// 					}
+		// 				}
+		// 			}
+		// 		}
+		// 	}
+
+		// 	info(permissionStr);
+		// 	MenuRepository.MenuItem[] menuData = repository.getAllowdMenus(permissionStr); 	
+		// 	view.assign("menusJsonData", menuData);
+		// 	// view.assign("isLogin", "YES");
+		// } else {
+		// 	// view.assign("isLogin", "NO");
+		// }
+
         logWarning(request.elapsed());		
 		// if (cmp(toUpper(request.method), HttpMethod.OPTIONS.asString()) == 0)
 		if (request.methodAsString() == HttpMethod.OPTIONS.asString())
@@ -105,13 +131,13 @@ class AdminBaseController : Controller
 		HttpSession session = request.session(true);
 		string sessionSuccessMessages = session.get("successMessages");
 		string sessionErrorMessages = session.get("errorMessages");
-		logInfo(sessionErrorMessages);
-		logInfo(sessionSuccessMessages);
 		if(sessionSuccessMessages) {
+			logInfo(sessionSuccessMessages);
 			session.remove("successMessages");
 			view.assign("successMessages", parseJSON(sessionSuccessMessages).array);
 		}
 		if(sessionErrorMessages) {
+			logInfo(sessionErrorMessages);
 			session.remove("errorMessages");
 			view.assign("errorMessages", parseJSON(sessionErrorMessages).array);
 		}

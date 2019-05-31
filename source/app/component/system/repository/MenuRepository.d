@@ -5,6 +5,18 @@ import app.component.system.model.Menu;
 import hunt.framework;
 import std.json;
 
+import hunt.shiro;
+
+struct MenuItemViewModel
+{
+    string name;
+    string keyword;
+    string user_link;
+    string icon_class;
+    MenuItemViewModel[] menus;
+}
+
+
 class MenuRepository : EntityRepository!(Menu, int)
 {
 
@@ -25,26 +37,43 @@ class MenuRepository : EntityRepository!(Menu, int)
             .getResultList();
     }
 
-    JSONValue[] getAllMenus(string getAllMenus)
+    MenuItemViewModel[] getAllowdMenus(Subject subject)
     {
-        JSONValue[] data = null;    
+         MenuItemViewModel[] data;
+        // TODO: Tasks pending completion -@zhangxueping at 2019/5/30 下午6:26:55
+        // 
+        // string cacheKey = "allowd_menus_" ~ userid;
+
+        // MenuItemViewModel[] data = cache().get(cacheKey);
+        // if (data)
+        // {
+        //     return data;
+        // }
+
         // Menu[] allMenus = this.findAll();        
         Menu[] allMenus = this.getAllSort(); 
         Menu[] firstLevelMenus = this.getMenusByPid(0);
         foreach(fmenu; firstLevelMenus)
         {
             string temFid = to!string(fmenu.id); 
-            JSONValue[] allMenusData = null;   
+            MenuItemViewModel[] allMenusData = null;   
+
             foreach(aMenu; allMenus) 
             {               
-                if(aMenu.pid == fmenu.id && aMenu.status == 1 && getAllMenus.indexOf(aMenu.mca) != -1)
+                if(aMenu.pid == fmenu.id && aMenu.status == 1 && subject.isPermitted(aMenu.mca) != -1)
                 {
                     string temLink = "";
                     if(aMenu.isAction == 1)
                         temLink = url(aMenu.mca);   
                     else
-                        temLink = aMenu.linkUrl;              
-                    allMenusData ~= toJson(["name": aMenu.name, "keyword": aMenu.keyword, "user_link": temLink]);           
+                        temLink = aMenu.linkUrl;        
+                    
+                    MenuItemViewModel temInfo; 
+                    temInfo.name = aMenu.name;
+                    temInfo.keyword = aMenu.keyword;
+                    temInfo.user_link = temLink;
+
+                    allMenusData ~= temInfo;           
                 } 
             }
             string userUrl = "";
@@ -53,8 +82,14 @@ class MenuRepository : EntityRepository!(Menu, int)
             else
                 userUrl = fmenu.linkUrl;
 
-            if(allMenusData !is null){
-                JSONValue temInfo = ["name": JSONValue(fmenu.name), "keyword": JSONValue(fmenu.keyword), "icon_class": JSONValue(fmenu.iconClass), "menus": JSONValue(allMenusData), "user_link": JSONValue(userUrl)];
+            if(allMenusData !is null) {
+                MenuItemViewModel temInfo;
+                temInfo .name = fmenu.name;
+                temInfo.keyword = fmenu.keyword; 
+                temInfo.icon_class = fmenu.iconClass;
+                temInfo.menus = allMenusData;
+                temInfo.user_link = userUrl;
+
                 data ~= temInfo;
             }
         }

@@ -67,9 +67,12 @@ void main()
 
 void initializeShiro() {
 		CmsRealm realm = new CmsRealm();
+	    auto cacheManager = new MemoryConstrainedCacheManager!(Object, AuthorizationInfo)();
 		// DefaultWebSecurityManager sm = new DefaultWebSecurityManager();
         // sm.setSessionMode(DefaultWebSecurityManager.NATIVE_SESSION_MODE);
 		DefaultSecurityManager sm = new DefaultSecurityManager();
 		sm.setRealm(realm);
+        sm.setCacheManager(cacheManager);
+
         SecurityUtils.setSecurityManager(sm);
 }
