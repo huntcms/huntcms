@@ -45,6 +45,7 @@ class AdminBaseController : Controller
 		infof("sessionId: %s, isAuthenticated: %s", sessionId, subject.isAuthenticated());
 
 		if(subject.isAuthenticated()) {
+			request.setAttribute(Subject.DEFAULT_NAME, cast(Object)subject);
 			view.assign("isLogin", "YES");
 			User currentUser = cast(User)subject.getPrincipal();
 			assert(currentUser !is null);

@@ -280,8 +280,15 @@ class UserController : AdminBaseController
 
     @Action Response logout()
     {
-        Application.getInstance().accessManager.removeAuth();
+            Subject subject = cast(Subject)request.getAttribute(Subject.DEFAULT_NAME);
+            if(subject !is null) {
+                subject.logout();
+            }
+            Cookie sessionCookie = new Cookie("ShiroSessionId", "", 0);
+
+        // Application.getInstance().accessManager.removeAuth();
         // return new RedirectResponse(request, "/admincp/login");
-        return new RedirectResponse(request, url("system.user.login", null, "admin"));
+        return new RedirectResponse(request, url("system.user.login", null, "admin"))
+                        .withCookie(sessionCookie);
     }
 }
