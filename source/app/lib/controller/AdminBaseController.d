@@ -2,6 +2,8 @@ module app.lib.controller.AdminBaseController;
 
 import hunt.framework;
 import app.lib.cache.TmpCache;
+import app.lib.middlewares.AuthenticationMiddleware;
+
 import app.component.system.repository.MenuRepository;
 import app.component.system.repository.UserRepository;
 import app.component.system.model.Menu;
@@ -16,7 +18,15 @@ import app.lib.functions;
 
 import hunt.shiro;
 
-class AdminBaseController : Controller
+// class AdminBaseController : CmsController {
+// 	this() 
+// 	{
+// 		super();
+//         addMiddleware(new AuthenticationMiddleware());
+//     }
+// }
+
+class  AdminBaseController : Controller
 {
     protected string[] errorMessages;
 	
@@ -31,21 +41,18 @@ class AdminBaseController : Controller
 	{
         _tmpCache = new TmpCache();
         _cManager = defaultEntityManagerFactory().createEntityManager();
+
+        addMiddleware(new AuthenticationMiddleware());
     }
 
     override bool before() {
-
 		this.flashMessages();
         logWarning(request.elapsed());		
-		auto repository = new MenuRepository(_cManager);
-		auto cache = Application.getInstance().cache();
 
-		string sessionId = this.request.cookie("ShiroSessionId");
-		Subject subject = SecurityUtils.newSubject(sessionId, request.host()); 
-		infof("sessionId: %s, isAuthenticated: %s", sessionId, subject.isAuthenticated());
+        Subject subject = cast(Subject)request.getAttribute(Subject.DEFAULT_NAME);
 
-		if(subject.isAuthenticated()) {
-			request.setAttribute(Subject.DEFAULT_NAME, cast(Object)subject);
+		if(subject !is null && subject.isAuthenticated()) {
+			auto repository = new MenuRepository(_cManager);
 			view.assign("isLogin", "YES");
 			User currentUser = cast(User)subject.getPrincipal();
 			assert(currentUser !is null);
@@ -58,42 +65,6 @@ class AdminBaseController : Controller
 			view.assign("isLogin", "NO");
 		}
 
-		// auto userInfo = Application.getInstance().accessManager.user;
-
-		// if (userInfo !is null) {
-		// 	string permissionStr;
-		// 	User nowUser = (new UserRepository(_cManager)).find(userInfo.id);
-		// 	view.assign("nowUser", nowUser);
-
-		// 	auto roles = userInfo.roles;
-		// 	// 防止 roles 丢失 当 roles 不存在且登录用户 为 supered = 1 是清除一次
-		// 	if(!roles && nowUser.supered == 1){
-		// 		Application.getInstance().accessManager.refresh();
-		// 	}
-
-		// 	if(roles){
-		// 		foreach(role; roles){
-		// 			auto permissions = role.permissions;
-
-		// 	// info(permissions);
-
-		// 			if(permissions){
-		// 				foreach(permission; permissions){
-		// 					if(permissionStr.indexOf(permission.key) < 0){
-		// 						permissionStr ~= "," ~ permission.key;
-		// 					}
-		// 				}
-		// 			}
-		// 		}
-		// 	}
-
-		// 	info(permissionStr);
-		// 	MenuRepository.MenuItem[] menuData = repository.getAllowdMenus(permissionStr); 	
-		// 	view.assign("menusJsonData", menuData);
-		// 	// view.assign("isLogin", "YES");
-		// } else {
-		// 	// view.assign("isLogin", "NO");
-		// }
 
         logWarning(request.elapsed());		
 		// if (cmp(toUpper(request.method), HttpMethod.OPTIONS.asString()) == 0)
