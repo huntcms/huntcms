@@ -40,6 +40,12 @@ class CmsRealm : AuthorizingRealm {
         setCredentialsMatcher(new AllowAllCredentialsMatcher());
     }
 
+    ~this() {
+        if(_cManager !is null) {
+            _cManager.close();
+        }
+    }
+
     void initEntityManager() {
         if(_cManager is null) {
             _cManager = defaultEntityManagerFactory().createEntityManager();
@@ -48,9 +54,14 @@ class CmsRealm : AuthorizingRealm {
 
     override protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) {
         initEntityManager();
+        // EntityManager 
+        // _cManager = defaultEntityManagerFactory().createEntityManager();
+        // scope(exit) {
+        //     _cManager.close();
+        // }
         string username = token.getPrincipal();
         string password = cast(string)token.getCredentials();
-        infof("principal: %s", username);
+        version(HUNT_DEBUG) infof("principal: %s", username);
         User userModel = (new UserRepository(_cManager)).findByEmail(username);
 
         if(userModel !is null) { 
@@ -73,6 +84,10 @@ class CmsRealm : AuthorizingRealm {
 
     override protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
         initEntityManager();
+        // EntityManager _cManager = defaultEntityManagerFactory().createEntityManager();
+        // scope(exit) {
+        //     _cManager.close();
+        // }
         // infof("principals: %s", typeid(cast(Object)principals).name);
         // infof("principals: %s", typeid(cast(Object)principals).toString());
 
@@ -83,7 +98,7 @@ class CmsRealm : AuthorizingRealm {
             warning("no principals");
             return null;
         }
-        infof("principals: %s", user.name);
+        version(HUNT_DEBUG) infof("principals: %s", user.name);
 
         SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
 
@@ -95,7 +110,7 @@ class CmsRealm : AuthorizingRealm {
 
             // roles
             info.addRole(r.name);
-            tracef("Role: id=%d, name=%s", r.id,  r.name);
+            version(HUNT_DEBUG) tracef("Role: id=%d, name=%s", r.id,  r.name);
 
             // permissions
             if(r.name == "admin" || r.name == "administrator" || r.name == "超级管理员" )  {

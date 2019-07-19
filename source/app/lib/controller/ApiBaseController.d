@@ -1,39 +1,29 @@
-module app.lib.controller.BaseController;
+module app.lib.controller.ApiBaseController;
 
 import hunt.framework;
-import hunt.logging;
-import hunt.util.Configuration;
-import hunt.http.codec.http.model.HttpMethod;
-import hunt.cache.ucache;
-import frontConf = hunt.framework.application.ApplicationConfig;
-import std.net.curl;
 import std.json;
-import std.algorithm.sorting;
-
-import app.component.system.repository.LanguageRepository;
-import app.component.system.model.Language;
+import hunt.http.codec.http.model.HttpMethod;
 import hunt.entity.DefaultEntityManagerFactory;
 
-class BaseController : Controller {
 
-    private ConfigBuilder _configFront;
-    public UCache _cache;
-    public EntityManager _cManager;
+class ApiBaseController : Controller
+{
+    EntityManager _cManager;
 
-    this(){
-        _configFront = configManager().config("hunt");
-        _cache = Application.getInstance().cache();
+    this()
+    {
         _cManager = defaultEntityManagerFactory().createEntityManager();
     }
 
-    override bool before() {
-        view.assign("siteBase", _configFront.front.site.base.value);
-        // view.assign("topMenu", this.getTopMenu());
-        logWarning(request.elapsed());
+    override bool before()
+    {
+        info("mca: ", request.getMCA());
+        trace("data: ", request.all());
         return true;
     }
 
-    override bool after(){
+    override bool after()
+    {
         ///请求结束自动销毁本次数据库连接
         if(_cManager){
             _cManager.close();
@@ -41,10 +31,9 @@ class BaseController : Controller {
         return true;
     }
 
-    bool pubAssign() {
-        return true;
+    EntityManager entityManager() {
+        return _cManager;
     }
-
 
     static JSONValue resultMessage(T = string)(T data = T.init)
     {

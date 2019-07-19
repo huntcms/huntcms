@@ -23,11 +23,12 @@ import std.array;
 import std.string;
 
 class AuthenticationMiddleware : MiddlewareInterface {
-    public EntityManager _cManager;
+    EntityManager _cManager;
 
-    this()
+    this(EntityManager manager)
     {
-        _cManager = defaultEntityManagerFactory().createEntityManager();
+        this._cManager = manager;
+        // _cManager = defaultEntityManagerFactory().createEntityManager();
     }
     
     override string name() {

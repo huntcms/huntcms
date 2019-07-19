@@ -42,8 +42,13 @@ class  AdminBaseController : Controller
         _tmpCache = new TmpCache();
         _cManager = defaultEntityManagerFactory().createEntityManager();
 
-        addMiddleware(new AuthenticationMiddleware());
+        addMiddleware(new AuthenticationMiddleware(_cManager));
     }
+
+	override void dispose() {
+		// _cManager.close();
+		// super.dispose();
+	}
 
     override bool before() {
 		this.flashMessages();

@@ -24,9 +24,9 @@ class FrontBaseController : Controller{
     }
 
     override bool before() {
-        auto topMenu = _tmpCache.getTopMenu();
+        // auto topMenu = _tmpCache.getTopMenu();
         view.assign("siteBase", _configFront.front.site.base.value);
-        view.assign("topMenu", topMenu);
+        // view.assign("topMenu", topMenu);
         logWarning(request.host);
         // logWarning(request.getScheme());
         logWarning(request.elapsed());

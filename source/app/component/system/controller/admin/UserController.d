@@ -57,7 +57,6 @@ class UserController : AdminBaseController
             string name = request.post!string("name");
             string email = request.post!string("email");
             short status = request.post("status").to!short;
-
             int[] roleIds = Utils.getCheckbox!int(request.all(), "roleid");
             string[] errorMessages;
 
@@ -240,14 +239,16 @@ class UserController : AdminBaseController
                 try {
                     subject.login(token);
                 } catch (WrongEmailException e) {
+                    warning(e);
                     this.errorMessages ~= "Your email has not been found or has been banned";
                 } catch (WrongPasswordException e) {
+                    warning(e);
                     this.errorMessages ~= "Wrong password!";
                 } catch (AuthenticationException e) {
-                    warning(e.msg);
+                    warning(e);
                     this.errorMessages ~= "Login failed.";
                 } catch(Exception ex) {
-                    warning(ex.msg);
+                    warning(ex);
                     this.errorMessages ~= "Unknown error";
                 }
 
