@@ -11,3 +11,4 @@ dub.userprefs
 .idea
 config/application.conf
 *.dll
+*.DS_Store
