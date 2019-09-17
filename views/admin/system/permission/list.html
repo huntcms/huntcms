@@ -74,7 +74,7 @@
                             </div>
                         </div>
                         <tbody>
-                            {% for permission in permissions.data %}
+                            {% for permission in permissions %}
                             <tr>
                                 <td>{{ permission.id }}</td>
                                 <td>{{ permission.mca }}</td>
@@ -105,19 +105,13 @@
                             </tr>
                             {% endfor %}
                         </tbody>
-                        <tfoot>
-                            <tr class="active">
-                                <td colspan="5">
-                                    <div class="text-right">
-                                        {{ pageView }}
-                                    </div>
-                                </td>
-                            </tr>
-                        </tfoot>
                     </table>
                 </div>
             </div>
-        </div>        
+        </div>
+        <div class="clearfix">
+            {% include "../../../default/paginate.html" %}
+        </div>
         <!-- end row -->
 
     </div>

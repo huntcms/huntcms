@@ -19,4 +19,15 @@ class UserRepository : EntityRepository!(User, int)
             .setParameter("email", email)
             .getSingleResult();
     }
+
+    Page!User findByUser(int page = 0, int perPage = 10)
+    {
+        page = page < 1 ? 0 : page;
+        perPage = perPage < 1 ? 10 : perPage;
+
+        auto temp = _manager.createQuery!(User)("SELECT u FROM User u", new Pageable(page, perPage))
+        .getPageResult();
+        logError(temp);
+        return temp;
+    }
 }

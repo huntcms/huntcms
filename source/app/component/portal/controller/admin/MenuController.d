@@ -29,15 +29,18 @@ class MenuController : AdminBaseController
         super();      
     }
 
-    @Action string list()
+
+    @Action Response list(int perPage, int page = 1)
     {
-        uint page = request.get!uint("page" , 0);
-        auto repository = new MenuRepository(_cManager);
-        auto alldata = pageToJson!Menu(repository.findAll(new Pageable(page , 20, repository.Field.sort , OrderBy.ASC)));
-        //logDebug("menus : ", alldata);
-        view.assign("menus", alldata);
-        string lang = findLocal();
-        return view.setLocale(lang).render("portal/menu/list");
+        perPage = perPage < 1 ? 5 : perPage;
+        auto alldata = new MenuRepository(_cManager).findByMenus(page-1, perPage);
+
+        view.assign("menus", alldata.getContent());
+        view.assign("pageModel",  alldata.getModel());
+        view.assign("pageQuery", buildQueryString(request.input()));
+        return new Response(request)
+        .setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString())
+        .setContent(view.render("portal/menu/list"));
     }
 
     @Action Response add()

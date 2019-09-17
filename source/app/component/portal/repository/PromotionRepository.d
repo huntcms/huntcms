@@ -12,4 +12,16 @@ class PromotionRepository : EntityRepository!(Promotion, int)
         super(manager is null ? createEntityManager() : manager);
     }
 
+
+
+    Page!Promotion findByPromotion(int page = 0, int perPage = 10)
+    {
+        page = page < 1 ? 0 : page;
+        perPage = perPage < 1 ? 10 : perPage;
+
+        auto temp = _manager.createQuery!(Promotion)("SELECT p FROM Promotion p", new Pageable(page, perPage))
+        .getPageResult();
+        return temp;
+    }
+
 }

@@ -19,10 +19,21 @@ struct MenuItemViewModel
 
 class MenuRepository : EntityRepository!(Menu, int)
 {
-
     this(EntityManager manager = null) {
         super(manager is null ? createEntityManager() : manager);
     }
+
+    Page!Menu findByMenu(int page = 0, int perPage = 10)
+    {
+        page = page < 1 ? 0 : page;
+        perPage = perPage < 1 ? 10 : perPage;
+
+        auto temp = _manager.createQuery!(Menu)("SELECT m FROM Menu m", new Pageable(page, perPage))
+        .getPageResult();
+        logError(temp);
+        return temp;
+    }
+
 
     Menu[] getMenusByPid(int parentId) 
     {

@@ -32,4 +32,14 @@ class RoleRepository : EntityRepository!(Role, int)
         }
         return roleIds;
     }
+
+    Page!Role findByRole(int page = 0, int perPage = 10)
+    {
+        page = page < 1 ? 0 : page;
+        perPage = perPage < 1 ? 10 : perPage;
+
+        auto temp = _manager.createQuery!(Role)("SELECT r FROM Role r", new Pageable(page, perPage))
+        .getPageResult();
+        return temp;
+    }
 }

@@ -33,20 +33,38 @@ class ArticleController : AdminBaseController
         this.addMiddleware(new LogMiddleware(_cManager));
     }
 
-    @Action string list()
-    {    
-        auto repository = new ArticleRepository(_cManager);
-        auto tae = new TagArticleRepository(_cManager);
-        auto tr  = new TagRepository(_cManager);
-        auto alldata = repository.findAll();
-        auto tagarticles = tae.findAll();
-        auto tags = tr.findAll();
+
+    @Action Response list(int categoriesId, int perPage, int page = 1)
+    {
+        //auto repository = new ArticleRepository(_cManager);
+        //auto tae = new TagArticleRepository(_cManager);
+        //auto tr  = new TagRepository(_cManager);
+        //auto alldata = repository.findAll();
+        //auto tagarticles = tae.findAll();
+        //auto tags = tr.findAll();
         //logDebug("articles : ", toJSON(alldata).toString);
-        view.assign("articles", alldata);
-        view.assign("tagarticles", tagarticles);
-        view.assign("tags", tags);
-        string lang = findLocal();
-        return view.setLocale(lang).render("article/article/list");
+        //view.assign("articles", alldata);
+        //view.assign("tagarticles", tagarticles);
+        //view.assign("tags", tags);
+        //string lang = findLocal();
+        //return view.setLocale(lang).render("article/article/list");
+        perPage = perPage < 1 ? 10 : perPage;
+        auto alldata = new ArticleRepository(_cManager).findByArticle(categoriesId, page-1, perPage);
+        auto tagarticles = new TagArticleRepository(_cManager).findByTagArticle(page-1, perPage);
+        auto tags = new TagRepository(_cManager).findByTag(page-1, perPage);
+        logError(toJson(alldata));
+        view.assign("categoriesId", categoriesId);
+        view.assign("articles", alldata.getContent());
+        view.assign("tagarticles", tagarticles.getContent());
+        view.assign("tags", tags.getContent());
+        view.assign("pageModel",  alldata.getModel());
+        view.assign("pageQuery", buildQueryString(request.input()));
+
+        return new Response(request)
+        .setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString())
+        .setContent(view.render("article/article/list"));
+
+
     }
 
     @Action Response add()

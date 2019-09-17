@@ -29,22 +29,20 @@ class PermissionController : AdminBaseController
         this.addMiddleware(new LogMiddleware(_cManager));   
     }
 
-    @Action string list()
-    {
-        uint page = request.get!uint("page" , 1);
-        auto repository = new PermissionRepository(_cManager);
-        int limit = 20 ;  // 每页显示多少条
-        JSONValue alldata = pageToJson!Permission(repository.findAll(new Pageable((page-1 < 0 ? 0 : page-1 ) , limit)));
-        //logDebug("permissions : ",alldata);
-        view.assign("permissions", alldata);
-        auto pgList = (new PermissionGroupRepository(_cManager)).findAll();
-        view.assign("groups", pgList);
 
-        int totalPages = cast(int)alldata["totalPages"].integer ;
-        Paginate temPage = new Paginate("/admincp/system/permissions?page={page}" , (cast(int) page <= 0 ? 1 : cast(int) page) , totalPages);
-        view.assign("pageView", temPage.showPages());
-        string lang = findLocal();
-        return view.setLocale(lang).render("system/permission/list");
+    @Action Response list(int perPage, int page = 1)
+    {
+        perPage = perPage < 1 ? 10 : perPage;
+        auto alldata = (new PermissionRepository(_cManager)).findByPermission(page-1, perPage);
+        auto data = (new PermissionGroupRepository(_cManager)).findByPermissionGroup(page-1, perPage);
+        view.assign("permissions", alldata.getContent());
+        view.assign("groups", data.getContent());
+
+        view.assign("pageModel",  alldata.getModel());
+        view.assign("pageQuery", buildQueryString(request.input()));
+        return new Response(request)
+        .setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString())
+        .setContent(view.render("system/permission/list"));
     }
 
     @Action Response add()

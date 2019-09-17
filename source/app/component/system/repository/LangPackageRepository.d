@@ -15,6 +15,17 @@ class LangPackageRepository : EntityRepository!(LangPackage, int) {
         super(manager is null ? createEntityManager() : manager);
     }
 
+    Page!LangPackage findByLangPackage(int page = 0, int perPage = 10)
+    {
+        page = page < 1 ? 0 : page;
+        perPage = perPage < 1 ? 10 : perPage;
+
+        auto temp = _manager.createQuery!(LangPackage)("SELECT l FROM LangPackage l", new Pageable(page, perPage))
+        .getPageResult();
+        return temp;
+    }
+
+
     LangPackage findPackageBySign(string local){
         return _manager.createQuery!(LangPackage)(" SELECT p FROM LangPackage p WHERE p.local = :local")
             .setParameter("local", local)

@@ -19,15 +19,18 @@ class BannerController : AdminBaseController
         super();  
     }
 
-    @Action string list()
+
+    @Action Response list(int perPage, int page = 1)
     {
-        uint page = request.get!uint("page" , 0);
-        auto repository = new BannerRepository(_cManager);
-        auto alldata = pageToJson!Banner(repository.findAll(new Pageable(page , 20)));
-        logDebug("banners : ", alldata);
-        view.assign("banners", alldata);
-        string lang = findLocal();
-        return view.setLocale(lang).render("portal/banner/list");
+        perPage = perPage < 1 ? 5 : perPage;
+        auto alldata = new BannerRepository(_cManager).findByBanner(page-1, perPage);
+
+        view.assign("banners", alldata.getContent());
+        view.assign("pageModel",  alldata.getModel());
+        view.assign("pageQuery", buildQueryString(request.input()));
+        return new Response(request)
+        .setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString())
+        .setContent(view.render("portal/banner/list"));
     }
     
     @Action Response add()

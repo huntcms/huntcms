@@ -71,7 +71,7 @@
                             </div>
                         </div>
                         <tbody>
-                            {% for group in groups.data %}
+                            {% for group in groups %}
                             <tr>
                                 <td>{{ group.id }}</td>
                                 <td>{{ group.title }}</td>
@@ -108,7 +108,10 @@
                     </table>
                 </div>
             </div>
-        </div>        
+        </div>
+        <div class="clearfix">
+            {% include "../../../default/paginate.html" %}
+        </div>
         <!-- end row -->
 
     </div>

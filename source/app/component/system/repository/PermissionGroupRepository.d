@@ -15,4 +15,17 @@ class PermissionGroupRepository : EntityRepository!(PermissionGroup, int)
         super(manager is null ? createEntityManager() : manager);
     }
 
+
+    Page!PermissionGroup findByPermissionGroup(int page = 0, int perPage = 10)
+    {
+        page = page < 1 ? 0 : page;
+        perPage = perPage < 1 ? 10 : perPage;
+
+        auto temp = _manager.createQuery!(PermissionGroup)("SELECT p FROM PermissionGroup p", new Pageable(page, perPage))
+        .getPageResult();
+        return temp;
+    }
+
+
+
 }

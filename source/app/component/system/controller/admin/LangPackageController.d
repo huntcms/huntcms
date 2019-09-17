@@ -26,21 +26,19 @@ class LangPackageController : AdminBaseController{
         super();      
     }
 
-    @Action string list() {
-        uint page = request.get!uint("page" , 1);
-        auto repository = new LangPackageRepository(_cManager);        
-        auto sortCondition = new Sort();
-        sortCondition.add(new Order(repository.Field.created, OrderBy.DESC));
-        auto alldata = pageToJson!LangPackage(repository.findAll(new Pageable((page < 1 ? 0 : page - 1), 20, sortCondition)));
-        // JSONValue j = parseJSON(alldata);
-        Paginate pageView = new Paginate(url("system.langpackage.list", null, "admin"), 
-            (cast(int) alldata["cur"].integer <= 0 ? 1 : cast(int) alldata["cur"].integer + 1), 
-            to!int(alldata["totalPages"].integer), 20);
-        logError(alldata);
-        view.assign("package", alldata);
-        view.assign("pageView", pageView.showPages());
-        string lang = findLocal();
-        return view.setLocale(lang).render("system/package/list");
+    @Action Response list(int perPage, int page = 1)
+    {
+        perPage = perPage < 1 ? 5 : perPage;
+        auto alldata = (new LangPackageRepository(_cManager)).findByLangPackage(page-1, perPage);
+        view.assign("package", alldata.getContent());
+
+        view.assign("pageModel",  alldata.getModel());
+        view.assign("pageQuery", buildQueryString(request.input()));
+
+        return new Response(request)
+        .setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString())
+        .setContent(view.render("system/package/list"));
+
     }
 
     @Action Response add() {

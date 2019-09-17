@@ -8,6 +8,7 @@ import app.component.system.repository.MenuRepository;
 import app.component.system.model.LangPackage;
 import app.component.system.repository.LangPackageRepository;
 import app.component.system.helper.Utils;
+
 import app.lib.controller.AdminBaseController;
 import app.lib.functions;
 import hunt.logging;
@@ -17,7 +18,7 @@ import hunt.util.Configuration;
 import hunt.http.codec.http.model.HttpMethod;
 import hunt.entity.domain;
 import std.uni;
-
+import app.lib.functions;
 class MenuController : AdminBaseController
 {
     mixin MakeController;
@@ -29,19 +30,23 @@ class MenuController : AdminBaseController
         // logError(_configFront.hunt.application.defaultLanguage.value);
     }
 
-    @Action string list()
+
+    @Action Response list(int perPage, int page = 1)
     {
-        uint page = request.get!uint("page" , 0);
-        auto repository = new MenuRepository(_cManager);
-        auto alldata = pageToJson!Menu(repository.findAll(new Pageable(page , 20)));
-        //logDebug("menus : ", alldata);
-        view.assign("menus", alldata);
-        string lang = findLocal();
-        return view.setLocale(lang).render("system/menu/list");
+        perPage = perPage < 1 ? 10 : perPage;
+        auto alldata = (new MenuRepository(_cManager)).findByMenu(page-1, perPage);
+
+        view.assign("menus", alldata.getContent());
+        view.assign("pageModel",  alldata.getModel());
+        view.assign("pageQuery", buildQueryString(request.input()));
+        return new Response(request)
+        .setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString())
+        .setContent(view.render("system/menu/list"));
     }
 
-    @Action Response add() {
 
+    @Action Response add()
+    {
         string lang = findLocal();
         if (request.methodAsString() == HttpMethod.POST.asString()) {
             int now = cast(int) time();

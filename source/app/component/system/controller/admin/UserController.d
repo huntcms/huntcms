@@ -41,12 +41,18 @@ class UserController : AdminBaseController
         super();      
     }
 
-    @Action string list()
+    @Action Response list(int perPage, int page = 1)
     {
-        auto repository = new UserRepository(_cManager);
-        view.assign("users", repository.findAll());
-        string lang = findLocal();
-        return view.setLocale(lang).render("system/user/list");
+        perPage = perPage < 1 ? 1 : perPage;
+        auto alldata = (new UserRepository(_cManager)).findByUser(page-1, perPage);
+        view.assign("users", alldata.getContent());
+
+        view.assign("pageModel",  alldata.getModel());
+        view.assign("pageQuery", buildQueryString(request.input()));
+
+        return new Response(request)
+        .setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString())
+        .setContent(view.render("system/user/list"));
     }
 
     @Action Response add()

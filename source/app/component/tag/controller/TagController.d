@@ -11,16 +11,19 @@ import hunt.http.codec.http.model.HttpMethod;
 class TagController : AdminBaseController
 {
     mixin MakeController;
-    @Action string list()
-    {
-        uint page = request.get!uint("page" , 0);
-        auto repository = new TagRepository(_cManager);
-        auto alldata = pageToJson!Tag(repository.findAll(new Pageable(page , 20)));
-        logDebug("tags : ", alldata);
-        view.assign("tags", alldata);
 
-        string lang = findLocal();
-        return view.setLocale(lang).render("tag/tag/list");
+
+    @Action Response list(int perPage, int page = 1)
+    {
+        perPage = perPage < 1 ? 1 : perPage;
+        auto alldata = new TagRepository(_cManager).findByTag(page-1, perPage);
+
+        view.assign("tags", alldata.getContent());
+        view.assign("pageModel",  alldata.getModel());
+        view.assign("pageQuery", buildQueryString(request.input()));
+        return new Response(request)
+        .setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString())
+        .setContent(view.render("tag/tag/list"));
     }
 
     @Action Response add()

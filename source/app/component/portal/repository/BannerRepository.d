@@ -48,4 +48,16 @@ class BannerRepository : EntityRepository!(Banner, int)
         }
         return jsonData;
     }
+
+
+    Page!Banner findByBanner(int page = 0, int perPage = 10)
+    {
+        page = page < 1 ? 0 : page;
+        perPage = perPage < 1 ? 10 : perPage;
+
+        auto temp = _manager.createQuery!(Banner)("SELECT b FROM Banner b", new Pageable(page, perPage))
+        .getPageResult();
+        return temp;
+    }
+
 }

@@ -18,15 +18,19 @@ class CategoryController : AdminBaseController
         super();      
         this.addMiddleware(new LogMiddleware(_cManager));
     }
-    
-    @Action string list()
-    {      
-        auto repository = new CategoryRepository(_cManager);
-        auto alldata = repository.findAll();
-        //logDebug("categories : ", toJSON(alldata).toString);
-        view.assign("categories", alldata); 
-        string lang = findLocal();
-        return view.setLocale(lang).render("article/category/list");
+
+
+    @Action Response list(int perPage, int page = 1)
+    {
+        perPage = perPage < 1 ? 5 : perPage;
+        auto alldata = new CategoryRepository(_cManager).findByCategory(page-1, perPage);
+        view.assign("categories", alldata.getContent());
+        view.assign("pageModel",  alldata.getModel());
+        view.assign("pageQuery", buildQueryString(request.input()));
+        return new Response(request)
+        .setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString())
+        .setContent(view.render("article/category/list"));
+
     }
 
     @Action Response add()

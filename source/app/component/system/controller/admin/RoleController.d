@@ -26,11 +26,19 @@ class RoleController : AdminBaseController
 {
     mixin MakeController;
 
-    @Action string list()
+    @Action Response list(int perPage, int page = 1)
     {
-        view.assign("roles", (new RoleRepository).findAll());
-        string lang = findLocal();
-        return view.setLocale(lang).render("system/role/list");
+        perPage = perPage < 1 ? 3 : perPage;
+        auto alldata = (new RoleRepository(_cManager)).findByRole(page-1, perPage);
+
+        view.assign("roles", alldata.getContent());
+
+        view.assign("pageModel",  alldata.getModel());
+        view.assign("pageQuery", buildQueryString(request.input()));
+        return new Response(request)
+        .setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString())
+        .setContent(view.render("system/role/list"));
+
     }
 
     @Action Response add()

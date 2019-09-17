@@ -21,15 +21,18 @@ class PromotionController : AdminBaseController
         super();      
     }
 
-    @Action string list()
+
+    @Action Response list(int perPage, int page = 1)
     {
-        uint page = request.get!uint("page" , 0);
-        auto repository = new PromotionRepository(_cManager);
-        auto alldata = pageToJson!Promotion(repository.findAll(new Pageable(page , 20)));
-        //logDebug("menus : ", alldata);
-        view.assign("promotions", alldata);
-        string lang = findLocal();
-        return view.setLocale(lang).render("portal/promotion/list");
+        perPage = perPage < 1 ? 5 : perPage;
+        auto alldata = new PromotionRepository(_cManager).findByPromotion(page-1, perPage);
+        view.assign("promotions", alldata.getContent());
+        view.assign("pageModel",  alldata.getModel());
+        view.assign("pageQuery", buildQueryString(request.input()));
+        return new Response(request)
+        .setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString())
+        .setContent(view.render("portal/promotion/list"));
+
     }
 
     @Action Response add()

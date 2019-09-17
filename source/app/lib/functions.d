@@ -37,3 +37,19 @@ string findLocal() {
     }
     return localLanguage;
 }
+string buildQueryString(string[string] params, string pageKey = "page")
+{
+    string resStr;
+    foreach(key, val; params)
+    {
+        if(pageKey != key)
+        {
+            if(resStr.length > 0)
+            {
+                resStr ~= "&";
+            }
+            resStr ~= key ~ "=" ~ val;
+        }
+    }
+    return resStr;
+}

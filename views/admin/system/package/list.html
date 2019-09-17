@@ -51,7 +51,7 @@
                         </thead>
                         
                         <tbody>
-                            {% for oneData in package.data %}
+                            {% for oneData in package %}
                             <tr>
                                 <td>{{ oneData.id }}</td>
                                 <td>{{ oneData.local }}</td>
@@ -84,7 +84,10 @@
                     </table>
                 </div>
             </div>
-        </div>        
+        </div>
+        <div class="clearfix">
+            {% include "../../../default/paginate.html" %}
+        </div>
         <!-- end row -->
 
     </div>
