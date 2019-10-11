@@ -7,6 +7,8 @@ import app.component.article.model.Category;
 import hunt.logging;
 import hunt.framework;
 
+import std.conv;
+
 class ArticleRepository : EntityRepository!(Article, int)
 {
 

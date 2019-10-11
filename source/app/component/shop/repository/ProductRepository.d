@@ -8,6 +8,7 @@ import hunt.util.Serialize;
 import hunt.logging;
 import hunt.framework;
 import app.component.shop.model.Product;
+import std.conv;
 
 class ProductRepository : EntityRepository!(Product, int)
 {

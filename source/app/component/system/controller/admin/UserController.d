@@ -21,7 +21,7 @@ import hunt.entity.DefaultEntityManagerFactory;
 import hunt.logging;
 import hunt.util.DateTime;
 
-import hunt.database.DatabaseException;
+// import hunt.database.DatabaseException;
 import hunt.http.codec.http.model.HttpMethod;
 import hunt.http.codec.http.model.HttpHeader;
 import hunt.util.MimeType;

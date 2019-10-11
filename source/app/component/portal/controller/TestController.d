@@ -61,10 +61,10 @@ class TestController : Controller {
         auto cacheData = _cache.get!(Banner[])("banners");
         Banner[] result;
         Banner[] allDatas;
-        if(!cacheData || isReset){
+        if(cacheData is null || isReset){
             logInfo("非缓存-banner");
             allDatas = (new BannerRepository(_cManager)).findAllData();
-            _cache.put("banners", allDatas, 86400);//缓存1天
+            _cache.set("banners", allDatas, 86400);//缓存1天
         }else{
             logInfo("缓存-banner");
             allDatas = cacheData;
@@ -109,7 +109,7 @@ class TestController : Controller {
                 }
                 result ~= tmp;
             }
-            _cache.put(cacheKey, result, 2592000); //缓存30天
+            _cache.set(cacheKey, result, 2592000); //缓存30天
         }else{
             logInfo("缓存数据-" ~ cacheKey);
         }

@@ -23,6 +23,8 @@ import app.component.document.repository.NodeRepository;
 import app.component.document.repository.ItemMiniRepository;
 import app.component.document.repository.ItemRepository;
 import app.component.system.helper.Utils;
+
+import std.array;
 import std.conv;
 import std.algorithm.iteration;
 

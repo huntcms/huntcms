@@ -7,6 +7,7 @@ import std.math;
 import hunt.util.Serialize;
 import hunt.logging;
 import app.component.shop.model.ProductCategory;
+import std.conv;
 
 class ProductCategoryRepository : EntityRepository!(ProductCategory, int)
 {

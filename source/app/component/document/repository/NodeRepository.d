@@ -6,6 +6,8 @@ import app.component.document.model.Node;
 import hunt.util.Serialize;
 import hunt.logging;
 
+import std.conv;
+
 class NodeRepository : EntityRepository!(Node, int){
 
     this(EntityManager manager = null) {

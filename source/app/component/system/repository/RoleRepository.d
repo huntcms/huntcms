@@ -6,6 +6,10 @@ import hunt.entity.repository;
 import app.component.system.model.Role;
 import app.component.system.repository.UserRoleRepository;
 
+import std.conv;
+import std.string;
+
+
 
 class RoleRepository : EntityRepository!(Role, int)
 {

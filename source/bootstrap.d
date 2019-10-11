@@ -19,15 +19,14 @@ import app.lib.CmsRealm;
 
 void main()
 {
-    DateTimeHelper.startClock();
     auto app = Application.getInstance();
-	app.addGroupMiddleware(new AuthenticateMiddleware([
-		"system.user.login", 
-		"system.user.tryLogin", 
-		"system.dashboard.dashboard", 
-		"system.user.logout"
-	]), "admin");
-	app.accessManager.initAuthenticateProxy(new MyAuthProxy());
+	// app.addGroupMiddleware(new AuthenticateMiddleware([
+	// 	"system.user.login", 
+	// 	"system.user.tryLogin", 
+	// 	"system.dashboard.dashboard", 
+	// 	"system.user.logout"
+	// ]), "admin");
+	// app.accessManager.initAuthenticateProxy(new MyAuthProxy());
 	
 
     auto defaultLanguage = configManager().config("hunt").hunt.application.defaultLanguage.value;

@@ -2,6 +2,7 @@ module  app.component.shop.repository.ShopProductTypeRepository;
 
 import hunt.entity;
 public import app.component.shop.model.ShopProductType;
+import std.conv;
 
 class ShopProductTypeRepository:EntityRepository!(ShopProductType ,int)
 {

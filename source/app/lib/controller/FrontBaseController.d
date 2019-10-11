@@ -1,15 +1,18 @@
 module app.lib.controller.FrontBaseController;
 
+import hunt.entity.DefaultEntityManagerFactory;
+
 import hunt.framework;
 import hunt.logging;
 import hunt.util.Configuration;
 import hunt.http.codec.http.model.HttpMethod;
 import frontConf = hunt.framework.application.ApplicationConfig;
 import app.lib.cache.TmpCache;
+
+public import std.conv;
 import std.net.curl;
 import std.json;
 import std.algorithm.sorting;
-import hunt.entity.DefaultEntityManagerFactory;
 
 class FrontBaseController : Controller{
 

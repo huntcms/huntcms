@@ -8,10 +8,12 @@ import std.datetime;
 import hunt.util.Configuration;
 import hunt.logging;
 import hunt.http.codec.http.model.HttpMethod;
-import hunt.cache.ucache;
+import hunt.cache;
 import app.component.system.helper.Utils;
 import app.component.portal.repository.BannerRepository;
 import app.component.portal.model.Banner;
+
+
 
 class Test2Controller : BaseController{
 
@@ -40,13 +42,13 @@ class Test2Controller : BaseController{
     Banner[] getBanner(string keyword, bool isReset = false){
 
         auto _cache = Application.getInstance().cache();
-        auto cacheData = _cache.get!(Banner[])("banners");
+        Banner[] cacheData = _cache.get!(Banner[])("banners");
         Banner[] result;
         Banner[] allDatas;
-        if(!cacheData || isReset){
+        if(cacheData is null || isReset){
             logInfo("非缓存-banner");
             allDatas = (new BannerRepository(_cManager)).findAllData();
-            _cache.put("banners", allDatas, 86400);//缓存1天
+            _cache.set("banners", allDatas, 86400);//缓存1天
         }else{
             logInfo("缓存-banner");
             allDatas = cacheData;

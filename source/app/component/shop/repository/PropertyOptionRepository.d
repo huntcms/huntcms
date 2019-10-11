@@ -3,7 +3,9 @@ module  app.component.shop.repository.PropertyOptionRepository;
 import hunt.entity;
 public import app.component.shop.model.ShopPropertyOption;
 
-class PropertyOptionRepository:EntityRepository!(ShopPropertyOption ,int)
+import std.conv;
+
+class PropertyOptionRepository : EntityRepository!(ShopPropertyOption ,int)
 {
 
     this(EntityManager manager = null) {

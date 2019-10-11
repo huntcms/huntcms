@@ -4,8 +4,10 @@ import hunt.framework;
 import hunt.logging;
 import hunt.util.Configuration;
 import hunt.http.codec.http.model.HttpMethod;
-import hunt.cache.ucache;
+import hunt.cache;
 import frontConf = hunt.framework.application.ApplicationConfig;
+
+public import std.conv;
 import std.net.curl;
 import std.json;
 import std.algorithm.sorting;
@@ -17,7 +19,7 @@ import hunt.entity.DefaultEntityManagerFactory;
 class BaseController : Controller {
 
     private ConfigBuilder _configFront;
-    public UCache _cache;
+    public Cache _cache;
     public EntityManager _cManager;
 
     this(){

@@ -4,6 +4,7 @@ import hunt.entity.repository;
 import app.component.system.model.Menu;
 import hunt.framework;
 import std.json;
+import std.conv;
 
 import hunt.shiro;
 

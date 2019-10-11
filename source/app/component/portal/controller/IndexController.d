@@ -8,7 +8,7 @@ import std.datetime;
 import hunt.util.Configuration;
 import hunt.logging;
 import hunt.http.codec.http.model.HttpMethod;
-import hunt.cache.ucache;
+import hunt.cache;
 import app.component.system.helper.Utils;
 import app.component.portal.repository.BannerRepository;
 import app.component.portal.model.Banner;

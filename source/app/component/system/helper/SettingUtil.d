@@ -4,7 +4,7 @@ import hunt.framework.application.Application;
 import app.component.system.repository.SettingRepository;
 import app.component.system.model.Setting;
 import std.traits;
-import hunt.cache.ucache;
+import hunt.cache;
 import hunt.entity.DefaultEntityManagerFactory;
 
 class SettingUtil
@@ -51,7 +51,7 @@ SettingObject setting(bool force = false)
         }
         manager.close();
         _huntcmsSetting = settingUtil.settingInit!SettingObject(settings);
-        Application.getInstance().cache().put(cacheKey, _huntcmsSetting);
+        Application.getInstance().cache().set(cacheKey, _huntcmsSetting);
     }
 
     return _huntcmsSetting;

@@ -9,8 +9,11 @@ import app.component.system.repository.UserRepository;
 import app.component.system.model.Menu;
 import app.component.system.model.User;
 
+public import std.conv;
+public import std.string;
 import std.json;
 import std.algorithm;
+
 import hunt.http.codec.http.model.HttpMethod;
 import hunt.framework.security.acl.Permission;
 import hunt.entity.DefaultEntityManagerFactory;
