@@ -5,6 +5,8 @@ import hunt.framework.http.RedirectResponse;
 import app.lib.controller.AdminBaseController;
 import app.lib.Exceptions;
 import app.lib.functions;
+import app.lib.JwtToken;
+import app.lib.JwtUtil;
 
 import app.component.system.model.User;
 import app.component.system.model.Role;
@@ -18,15 +20,13 @@ import app.component.system.repository.LanguageRepository;
 import app.component.system.helper.Password;
 import app.component.system.helper.Utils;
 import hunt.entity.DefaultEntityManagerFactory;
-import hunt.logging;
-import hunt.util.DateTime;
 
-// import hunt.database.DatabaseException;
+import hunt.logging;
 import hunt.http.codec.http.model.HttpMethod;
 import hunt.http.codec.http.model.HttpHeader;
-import hunt.util.MimeType;
-
 import hunt.shiro;
+import hunt.util.MimeType;
+import hunt.util.DateTime;
 
 import std.algorithm;
 import std.string;
@@ -239,40 +239,29 @@ class UserController : AdminBaseController
             if(result.isValid()) {
                 string username = loginForm.username;
                 string password = loginForm.password;     
-                UsernamePasswordToken token = new UsernamePasswordToken(username, password);
+                scope auto userRepository = new UserRepository(_cManager); 
+                User userModel = userRepository.findByEmail(username);
+                if(userModel is null) {
+                    this.errorMessages ~= "Your email is not found or has been banned";
+                } else {
+                    // UsernamePasswordToken token = new UsernamePasswordToken(username, password);
                 // token.setRememberMe(true);
-                Subject subject = SecurityUtils.newSubject("", request.host()); 
-                try {
-                    subject.login(token);
-                } catch (WrongEmailException e) {
-                    warning(e);
-                    this.errorMessages ~= "Your email has not been found or has been banned";
-                } catch (WrongPasswordException e) {
-                    warning(e);
-                    this.errorMessages ~= "Wrong password!";
-                } catch (AuthenticationException e) {
-                    warning(e);
-                    this.errorMessages ~= "Login failed.";
-                } catch(Exception ex) {
-                    warning(ex);
-                    this.errorMessages ~= "Unknown error";
-                }
+                    string checkSalt = generateUserPassword(password, userModel.salt);
+                    if(checkSalt == userModel.password) {
+                        string tokenString = JwtUtil.sign(username, checkSalt);
+                        info("tokenString: ", tokenString);
+                        setLocale(userModel.language);
+                        info("user logined: ", toJson(userModel));
+                        Application.getInstance().accessManager.addUser(userModel.id);
+                        Cookie langCookie = new Cookie("Content-Language", userModel.language);
+                        Cookie sessionCookie = new Cookie("__auth_token__", tokenString);
 
-                if(subject.isAuthenticated()) {
-                    PrincipalCollection principals = subject.getPrincipals();
-                    User user = cast(User) principals.getPrimaryPrincipal();
-                    setLocale(user.language);
-                    info("user logined: ", toJson(user));
-                    Application.getInstance().accessManager.addUser(user.id);
-                    // trace("isPermitted: ", subject.isPermitted("system.file.upload"));
-
-			        Cookie langCookie = new Cookie("Content-Language", user.language);
-                    ShiroSession se = subject.getSession();
-			        Cookie sessionCookie = new Cookie("ShiroSessionId", se.getId());
-
-                    return new RedirectResponse(request, url("system.dashboard.dashboard", null, "admin"))
-                        .withCookie(langCookie)
-                        .withCookie(sessionCookie);
+                        return new RedirectResponse(request, url("system.dashboard.dashboard", null, "admin"))
+                            .withCookie(langCookie)
+                            .withCookie(sessionCookie);                        
+                    } else {
+                        this.errorMessages ~= "Wrong password!";
+                    }
                 }
             }
         }
@@ -291,7 +280,7 @@ class UserController : AdminBaseController
             if(subject !is null) {
                 subject.logout();
             }
-            Cookie sessionCookie = new Cookie("ShiroSessionId", "", 0);
+            Cookie sessionCookie = new Cookie("__auth_token__", "", 0);
 
         // Application.getInstance().accessManager.removeAuth();
         // return new RedirectResponse(request, "/admincp/login");

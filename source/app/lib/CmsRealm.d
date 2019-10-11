@@ -1,6 +1,9 @@
 module app.lib.CmsRealm;
 
 import app.lib.Exceptions;
+import app.lib.JwtToken;
+import app.lib.JwtUtil;
+
 import app.component.system.helper.Password;
 import app.component.system.model.User;
 import app.component.system.model.Permission;
@@ -46,12 +49,27 @@ class CmsRealm : AuthorizingRealm {
         }
     }
 
+    /**
+     * 必须重写此方法，不然shiro会报错
+     *
+     * @param token
+     * @return
+     */
+    override
+    bool supports(AuthenticationToken token) {
+        JwtToken jt = cast(JwtToken)token;
+        return jt !is null;
+    }
+
     void initEntityManager() {
         if(_cManager is null) {
             _cManager = defaultEntityManagerFactory().createEntityManager();
         }
     }
 
+    /**
+     * 默认使用此方法进行用户名正确与否验证，错误抛出异常即可
+     */
     override protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) {
         initEntityManager();
         // EntityManager 
@@ -59,27 +77,30 @@ class CmsRealm : AuthorizingRealm {
         // scope(exit) {
         //     _cManager.close();
         // }
-        string username = token.getPrincipal();
-        string password = cast(string)token.getCredentials();
-        version(HUNT_DEBUG) infof("principal: %s", username);
+        // string username = token.getPrincipal();
+        // string password = cast(string)token.getCredentials();
+        string tokenString = token.getPrincipal();
+        string username = JwtUtil.getUsername(tokenString);
+        version(HUNT_DEBUG) {
+            trace(tokenString);
+            infof("principal: %s", username);
+        }
+
         User userModel = (new UserRepository(_cManager)).findByEmail(username);
 
         if(userModel !is null) { 
-            string checkSalt = generateUserPassword(password, userModel.salt);
-            if(checkSalt == userModel.password) {
-                String credentials = new String(password);
+            if(JwtUtil.verify(tokenString, username, userModel.password)) {
+                String credentials = new String(tokenString);
                 SimpleAuthenticationInfo info = new SimpleAuthenticationInfo(userModel, credentials, getName());
                 return info;  
             } else {
                 warning("Wrong password!");
-                throw new WrongPasswordException(username);
+                throw new WrongPasswordException(username);                
             }
         } 
 
         warning("Your email has not been found or has been banned");
         throw new WrongEmailException(username);
-
-        // return null;
     }
 
     override protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
