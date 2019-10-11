@@ -1,13 +1,24 @@
 {
-    "name": "huntcms",
-    "description": "A CMS based on hunt framework.",
-    "copyright": "Copyright © 2017-2019, huntframework.com",
-    "homepage": "http://www.huntframework.com/",
-    "license": "Apache-2.0",
-    "targetType": "executable",
-    "dependencies": {
-		"hunt-shiro" : "~>1.0.0-rc.1",
-       "hunt-framework": "~>2.1.3"
+  "name": "huntcms",
+  "description": "A CMS based on hunt framework.",
+  "copyright": "Copyright © 2017-2019, huntframework.com",
+  "homepage": "http://www.huntframework.com/",
+  "license": "Apache-2.0",
+  "targetType": "executable",
+  "dependencies": {
+    "hunt-shiro": {
+      "version": "~>1.0.0-rc.5"
     },
-    "versions":["HUNT_DEBUG", "HUNT_SHIRO_DEBUG", "HUNT_SQL_DEBUG"]
+    "hunt-jwt": {
+      "version": "~>0.1.0-beta.1"
+    },
+    "hunt-framework": {
+      "version": "~>2.2.0-rc.2"
+    }
+  },
+  "versions": [
+    "HUNT_DEBUG",
+    "HUNT_SHIRO_DEBUG",
+    "HUNT_SQL_DEBUG"
+  ]
 }
