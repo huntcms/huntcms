@@ -6,11 +6,11 @@ import app.component.system.model.Setting;
 import std.traits;
 import hunt.cache;
 import hunt.entity.DefaultEntityManagerFactory;
+import hunt.framework.Simplify;
 
 class SettingUtil
 {
-    T settingInit(T)(Setting[string] settings)
-    {
+    T settingInit(T)(Setting[string] settings) {
         auto so = new T;
         mixin (generateItemsCode!T);
         //pragma(msg, generateItemsCode!T);
@@ -44,12 +44,10 @@ SettingObject setting(bool force = false)
     if (_huntcmsSetting is null || force)
     {
         Setting[string] settings;
-        EntityManager manager = defaultEntityManagerFactory().createEntityManager();
-        foreach (s; (new SettingRepository(manager)).findAll())
-        {
+        foreach (s; (new SettingRepository()).findAll()) {
             settings[s.key] = s;
         }
-        manager.close();
+        closeDefaultEntityManager();
         _huntcmsSetting = settingUtil.settingInit!SettingObject(settings);
         Application.getInstance().cache().set(cacheKey, _huntcmsSetting);
     }

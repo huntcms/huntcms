@@ -3,12 +3,12 @@ module app.component.system.repository.SettingRepository;
 import app.component.system.model.Setting;
 
 import hunt.entity;
+import hunt.framework.Simplify;
 
-class SettingRepository : EntityRepository!(Setting, string)
-{
+class SettingRepository : EntityRepository!(Setting, string) {
 
-    this(EntityManager manager = null) {
-        super(manager is null ? createEntityManager() : manager);
+    this() {
+        super(defaultEntityManager());
     }
     
 }

@@ -1,11 +1,11 @@
 module app.component.tag.model.Tag;
 
+import app.component.article.model.TagArticle;
 import hunt.entity;
-public import app.component.article.model.TagArticle;
 
 @Table("tag_tag")
-class Tag : Model
-{
+class Tag : Model {
+
     mixin MakeModel;
 
     @AutoIncrement
@@ -15,13 +15,16 @@ class Tag : Model
     string name;
 
     int sort;
-    
+    // 1: enabled, 0: disabled
+    short status;
+
     // timestamp
     int created;
 
     // timestamp
     int updated;
 
-    // 1: enabled, 0: disabled
-    short status;
+    // timestamp
+    int deleted;
+
 }

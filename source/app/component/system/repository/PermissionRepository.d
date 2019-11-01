@@ -1,35 +1,33 @@
 module app.component.system.repository.PermissionRepository;
 
-import hunt.entity.repository;
-import hunt.entity.EntityManager;
-
 import app.component.system.model.Permission;
 import app.component.system.model.PermissionGroup;
 
-class PermissionRepository : EntityRepository!(Permission, int)
-{
+import hunt.entity.EntityManager;
+import hunt.entity.repository;
+import hunt.framework.Simplify;
 
-    this(EntityManager manager = null) {
-        super(manager is null ? createEntityManager() : manager);
+class PermissionRepository : EntityRepository!(Permission, int) {
+
+    this() {
+        super(defaultEntityManager());
     }
 
-    Page!Permission findByPermission(int page = 0, int perPage = 10)
-    {
-        page = page < 1 ? 0 : page;
+    Page!Permission findByPermission(int page = 1, int perPage = 10) {
+        page = page < 1 ? 1 : page;
         perPage = perPage < 1 ? 10 : perPage;
-
-        auto temp = _manager.createQuery!(Permission)("SELECT p FROM Permission p", new Pageable(page, perPage))
-        .getPageResult();
+        string sql = "SELECT p FROM Permission p";
+        auto temp = _manager.createQuery!(Permission)(sql, new Pageable(page - 1, perPage))
+            .getPageResult();
         return temp;
     }
 
-    Page!PermissionGroup findByPermissionGroup(int page = 0, int perPage = 10)
-    {
-        page = page < 1 ? 0 : page;
+    Page!PermissionGroup findByPermissionGroup(int page = 1, int perPage = 10) {
+        page = page < 1 ? 1 : page;
         perPage = perPage < 1 ? 10 : perPage;
-
-        auto temp1 = _manager.createQuery!(PermissionGroup)("SELECT p FROM PermissionGroup p", new Pageable(page, perPage))
-        .getPageResult();
+        string sql = "SELECT p FROM PermissionGroup p";
+        auto temp1 = _manager.createQuery!(PermissionGroup)(sql, new Pageable(page - 1, perPage))
+            .getPageResult();
         return temp1;
     }
 

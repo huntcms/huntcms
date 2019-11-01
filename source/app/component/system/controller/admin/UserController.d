@@ -1,26 +1,24 @@
 module app.component.system.controller.admin.UserController;
 
-import hunt.framework;
-import hunt.framework.http.RedirectResponse;
-import app.lib.controller.AdminBaseController;
-import app.lib.Exceptions;
-import app.lib.functions;
-import app.lib.JwtToken;
-import app.lib.JwtUtil;
-
+import app.component.system.authentication.JwtToken;
+import app.component.system.authentication.JwtUtil;
+import app.component.system.form.LoginForm;
+import app.component.system.helper.Password;
+import app.component.system.helper.Utils;
 import app.component.system.model.User;
 import app.component.system.model.Role;
 import app.component.system.model.Language;
-import app.component.system.form.LoginForm;
-
-import app.component.system.repository.UserRepository;
-import app.component.system.repository.RoleRepository;
-import app.component.system.repository.UserRoleRepository;
 import app.component.system.repository.LanguageRepository;
-import app.component.system.helper.Password;
-import app.component.system.helper.Utils;
-import hunt.entity.DefaultEntityManagerFactory;
+import app.component.system.repository.RoleRepository;
+import app.component.system.repository.UserRepository;
+import app.component.system.repository.UserRoleRepository;
+import app.lib.controller.AdminBaseController;
+import app.lib.Exceptions;
+import app.lib.functions;
 
+import hunt.entity.DefaultEntityManagerFactory;
+import hunt.framework;
+import hunt.framework.http.RedirectResponse;
 import hunt.logging;
 import hunt.http.codec.http.model.HttpMethod;
 import hunt.http.codec.http.model.HttpHeader;
@@ -29,22 +27,21 @@ import hunt.util.MimeType;
 import hunt.util.DateTime;
 
 import std.algorithm;
-import std.string;
 import std.json;
+import std.string;
 
-class UserController : AdminBaseController
-{
+class UserController : AdminBaseController {
+
     mixin MakeController;
 
-    this()
-    {
+    this() {
         super();      
     }
 
-    @Action Response list(int perPage, int page = 1)
-    {
+    @Action 
+    Response list(int perPage, int page = 1) {
         perPage = perPage < 1 ? 1 : perPage;
-        auto alldata = (new UserRepository(_cManager)).findByUser(page-1, perPage);
+        auto alldata = (new UserRepository()).findByUser(page-1, perPage);
         view.assign("users", alldata.getContent());
 
         view.assign("pageModel",  alldata.getModel());
@@ -64,8 +61,7 @@ class UserController : AdminBaseController
             string email = request.post!string("email");
             short status = request.post("status").to!short;
             int[] roleIds = Utils.getCheckbox!int(request.all(), "roleid");
-            string[] errorMessages;
-
+            int errorNum = 0;
             User user = new User();
             int time = cast(int)time();
             user.name = name;
@@ -77,42 +73,41 @@ class UserController : AdminBaseController
             user.updated = time;
             user.status = status;
 
-            if(email is null || email == "")
-            {
-                errorMessages ~= "Email is not validated.";
+            if(email is null || email == ""){
+                errorNum += 1;
+                assignError("Email is not validated.");
             }
 
-            if(name is null || name == "")
-            {
-                errorMessages ~= "Name is not validated.";
+            if(name is null || name == ""){
+                errorNum += 1;
+                assignError("Name is not validated.");
             }
 
-            if (errorMessages.length == 0)
+            if (errorNum == 0)
             {
                 
                 try {
-                    _cManager.getTransaction().begin();
-                    auto userRepository = new UserRepository(_cManager);
+                    // _cManager.getTransaction().begin();
+                    auto userRepository = new UserRepository();
                     userRepository.save(user);
-                    auto userRoleRepository = new UserRoleRepository(_cManager);
+                    auto userRoleRepository = new UserRoleRepository();
                     userRoleRepository.saves(user.id, roleIds);
-                    _cManager.getTransaction().commit();
+                    // _cManager.getTransaction().commit();
                     // return new RedirectResponse(request, "/admincp/system/users");
                     return new RedirectResponse(request, url("system.user.list", null, "admin"));
                 } catch(Exception e) {
-                    errorMessages ~= "Email already existed.";
-                    _cManager.getTransaction().rollback();
+                    assignError("Email already existed.");
+                    // _cManager.getTransaction().rollback();
                     logError(e);
                 }
             }
 
             view.assign("user", user);
-            view.assign("errorMessages", errorMessages);
         }
 
-        view.assign("roles", (new RoleRepository(_cManager)).findAll());
-        view.assign("languages", (new LanguageRepository(_cManager)).findEnable());
-        logError((new LanguageRepository(_cManager)).findEnable());
+        view.assign("roles", (new RoleRepository()).findAll());
+        view.assign("languages", (new LanguageRepository()).findEnable());
+        logError((new LanguageRepository()).findEnable());
         
         string lang = findLocal();
         return new Response(request)
@@ -125,8 +120,8 @@ class UserController : AdminBaseController
         int id = request.get!int("id", 0);
 
         // auto manager = defaultEntityManagerFactory().createEntityManager();
-        auto userRoleRepository = new UserRoleRepository(_cManager);
-        auto userRepository = new UserRepository(_cManager);
+        auto userRoleRepository = new UserRoleRepository();
+        auto userRepository = new UserRepository();
 
         auto findUser = userRepository.find(id);
         logError(toJson(findUser));
@@ -138,7 +133,7 @@ class UserController : AdminBaseController
             int[] roleIds = Utils.getCheckbox!int(request.all(), "roleid");
 
             try {
-                _cManager.getTransaction().begin();
+                // _cManager.getTransaction().begin();
 
                 auto user = userRepository.find(id);
                 user.name = name;
@@ -147,12 +142,12 @@ class UserController : AdminBaseController
 
                 userRoleRepository.removes(id);
                 userRoleRepository.saves(id, roleIds);
-                _cManager.getTransaction().commit();
+                // _cManager.getTransaction().commit();
                 // return new RedirectResponse(request, "/admincp/system/users");
                 return new RedirectResponse(request, url("system.user.list", null, "admin"));
             } catch(Exception e) {
-                errorMessages ~= "Email already existed.";
-                _cManager.getTransaction().rollback();
+                assignError("Email already existed.");
+                // _cManager.getTransaction().rollback();
                 logError(e);
             }
             // return new RedirectResponse(request, "/admincp/system/user/edit?id="~to!string(id));
@@ -161,7 +156,7 @@ class UserController : AdminBaseController
             return new RedirectResponse(request, url("system.user.edit", redirectParams, "admin"));
         }
         view.assign("user", findUser);
-        auto roles = (new RoleRepository(_cManager)).findAll();
+        auto roles = (new RoleRepository()).findAll();
         int[] userRoleIds = userRoleRepository.getUserRoleIds(id);
         class userRoleClass{
             Role role;
@@ -179,9 +174,9 @@ class UserController : AdminBaseController
             userRoles ~= tmp;
         }
         view.assign("userRoles", userRoles);
-        view.assign("roles", (new RoleRepository(_cManager)).findAll());
-        view.assign("languages", (new LanguageRepository(_cManager)).findEnable());
-        logError(toJson((new LanguageRepository(_cManager)).findEnable()));
+        view.assign("roles", (new RoleRepository()).findAll());
+        view.assign("languages", (new LanguageRepository()).findEnable());
+        logError(toJson((new LanguageRepository()).findEnable()));
 
         string lang = findLocal();
         return new Response(request)
@@ -191,7 +186,7 @@ class UserController : AdminBaseController
 
     @Action string del()
     {
-        auto repository = new UserRepository(_cManager);
+        auto repository = new UserRepository();
         view.assign("permissions", repository.findById( request.get!int("id", 0) ));
 
         string lang = findLocal();
@@ -200,7 +195,7 @@ class UserController : AdminBaseController
 
     @Action string profile()
     {
-        auto userRepository = new UserRepository(_cManager);
+        auto userRepository = new UserRepository();
         auto userInfo = Application.getInstance().accessManager.user;
         User user = userRepository.find(userInfo.id);
         // User user = userRepository.find(UserAuth.userId(request));
@@ -210,14 +205,14 @@ class UserController : AdminBaseController
             string password = request.post!string("password", "");
             string rpassword = request.post!string("rpassword", "");
             if(name.length < 1 || name.length > 12){
-                this.errorMessages ~= "Name 1 - 12 Characters";
+                assignError("Name 1 - 12 Characters");
             }
             if(password.length > 0 || rpassword.length > 0){
                 if(password.length <6 || password.length > 32){
-                    this.errorMessages ~= "Password 6 - 32 Characters";
+                    assignError("Password 6 - 32 Characters");
                 }
                 if(password != rpassword){
-                    this.errorMessages ~= "Inconsistency of Password";
+                    assignError("Inconsistency of Password");
                 }
                 user.password = generateUserPassword(password, user.salt);
             }
@@ -239,10 +234,10 @@ class UserController : AdminBaseController
             if(result.isValid()) {
                 string username = loginForm.username;
                 string password = loginForm.password;     
-                scope auto userRepository = new UserRepository(_cManager); 
+                scope auto userRepository = new UserRepository(); 
                 User userModel = userRepository.findByEmail(username);
                 if(userModel is null) {
-                    this.errorMessages ~= "Your email is not found or has been banned";
+                    assignError("Your email is not found or has been banned");
                 } else {
                     // UsernamePasswordToken token = new UsernamePasswordToken(username, password);
                 // token.setRememberMe(true);
@@ -260,7 +255,7 @@ class UserController : AdminBaseController
                             .withCookie(langCookie)
                             .withCookie(sessionCookie);                        
                     } else {
-                        this.errorMessages ~= "Wrong password!";
+                        assignError("Wrong password!");
                     }
                 }
             }

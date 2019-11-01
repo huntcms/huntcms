@@ -1,135 +1,209 @@
 module app.component.system.controller.admin.MenuController;
 
-import hunt.framework;
-import hunt.framework.i18n.I18n;
-import hunt.framework.application.ApplicationConfig;
-import app.component.system.model.Menu;
-import app.component.system.repository.MenuRepository;
-import app.component.system.model.LangPackage;
-import app.component.system.repository.LangPackageRepository;
 import app.component.system.helper.Utils;
-
+import app.component.system.model.LangPackage;
+import app.component.system.model.Menu;
+import app.component.system.repository.LangPackageRepository;
+import app.component.system.repository.MenuRepository;
+import app.component.system.validation.MenuForm;
 import app.lib.controller.AdminBaseController;
 import app.lib.functions;
-import hunt.logging;
-import hunt.util.Serialize;
-import hunt.util.DateTime;
-import hunt.util.Configuration;
-import hunt.http.codec.http.model.HttpMethod;
+
 import hunt.entity.domain;
+import hunt.framework;
+import hunt.framework.application.ApplicationConfig;
+import hunt.framework.i18n.I18n;
+import hunt.logging;
+import hunt.http.codec.http.model.HttpMethod;
+import hunt.util.Configuration;
+import hunt.util.DateTime;
+import hunt.util.Serialize;
 import std.uni;
-import app.lib.functions;
-class MenuController : AdminBaseController
-{
+import std.json;
+
+class MenuController : AdminBaseController {
+
     mixin MakeController;
-    private ConfigBuilder _configFront;
-    this()
-    {
+    
+    this(){
         super();      
-        _configFront = configManager().config("hunt");
-        // logError(_configFront.hunt.application.defaultLanguage.value);
     }
 
-
-    @Action Response list(int perPage, int page = 1)
-    {
+    @Action 
+    Response list(int page, int perPage = 1) {
+        page = page < 1 ? 1 : page;
         perPage = perPage < 1 ? 10 : perPage;
-        auto alldata = (new MenuRepository(_cManager)).findByMenu(page-1, perPage);
+        auto alldata = (new MenuRepository()).findByMenu(page, perPage);
 
         view.assign("menus", alldata.getContent());
         view.assign("pageModel",  alldata.getModel());
         view.assign("pageQuery", buildQueryString(request.input()));
-        return new Response(request)
-        .setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString())
-        .setContent(view.render("system/menu/list"));
+        makePageBreadCrumbs("menuList");
+        return ResponseView("system/menu/list");
     }
 
+    @Action 
+    Response add(MenuForm menuForm) {
 
-    @Action Response add()
-    {
+        MenuRepository menuRepository = new MenuRepository();
+        int errorNum = 0;
+
         string lang = findLocal();
         if (request.methodAsString() == HttpMethod.POST.asString()) {
             int now = cast(int) time();
-            auto mr = new MenuRepository(_cManager);
-            Menu mn = new Menu;
-            mn.pid = request.post("pid", "0") is null ? 0 : request.post("pid", "0").to!int;
-            mn.name = request.post("name");
-            mn.mca = request.post("mca");
-            // mn.keyword = "__SYSTEM_MENU_" ~ toUpper(mn.mca).replace(".", "_");
-            mn.linkUrl = request.post("linkUrl");
-            mn.iconClass = request.post("iconClass", "");
-            mn.sort = request.post("sort", "0") is null ? 0 : request.post("sort", "0").to!int;
-            mn.isAction = request.post("actionRadio").to!short;
-            mn.status = request.post("statusRadio").to!short;
-            auto id = request.post("id");
-            if(id.length != 0) {
-                mn.id = id.to!int;
-                auto exsit_data = mr.findById(id.to!int);
-                if(exsit_data !is null){
-                    mn.created = exsit_data.created;
-                    mn.keyword = exsit_data.keyword;
-                }
-            } else {
-                mn.created = now;
-            }
-            mn.updated = now;
 
-            auto saveRes = mr.save(mn);
+            auto validRes = menuForm.valid();
+            if(!validRes.isValid()) {
+                auto errors = validRes.messages();
+                foreach(error; errors) {
+                    errorNum += 1;
+                    assignError(error);
+                }      
+                return new RedirectResponse(request, url("admin:system.menu.add"));
+            }
+
+            Menu menu = new Menu();
+            menu.pid = menuForm.pid;
+            menu.name = menuForm.name;
+            menu.mca = menuForm.mca;
+            menu.linkUrl = menuForm.linkUrl;
+            menu.iconClass = menuForm.iconClass;
+            menu.sort = menuForm.sort;
+            menu.isAction = menuForm.actionRadio;
+            menu.status = menuForm.statusRadio;
+            menu.created = now;
+            menu.updated = now;
+
+            auto saveRes = menuRepository.save(menu);
             if (saveRes !is null){
                 auto keyWord = "__SYSTEM_MENU_" ~ (saveRes.id).to!string;
                 if(saveRes.keyword != keyWord){
                     saveRes.keyword = keyWord;
-                    mr.save(saveRes);
+                    menuRepository.save(saveRes);
                 }
-                
-                auto repository = new LangPackageRepository(_cManager);
-                auto lp = repository.findByKeyword(lang, keyWord);
-                if(lp !is null){
-                    if(lp.value != mn.name){
-                        lp.value = mn.name;
-                        lp.updated = now;
-                        repository.save(lp);
-                        I18n i18n = I18n.instance();
-                        i18n.add(lp.local, keyWord, lp.value);
-                    }
-                }else{
-                    LangPackage lpn = new LangPackage();
-                    lpn.local = lang;
-                    lpn.value = mn.name;
-                    lpn.key = keyWord;
-                    lpn.created = now;
-                    lpn.updated = now;
-                    repository.save(lpn);
-                    I18n i18n = I18n.instance();
-                    i18n.add(lpn.local, lpn.key, lpn.value);
-                }
+                autoUpdateLanguage(keyWord, menuForm.name);
+            }
+            return new RedirectResponse(request, url("admin:system.menu.list"));
+        }
 
-                return new RedirectResponse(request, "/admincp/system/menus");
+        view.assign("firstLevelMenus", menuRepository.getMenusByPid(0));
+        makePageBreadCrumbs("menuAdd");
+
+        return ResponseView("system/menu/add", lang);
+    }
+
+    @Action 
+    Response edit(MenuForm menuForm) {
+        MenuRepository menuRepository = new MenuRepository();
+        Menu menu = new Menu();
+        int id, errorNum = 0;
+
+        if(request.methodAsString() == HttpMethod.POST.asString()) {
+            
+            id = initNum("id", 0, "POST");
+            view.assign("id", id);
+
+            if (id > 0) {
+                menu = menuRepository.find(id);
+                if (menu is null){
+                    errorNum += 1;
+                    assignError("数据报错或不存在,请稍后重试! ");
+                }
+            } else {
+                errorNum += 1;
+                assignError("参数ID不能为空! ");
+            }
+            if (errorNum > 0) {
+                return new RedirectResponse(request, url("admin:system.menu.list"));
             }
 
+            auto validRes = menuForm.valid();
+            if(!validRes.isValid()) {
+                auto errors = validRes.messages();
+                foreach(error; errors) {
+                    assignError(error);
+                }                
+                string[string] params;
+                params["id"] = id.to!string;
+                return new RedirectResponse(request, url("system.menu.list", params, "admin"));
+            }
+
+            int now = cast(int) time();
+            menu.pid = menuForm.pid;
+            menu.name = menuForm.name;
+            menu.mca = menuForm.mca;
+            menu.linkUrl = menuForm.linkUrl;
+            menu.iconClass = menuForm.iconClass;
+            menu.sort = menuForm.sort;
+            menu.isAction = menuForm.actionRadio;
+            menu.status = menuForm.statusRadio;
+            menu.updated = now;
+
+            auto saveRes = menuRepository.save(menu);
+
+            if (saveRes !is null){
+                auto keyWord = "__SYSTEM_MENU_" ~ (saveRes.id).to!string;
+                autoUpdateLanguage(keyWord, menuForm.name);
+            }
+
+            assignSussess("数据修改成功!");
+            return new RedirectResponse(request, url("admin:system.menu.list"));
         }
-        auto repository = new MenuRepository(_cManager);
-        view.assign("firstLevelMenus", repository.getMenusByPid(0));
 
-        return new Response(request)
-            .setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString())
-            .setContent(view.setLocale(lang).render("system/menu/add"));
+        id = initNum("id", 0, "GET");
+        if (id > 0) {
+            menu = menuRepository.find(id);
+            if (menu is null){
+                errorNum += 1;
+                assignError("数据报错或不存在,请稍后重试! ");
+            }
+        } else {
+            errorNum += 1;
+            assignError("参数ID不能为空! ");
+        }
+        if (errorNum > 0) {
+            return new RedirectResponse(request, url("admin:system.menu.list"));
+        }
+
+        view.assign("menu", menu);
+        view.assign("firstLevelMenus", menuRepository.getMenusByPid(0));
+        makePageBreadCrumbs("menuEdit");
+        
+        return ResponseView("system/menu/edit");
     }
 
-    @Action string edit(int id)
-    {
-        logDebug(" edit id : ", id, "  get id : ", request.get("id"));
-        auto repository = new MenuRepository(_cManager);
-        view.assign("menu", repository.find(id));
-        view.assign("firstLevelMenus", repository.getMenusByPid(0));
-        string lang = findLocal();
-        return view.setLocale(lang).render("system/menu/edit");
+    @Action 
+    Response del(int id) {
+        (new MenuRepository()).removeById(id);
+        return new RedirectResponse(request, url("admin:system.menu.list"));
     }
 
-    @Action Response del(int id)
-    {
-        (new MenuRepository(_cManager)).removeById(id);
-        // return new RedirectResponse(request, "/admincp/system/menus");
-        return new RedirectResponse(request, url("system.menu.list", null, "admin"));
+    bool autoUpdateLanguage(string keyword, string showname, string language = "") {
+        int now = cast(int) time();
+        if (language == "") language = findLocal();
+        auto repository = new LangPackageRepository();
+        LangPackage lpn;
+        lpn = repository.findByKeyword(language, keyword);
+        logError(toJson(lpn));
+        if(lpn !is null){
+            if(lpn.value != showname){
+                lpn.value = showname;
+                lpn.updated = now;
+                repository.save(lpn);
+                I18n i18n = I18n.instance();
+                i18n.add(lpn.local, keyword, lpn.value);
+            }
+        }else{
+            lpn = new LangPackage();
+            lpn.local = language;
+            lpn.value = showname;
+            lpn.key = keyword;
+            lpn.created = now;
+            lpn.updated = now;
+            repository.save(lpn);
+            I18n i18n = I18n.instance();
+            i18n.add(lpn.local, lpn.key, lpn.value);
+        }
+        return true;
     }
 }

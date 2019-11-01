@@ -9,12 +9,16 @@
             <div class="col-sm-12">
                 <div class="page-title-box">
                     <div class="btn-group pull-right">
-                        <h4 class="page-title">Tags</h4>
+                        <h4 class="page-title">{{ breadTitle }}</h4>
                     </div>
                     <ol class="breadcrumb hide-phone p-0 m-0">
-                        <li class="breadcrumb-item"><a href="#">HuntCMS</a></li>
-                        <li class="breadcrumb-item"><a href="#">Tag</a></li>
-                        <li class="breadcrumb-item active">Tag List</li>
+                        {% for item in breadCrumbs %}
+                            {% if item.link and not loop.last %}
+                                <li class="breadcrumb-item"><a href="{{ item.link }}">{{ item.title }}</a></li>
+                            {% else %}
+                                <li class="breadcrumb-item active">{{ item.title }}</li>
+                            {% endif %}
+                        {% endfor %}    
                     </ol>
                 </div>
             </div>
@@ -52,7 +56,7 @@
                                         <select id="demo-foo-filter-status" class="form-control input-sm">
                                             <option value="">Show all</option>
                                             <option value="active">Active</option>
-                                            <option value="disabled">Disabled</option>
+                                            <option value="disabled">{{ trans("COMMON_SYSTEM_DISABLED") }}</option>
                                             <option value="suspended">Suspended</option>
                                         </select>
                                     </div>
@@ -101,7 +105,7 @@
             </div>
         </div>
         <div class="clearfix">
-            {% include "../../../default/paginate.html" %}
+            {% include "../../paginate.html" %}
         </div>
         <!-- end row -->
 

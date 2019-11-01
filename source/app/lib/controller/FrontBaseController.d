@@ -1,46 +1,33 @@
 module app.lib.controller.FrontBaseController;
 
+// import frontConf = hunt.framework.application.ApplicationConfig;
 import hunt.entity.DefaultEntityManagerFactory;
-
 import hunt.framework;
+import hunt.framework.Simplify;
+import hunt.http.codec.http.model.HttpMethod;
 import hunt.logging;
 import hunt.util.Configuration;
-import hunt.http.codec.http.model.HttpMethod;
-import frontConf = hunt.framework.application.ApplicationConfig;
-import app.lib.cache.TmpCache;
 
+public import std.algorithm.sorting;
 public import std.conv;
-import std.net.curl;
-import std.json;
-import std.algorithm.sorting;
+public import std.json;
+public import std.net.curl;
 
-class FrontBaseController : Controller{
+class FrontBaseController : Controller {
 
     private ConfigBuilder _configFront;
-    public TmpCache _tmpCache;
-    public EntityManager _cManager;
 
     this(){
         _configFront = configManager().config("hunt");
-        _tmpCache = new TmpCache();
-        _cManager = defaultEntityManagerFactory().createEntityManager();
     }
 
     override bool before() {
-        // auto topMenu = _tmpCache.getTopMenu();
-        view.assign("siteBase", _configFront.front.site.base.value);
-        // view.assign("topMenu", topMenu);
-        logWarning(request.host);
-        // logWarning(request.getScheme());
-        logWarning(request.elapsed());
         return true;
     }
 
     override bool after(){
         ///请求结束自动销毁本次数据库连接
-        if(_cManager){
-            _cManager.close();
-        }
+        closeDefaultEntityManager();
         return true;
     }
 

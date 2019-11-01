@@ -8,16 +8,16 @@
             <div class="col-sm-12">
                 <div class="page-title-box">
                     <div class="btn-group pull-right">
-                        <h4 class="page-title">Edit Banner</h4>
+                        <h4 class="page-title">{{ breadTitle }}</h4>
                     </div>
                     <ol class="breadcrumb hide-phone p-0 m-0">
-                        <li class="breadcrumb-item">
-                            <a href="#">HuntCMS</a>
-                        </li>
-                        <li class="breadcrumb-item">
-                            <a href="#">Banner</a>
-                        </li>
-                        <li class="breadcrumb-item active">Edit Banner</li>
+                        {% for item in breadCrumbs %}
+                            {% if item.link and not loop.last %}
+                                <li class="breadcrumb-item"><a href="{{ item.link }}">{{ item.title }}</a></li>
+                            {% else %}
+                                <li class="breadcrumb-item active">{{ item.title }}</li>
+                            {% endif %}
+                        {% endfor %}    
                     </ol>
                 </div>
             </div>
@@ -27,10 +27,10 @@
         <div class="row">
             <div class="col-12">
                 <div class="card-box">
-                    <h4 class="m-t-0 header-title">Edit Banner</h4>
-                    <p class="text-muted m-b-30 font-14">
+                    <h4 class="m-t-0 header-title">{{ breadTitle }}</h4>
+                    <!-- <p class="text-muted m-b-30 font-14">
                         User can Edit Banner.
-                    </p>
+                    </p> -->
 
                     <div class="row">
                         <div class="col-12">
@@ -101,11 +101,11 @@
                                         <div class="col-10">
                                             <div class="custom-control custom-radio">
                                                 <input type="radio" id="statusRadio1" name="statusRadio" class="custom-control-input" value="1" checked>
-                                                <label class="custom-control-label" for="statusRadio1">Enabled</label>
+                                                <label class="custom-control-label" for="statusRadio1">{{ trans("COMMON_SYSTEM_ENABLED") }}</label>
                                             </div>
                                             <div class="custom-control custom-radio">
                                                 <input type="radio" id="statusRadio2" name="statusRadio" class="custom-control-input" value="0">
-                                                <label class="custom-control-label" for="statusRadio2">Disabled</label>
+                                                <label class="custom-control-label" for="statusRadio2">{{ trans("COMMON_SYSTEM_DISABLED") }}</label>
                                             </div>
                                         </div>
                                     </div>

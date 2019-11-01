@@ -21,28 +21,28 @@ class LangPackageController : AdminBaseController{
     
     mixin MakeController;
   
-    this()
-    {
+    this() {
         super();      
     }
 
-    @Action Response list(int perPage, int page = 1)
-    {
+    @Action 
+    Response list(int perPage, int page = 1){
         perPage = perPage < 1 ? 5 : perPage;
-        auto alldata = (new LangPackageRepository(_cManager)).findByLangPackage(page-1, perPage);
+        page = page < 1 ? 1 : page;
+        auto alldata = (new LangPackageRepository()).findByLangPackage(page, perPage);
         view.assign("package", alldata.getContent());
 
         view.assign("pageModel",  alldata.getModel());
         view.assign("pageQuery", buildQueryString(request.input()));
 
-        return new Response(request)
-        .setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString())
-        .setContent(view.render("system/package/list"));
-
+        makePageBreadCrumbs("packageList");
+        return ResponseView("system/package/list");
     }
 
-    @Action Response add() {
-        auto repository = new LangPackageRepository(_cManager);
+    @Action 
+    Response add() {
+        makePageBreadCrumbs("packageAdd");
+        auto repository = new LangPackageRepository();
         if (request.methodAsString() == HttpMethod.POST.asString()) {
             int now = cast(int) time();
             LangPackage lp = new LangPackage();
@@ -96,28 +96,24 @@ class LangPackageController : AdminBaseController{
             }
         }
 
-        auto languageRepository = new LanguageRepository(_cManager);
+        auto languageRepository = new LanguageRepository();
         view.assign("languages", languageRepository.findAll());
 
-        string lang = findLocal();
-        return new Response(request)
-            .setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString())
-            .setContent(view.setLocale(lang).render("system/package/add"));
+        return ResponseView("system/package/add");
     }
 
-    @Action Response edit(int id) {
-        auto repository = new LangPackageRepository(_cManager);
-        auto languageRepository = new LanguageRepository(_cManager);
+    @Action 
+    Response edit(int id) {
+        makePageBreadCrumbs("packageEdit");
+        auto repository = new LangPackageRepository();
+        auto languageRepository = new LanguageRepository();
         view.assign("languages", languageRepository.findAll());
         view.assign("languageWord", repository.find(id));
-        string lang = findLocal();
-        return new Response(request)
-            .setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString())
-            .setContent(view.setLocale(lang).render("system/package/edit"));
+        return ResponseView("system/package/edit");
     }
 
     @Action Response del(int id) {
-        (new LangPackageRepository(_cManager)).removeById(id);
+        (new LangPackageRepository()).removeById(id);
         return new RedirectResponse(request, url("system.langpackage.list", null, "admin"));
     }
 }

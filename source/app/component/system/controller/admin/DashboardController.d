@@ -1,22 +1,21 @@
 module app.component.system.controller.admin.DashboardController;
 
-import hunt.framework;
 import app.lib.controller.AdminBaseController;
-import hunt.logging;
 import app.lib.functions;
+import hunt.framework;
+import hunt.logging;
 
-class DashboardController : AdminBaseController
-{
+class DashboardController : AdminBaseController {
+
     mixin MakeController;
 
-    this()
-    {
-        super();      
+    this() {
+        super();  
     }
     
-    @Action string dashboard()
-    {
-        string lang = findLocal();
-        return view.setLocale(lang).render("system/dashboard/dashboard");
+    @Action 
+    Response dashboard() {
+        return ResponseView("system/dashboard/dashboard");
     }
+
 }

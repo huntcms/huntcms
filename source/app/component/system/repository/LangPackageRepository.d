@@ -11,17 +11,16 @@ import std.algorithm;
 
 class LangPackageRepository : EntityRepository!(LangPackage, int) {
 
-    this(EntityManager manager = null) {
-        super(manager is null ? createEntityManager() : manager);
+    this() {
+        super(defaultEntityManager());
     }
 
-    Page!LangPackage findByLangPackage(int page = 0, int perPage = 10)
-    {
-        page = page < 1 ? 0 : page;
+    Page!LangPackage findByLangPackage(int page = 1, int perPage = 10) {
+        page = page < 1 ? 1 : page;
         perPage = perPage < 1 ? 10 : perPage;
-
-        auto temp = _manager.createQuery!(LangPackage)("SELECT l FROM LangPackage l", new Pageable(page, perPage))
-        .getPageResult();
+        string sql = "SELECT l FROM LangPackage l";
+        auto temp = _manager.createQuery!(LangPackage)(sql, new Pageable(page - 1, perPage))
+            .getPageResult();
         return temp;
     }
 

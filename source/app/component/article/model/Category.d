@@ -2,7 +2,6 @@ module app.component.article.model.Category;
 
 import hunt.entity;
 
-
 @Table("article_category")
 class Category : Model
 {
@@ -16,12 +15,16 @@ class Category : Model
   
     int sort;
 
+    // 1: enabled, 0: disabled
+    short status;
+
     // timestamp
     int created;
 
     // timestamp
     int updated;
 
-    // 1: enabled, 0: disabled
-    short status;
+    // timestamp
+    int deleted;
+
 }

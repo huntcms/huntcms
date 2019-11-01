@@ -2,13 +2,16 @@ module app.lib.functions;
 
 import hunt.framework;
 import hunt.util.DateTime;
+import std.array;
 import std.conv;
 import std.format;
+import std.string;
 import app.component.system.repository.UserRepository;
 import app.component.system.model.User;
 import hunt.framework.application.ApplicationConfig;
 import hunt.entity.DefaultEntityManagerFactory;
 import hunt.logging;
+import hunt.framework.Simplify;
 
 string client_ip() {
     import hunt.framework.http.Request;
@@ -28,15 +31,16 @@ string findLocal() {
     string localLanguage = configManager().config("hunt").hunt.application.defaultLanguage.value;
     auto userInfo = Application.getInstance().accessManager.user;
     if(userInfo !is null){
-        _myManager = defaultEntityManagerFactory().createEntityManager();
-        auto user = new UserRepository(_myManager).find(userInfo.id);
+        // _myManager = defaultEntityManagerFactory().createEntityManager();
+        auto user = new UserRepository().find(userInfo.id);
         if(user !is null){
             localLanguage = user.language;
         }
-        _myManager.close();
+        closeDefaultEntityManager();
     }
     return localLanguage;
 }
+
 string buildQueryString(string[string] params, string pageKey = "page")
 {
     string resStr;
@@ -52,4 +56,21 @@ string buildQueryString(string[string] params, string pageKey = "page")
         }
     }
     return resStr;
+}
+
+/**
+ * 获取表单INT数据
+ */
+static int initNum(string paramName, int initValue = 1, string reqType = "POST"){
+    int resNum;
+    if(paramName && reqType){
+        string param;
+        if(reqType == "POST"){
+            param = request.post(paramName, initValue.to!string).replace(" ", "");
+        }else{
+            param = request.get(paramName, initValue.to!string).replace(" ", "");
+        }
+        resNum = isNumeric(param) ? to!int(param) : initValue;
+    }
+    return resNum;
 }

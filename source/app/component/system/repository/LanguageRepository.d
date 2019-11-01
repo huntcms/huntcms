@@ -9,8 +9,8 @@ import app.component.system.model.Language;
 
 class LanguageRepository : EntityRepository!(Language, int) {
 
-    this(EntityManager manager = null) {
-        super(manager is null ? createEntityManager() : manager);
+    this() {
+        super(defaultEntityManager());
     }
 
     Language findOneBySign(string sign){

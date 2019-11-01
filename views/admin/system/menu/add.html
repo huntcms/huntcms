@@ -4,30 +4,30 @@
     <div class="container-fluid">
 
         <!-- Page-Title -->
-        <div class="row">
-            <div class="col-sm-12">
-                <div class="page-title-box">
-                    <div class="btn-group pull-right">
-                        <h4 class="page-title">Add Menu</h4>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="page-title-box">
+                        <div class="btn-group pull-right">
+                            <h4 class="page-title">{{ breadTitle }}</h4>
+                        </div>
+                        <ol class="breadcrumb hide-phone p-0 m-0">
+                            {% for item in breadCrumbs %}
+                                {% if item.link and not loop.last %}
+                                    <li class="breadcrumb-item"><a href="{{ item.link }}">{{ item.title }}</a></li>
+                                {% else %}
+                                    <li class="breadcrumb-item active">{{ item.title }}</li>
+                                {% endif %}
+                            {% endfor %}    
+                        </ol>
                     </div>
-                    <ol class="breadcrumb hide-phone p-0 m-0">
-                        <li class="breadcrumb-item">
-                            <a href="#">HuntCMS</a>
-                        </li>
-                        <li class="breadcrumb-item">
-                            <a href="#">Menu</a>
-                        </li>
-                        <li class="breadcrumb-item active">Add Menu</li>
-                    </ol>
                 </div>
             </div>
-        </div>
         <!-- end page title end breadcrumb -->
 
         <div class="row">
             <div class="col-12">
                 <div class="card-box">
-                    <h4 class="m-t-0 header-title">Add Menu</h4>
+                    <h4 class="m-t-0 header-title">{{ breadTitle }}</h4>
                     <p class="text-muted m-b-30 font-14">
                         User can add admin Menu.
                     </p>
@@ -37,7 +37,7 @@
                             <div class="p-20">
                                 <form class="form-horizontal" role="form" action="" method="post">
                                     <div class="form-group row">
-                                        <label class="col-2 col-form-label">First level menu</label>
+                                        <label class="col-2 col-form-label">{{ trans("MENU_SYSTEM_FIRST_LEVEL") }}</label>
                                         <div class="col-10">
                                             <select class="form-control" name="pid">
                                                 <option value="0"></option>
@@ -48,68 +48,67 @@
                                         </div>
                                     </div>
                                     <div class="form-group row">
-                                        <label class="col-2 col-form-label">Name</label>
+                                        <label class="col-2 col-form-label">{{ trans("MENU_SYSTEM_NAME") }}</label>
                                         <div class="col-10">
                                             <input type="text" class="form-control" required id="name" name="name" placeholder="Some text value...">
                                         </div>
                                     </div>
                                     <div class="form-group row">
-                                        <label class="col-2 col-form-label">Mca</label>
+                                        <label class="col-2 col-form-label">{{ trans("MENU_SYSTEM_MCA") }}</label>
                                         <div class="col-10">
                                             <input type="text" class="form-control" required id="mca" name="mca" placeholder="module.controller.action">
                                         </div>
                                     </div>
                                     <div class="form-group row">
-                                        <label class="col-2 col-form-label">LinkUrl</label>
+                                        <label class="col-2 col-form-label">{{ trans("MENU_SYSTEM_LINKURL") }}</label>
                                         <div class="col-10">
                                             <input type="text" class="form-control" required id="linkUrl" name="linkUrl" placeholder="Some text value...">
                                         </div>
                                     </div>
                                     <div class="form-group row">
-                                        <label class="col-2 col-form-label">IconClass</label>
+                                        <label class="col-2 col-form-label">{{ trans("MENU_SYSTEM_ICON") }}</label>
                                         <div class="col-10">
                                             <input type="text" class="form-control" id="iconClass" name="iconClass" placeholder="Some text value...">
                                         </div>
                                     </div>
                                     <div class="form-group row">
-                                        <label class="col-2 col-form-label">Sort</label>
+                                        <label class="col-2 col-form-label">{{ trans("MENU_SYSTEM_SORT") }}</label>
                                         <div class="col-10">
                                             <input type="number" class="form-control" id="sort" name="sort" placeholder="Some text value..." value="0">
                                         </div>
                                     </div>
                                     <div class="form-group row">
-                                        <label class="col-2 col-form-label">isAction</label>
+                                        <label class="col-2 col-form-label">{{ trans("MENU_SYSTEM_ISACTION") }}</label>
                                         <div class="col-10">
                                             <div class="custom-control custom-radio">
                                                 <input type="radio" id="actionRadio1" name="actionRadio" class="custom-control-input" value="1" checked>
-                                                <label class="custom-control-label" for="actionRadio1">YES</label>
+                                                <label class="custom-control-label" for="actionRadio1">{{ trans("COMMON_SYSTEM_YES") }}</label>
                                             </div>
                                             <div class="custom-control custom-radio">
                                                 <input type="radio" id="actionRadio2" name="actionRadio" class="custom-control-input" value="0">
-                                                <label class="custom-control-label" for="actionRadio2">NO</label>
+                                                <label class="custom-control-label" for="actionRadio2">{{ trans("COMMON_SYSTEM_NO") }}</label>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="form-group row">
-                                        <label class="col-2 col-form-label">Status</label>
+                                        <label class="col-2 col-form-label">{{ trans("MENU_SYSTEM_STATUS") }}</label>
                                         <div class="col-10">
                                             <div class="custom-control custom-radio">
                                                 <input type="radio" id="statusRadio1" name="statusRadio" class="custom-control-input" value="1" checked>
-                                                <label class="custom-control-label" for="statusRadio1">Enabled</label>
+                                                <label class="custom-control-label" for="statusRadio1">{{ trans("COMMON_SYSTEM_ENABLED") }}</label>
                                             </div>
                                             <div class="custom-control custom-radio">
                                                 <input type="radio" id="statusRadio2" name="statusRadio" class="custom-control-input" value="0">
-                                                <label class="custom-control-label" for="statusRadio2">Disabled</label>
+                                                <label class="custom-control-label" for="statusRadio2">{{ trans("COMMON_SYSTEM_DISABLED") }}</label>
                                             </div>
                                         </div>
                                     </div>
 
                                     <div class="form-group mb-0 justify-content-end row">
                                         <div class="col-md-10">
-                                            <button type="submit"  class="btn btn-info waves-effect waves-light">Create</button>
+                                            <button type="submit" class="btn btn-info waves-effect waves-light">Create</button>
                                         </div>
                                     </div>
-
                                 </form>
                             </div>
                         </div>

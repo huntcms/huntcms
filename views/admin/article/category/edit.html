@@ -54,7 +54,7 @@
                                                 {% else %}
                                                 <input type="radio" id="customRadio1" name="statusRadio" value="1" class="custom-control-input">
                                                 {% endif %}
-                                                <label class="custom-control-label" for="customRadio1">Enabled</label>
+                                                <label class="custom-control-label" for="customRadio1">{{ trans("COMMON_SYSTEM_ENABLED") }}</label>
                                             </div>
                                             <div class="custom-control custom-radio">
                                                 {% if category.status == 0 %}
@@ -62,7 +62,7 @@
                                                 {% else %}
                                                 <input type="radio" id="customRadio2" name="statusRadio" value="0" class="custom-control-input">
                                                 {% endif %}
-                                                <label class="custom-control-label" for="customRadio2">Disabled</label>
+                                                <label class="custom-control-label" for="customRadio2">{{ trans("COMMON_SYSTEM_DISABLED") }}</label>
                                             </div>
                                         </div>
                                     </div>                               

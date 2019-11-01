@@ -6,11 +6,10 @@ import hunt.entity.EntityManager;
 import hunt.entity.repository;
 import app.component.system.model.LogInfo;
 
-class LogInfoRepository : EntityRepository!(LogInfo, int)
-{
+class LogInfoRepository : EntityRepository!(LogInfo, int) {
 
-    this(EntityManager manager = null) {
-        super(manager is null ? createEntityManager() : manager);
+    this() {
+        super(defaultEntityManager());
     }
-
+    
 }

@@ -4,24 +4,24 @@
     <div class="container-fluid">
 
         <!-- Page-Title -->
-        <div class="row">
-            <div class="col-sm-12">
-                <div class="page-title-box">
-                    <div class="btn-group pull-right">
-                        <h4 class="page-title">Language Package List</h4>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="page-title-box">
+                        <div class="btn-group pull-right">
+                            <h4 class="page-title">{{ breadTitle }}</h4>
+                        </div>
+                        <ol class="breadcrumb hide-phone p-0 m-0">
+                            {% for item in breadCrumbs %}
+                                {% if item.link and not loop.last %}
+                                    <li class="breadcrumb-item"><a href="{{ item.link }}">{{ item.title }}</a></li>
+                                {% else %}
+                                    <li class="breadcrumb-item active">{{ item.title }}</li>
+                                {% endif %}
+                            {% endfor %}    
+                        </ol>
                     </div>
-                    <ol class="breadcrumb hide-phone p-0 m-0">
-                        <li class="breadcrumb-item">
-                            <a href="#">HuntCMS</a>
-                        </li>
-                        <li class="breadcrumb-item">
-                            <a href="#">Language Package</a>
-                        </li>
-                        <li class="breadcrumb-item active">Language Package List</li>
-                    </ol>
                 </div>
             </div>
-        </div>
         <!-- end page title end breadcrumb -->
 
 
@@ -86,7 +86,7 @@
             </div>
         </div>
         <div class="clearfix">
-            {% include "../../../default/paginate.html" %}
+            {% include "../../paginate.html" %}
         </div>
         <!-- end row -->
 

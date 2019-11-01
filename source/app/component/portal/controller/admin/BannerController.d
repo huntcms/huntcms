@@ -1,92 +1,164 @@
 module app.component.portal.controller.admin.BannerController;
 
-import hunt.framework;
-import app.component.portal.repository.BannerRepository;
 import app.component.portal.model.Banner;
+import app.component.portal.repository.BannerRepository;
+import app.component.portal.validation.BannerForm;
+import app.component.system.controller.admin.LogMiddleware;
+import app.component.system.helper.Utils;
 import app.lib.controller.AdminBaseController;
 import app.lib.functions;
+
+import hunt.framework;
+import hunt.http.codec.http.model.HttpMethod;
+import hunt.util.Configuration;
+
 import std.digest.sha;
 import std.file;
-import hunt.util.Configuration;
-import hunt.http.codec.http.model.HttpMethod;
-import app.component.system.helper.Utils;
+import std.json;
 
-class BannerController : AdminBaseController
-{
+class BannerController : AdminBaseController {
+
     mixin MakeController;
-    
-    this(){
-        super();  
+
+    this() {
+        super();      
+        this.addMiddleware(new LogMiddleware());
     }
 
-
-    @Action Response list(int perPage, int page = 1)
-    {
+    @Action 
+    Response list(int perPage = 10, int page = 1) {
+        page = page < 1 ? 1 : page;
         perPage = perPage < 1 ? 5 : perPage;
-        auto alldata = new BannerRepository(_cManager).findByBanner(page-1, perPage);
+        auto alldata = new BannerRepository().findByBanner(page, perPage);
 
         view.assign("banners", alldata.getContent());
         view.assign("pageModel",  alldata.getModel());
         view.assign("pageQuery", buildQueryString(request.input()));
-        return new Response(request)
-        .setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString())
-        .setContent(view.render("portal/banner/list"));
+
+        makePageBreadCrumbs("bannerList");
+        return ResponseView("portal/banner/list");
     }
     
-    @Action Response add()
-    {
-        if (request.methodAsString() == HttpMethod.POST.asString())
-        {
-            int now = cast(int) time();
-            auto br = new BannerRepository(_cManager);
-            Banner banner = new Banner;
-            banner.title = request.post("title");
-            banner.subtitle = request.post("subtitle");
-            // banner.sort = request.post("sort").to!int;
-            banner.sort = initInt("sort", 0, "POST");
-            banner.url = request.post("url");
-            banner.keyword = request.post("keyword");
-            // banner.picurl = request.post("imageFile");
-            banner.picurl = request.post("picurl");
-            auto id = request.post("id");
-            if(id.length != 0)
-            {
-                banner.id = id.to!int;
-                auto exsit_data = br.findById(id.to!int);
-                if(exsit_data !is null)
-                    banner.created = exsit_data.created;
+    @Action 
+    Response add(BannerForm bannerForm) {
+
+        BannerRepository bannerRepository = new BannerRepository();
+        int errorNum = 0;
+
+        if(request.methodAsString() == HttpMethod.POST.asString()) {
+            auto validRes = bannerForm.valid();
+            if(!validRes.isValid()) {
+                auto errors = validRes.messages();
+                foreach(error; errors) {
+                    errorNum += 1;
+                    assignError(error);
+                }                
+                return new RedirectResponse(request, url("admin:portal.banner.add"));
             }
-            else
-                banner.created = now;
+
+            int now = cast(int) time();
+            Banner banner = new Banner();
+            banner.title = bannerForm.title;
+            banner.subtitle = bannerForm.subtitle;
+            banner.sort = bannerForm.sort;
+            banner.status = bannerForm.statusRadio;
+            banner.url = bannerForm.url;
+            banner.keyword = bannerForm.keyword;
+            banner.picurl = bannerForm.picurl;
+            banner.pid = bannerForm.pid;
+            banner.group = bannerForm.group;
+            banner.created = now;
             banner.updated = now;
 
-            auto saveRes = br.save(banner);
-            // 更新缓存信息
-            _tmpCache.getBanner("index", true);
-            if (saveRes !is null)
-                return new RedirectResponse(request, "/admincp/portal/banners");
+            bannerRepository.save(banner);
+            assignSussess("数据保存成功! ");
+            return new RedirectResponse(request, url("admin:portal.banner.list"));
         }
         
-        auto repository = new BannerRepository(_cManager);
-        view.assign("groups", repository.getBannersByPid(1));
-        string lang = findLocal();
-        return new Response(request)
-            .setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString())
-            .setContent(view.setLocale(lang).render("portal/banner/add"));
+        makePageBreadCrumbs("bannerAdd");
+        view.assign("groups", bannerRepository.getBannersByPid(1));
+        
+        return ResponseView("portal/banner/add");
     }
 
-    @Action string edit(int id)
-    {
-        logDebug(" edit id : ", id, "  get id : ", request.get("id"));
-        auto repository = new BannerRepository(_cManager);
-        view.assign("banner", repository.find(id));
-        string lang = findLocal();
-        return view.setLocale(lang).render("portal/banner/edit");
+    @Action 
+    Response edit(BannerForm bannerForm) {
+        
+        int id, errorNum = 0;
+        Banner banner;
+        BannerRepository bannerRepository = new BannerRepository();
+        
+        if(request.methodAsString() == HttpMethod.POST.asString()) {
+
+            id = initNum("id", 0, "POST");
+            if (id > 0) {
+                banner = bannerRepository.find(id);
+                if (banner is null) {
+                    errorNum += 1;
+                    assignError("数据异常或不存在, 请稍后重试! ");
+                }
+            } else {
+                errorNum += 1;
+                assignError("缺少参数id, 请稍后重试! ");
+            }
+            if(errorNum > 0) {
+                return new RedirectResponse(request, url("admin:portal.banner.list"));
+            }
+
+            auto validRes = bannerForm.valid();
+            if(!validRes.isValid()) {
+                auto errors = validRes.messages();
+                foreach(error; errors) {
+                    errorNum += 1;
+                    assignError(error);
+                }                
+                string[string] params;
+                params["id"] = id.to!string;
+                return new RedirectResponse(request, url("portal.banner.edit", params, "admin"));
+            }
+
+            int now = cast(int) time();
+            banner.title = bannerForm.title;
+            banner.subtitle = bannerForm.subtitle;
+            banner.sort = bannerForm.sort;
+            banner.status = bannerForm.statusRadio;
+            banner.url = bannerForm.url;
+            banner.keyword = bannerForm.keyword;
+            banner.picurl = bannerForm.picurl;
+            banner.pid = bannerForm.pid;
+            banner.group = bannerForm.group;
+            banner.updated = now;
+
+            bannerRepository.save(banner);
+            assignSussess("数据保存成功! ");
+            return new RedirectResponse(request, url("admin:portal.banner.list"));
+
+        }
+
+        id = initNum("id", 0, "GET");
+        if (id > 0) {
+            banner = bannerRepository.find(id);
+            if (banner is null) {
+                errorNum += 1;
+                assignError("数据出错或不存在, 请稍后重试! ");
+            }
+        } else {
+            errorNum += 1;
+            assignError("缺少参数id, 请稍后重试! ");
+        }
+        if (errorNum > 0) {
+            return new RedirectResponse(request, url("admin:portal.banner.list"));
+        }
+
+        view.assign("banner", banner);
+        makePageBreadCrumbs("bannerEdit");
+        return ResponseView("portal/banner/edit");
     }
 
-    @Action Response del(int id){
-        (new BannerRepository(_cManager)).removeById(id);
-        _tmpCache.getBanner("index", true);
-        return new RedirectResponse(request, url("portal.banner.list", null, "admin"));
+    @Action 
+    Response del(int id){
+        (new BannerRepository()).removeById(id);
+        assignSussess("Banner删除成功! ");
+        return new RedirectResponse(request, url("admin:portal.banner.list"));
     }
 }

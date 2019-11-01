@@ -19,6 +19,7 @@
   "versions": [
     "HUNT_DEBUG",
     "HUNT_SHIRO_DEBUG",
-    "HUNT_SQL_DEBUG"
+    "HUNT_SQL_DEBUG",
+    "HUNT_DEBUG_MORE"
   ]
 }

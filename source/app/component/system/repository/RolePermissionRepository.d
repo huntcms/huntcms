@@ -1,17 +1,17 @@
 module app.component.system.repository.RolePermissionRepository;
 
-import hunt.entity;
-import hunt.entity.repository;
-
-import app.component.system.model.RolePermission;
 import app.component.system.model.Permission;
+import app.component.system.model.RolePermission;
 import app.component.system.repository.PermissionRepository;
 
-class RolePermissionRepository : EntityRepository!(RolePermission, int)
-{
+import hunt.entity;
+import hunt.entity.repository;
+import hunt.framework.Simplify;
 
-    this(EntityManager manager = null) {
-        super(manager is null ? createEntityManager() : manager);
+class RolePermissionRepository : EntityRepository!(RolePermission, int) {
+
+    this() {
+        super(defaultEntityManager());
     }
 
     Permission[] getRolePermissions(int roleId) {
@@ -19,14 +19,14 @@ class RolePermissionRepository : EntityRepository!(RolePermission, int)
             .setParameter("roleId", roleId)
             .getResultList();
         Permission[] permissions;
-        auto permissionRepository = new PermissionRepository(_manager);
+        auto permissionRepository = new PermissionRepository();
         foreach (rolePermission; rolePermissions) {
             permissions ~= permissionRepository.findById(rolePermission.permission_id);
         }
         return permissions;
     }
 
-    int[] getRolePermissionIds(int roleId){
+    int[] getRolePermissionIds(int roleId) {
         RolePermission[] rolePermissions = _manager.createQuery!(RolePermission)(" SELECT rp FROM RolePermission rp WHERE rp.role_id = :roleId ")
             .setParameter("roleId", roleId)
             .getResultList();
@@ -37,8 +37,7 @@ class RolePermissionRepository : EntityRepository!(RolePermission, int)
         return ids;
     }
 
-    bool saves(int roleId, int[] permissionIds)
-    {
+    bool saves(int roleId, int[] permissionIds) {
         RolePermission[] rolePermission;
         foreach(permissionId; permissionIds){
             RolePermission r = new RolePermission();

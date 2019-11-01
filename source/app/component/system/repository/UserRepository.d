@@ -1,16 +1,16 @@
 module app.component.system.repository.UserRepository;
 
+import app.component.system.model.User;
 import hunt.entity;
 import hunt.entity.repository;
 import hunt.logging;
-import app.component.system.model.User;
 import std.json;
+import hunt.framework.Simplify;
 
-class UserRepository : EntityRepository!(User, int)
-{
+class UserRepository : EntityRepository!(User, int) {
 
-    this(EntityManager manager = null) {
-        super(manager is null ? createEntityManager() : manager);
+    this() {
+        super(defaultEntityManager());
     }
 
     User findByEmail(string email) { 
@@ -20,14 +20,10 @@ class UserRepository : EntityRepository!(User, int)
             .getSingleResult();
     }
 
-    Page!User findByUser(int page = 0, int perPage = 10)
-    {
-        page = page < 1 ? 0 : page;
+    Page!User findByUser(int page = 1, int perPage = 10) {
+        page = page < 1 ? 1 : page;
         perPage = perPage < 1 ? 10 : perPage;
-
-        auto temp = _manager.createQuery!(User)("SELECT u FROM User u", new Pageable(page, perPage))
-        .getPageResult();
-        logError(temp);
-        return temp;
+        return _manager.createQuery!(User)("SELECT u FROM User u", new Pageable(page - 1, perPage))
+            .getPageResult();
     }
 }

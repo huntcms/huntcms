@@ -1,51 +1,31 @@
 module app.lib.controller.AdminBaseController;
 
-import hunt.framework;
-import app.lib.cache.TmpCache;
-import app.lib.middlewares.AuthenticationMiddleware;
-
-import app.component.system.repository.MenuRepository;
-import app.component.system.repository.UserRepository;
 import app.component.system.model.Menu;
 import app.component.system.model.User;
-
-public import std.conv;
-public import std.string;
-import std.json;
-import std.algorithm;
-
-import hunt.http.codec.http.model.HttpMethod;
-import hunt.framework.security.acl.Permission;
-import hunt.entity.DefaultEntityManagerFactory;
+import app.component.system.repository.MenuRepository;
+import app.component.system.repository.UserRepository;
 import app.lib.functions;
-
+import app.component.system.authentication.AuthenticationMiddleware;
+import hunt.http.codec.http.model.HttpMethod;
+import hunt.entity.DefaultEntityManagerFactory;
+import hunt.framework;
+import hunt.framework.security.acl.Permission;
+import hunt.framework.Simplify;
 import hunt.shiro;
 
-// class AdminBaseController : CmsController {
-// 	this() 
-// 	{
-// 		super();
-//         addMiddleware(new AuthenticationMiddleware());
-//     }
-// }
+public import std.algorithm;
+public import std.conv;
+public import std.json;
+public import std.string;
 
-class  AdminBaseController : Controller
-{
-    protected string[] errorMessages;
-	
+class AdminBaseController : Controller {
+
 	protected User thisUser;
 	private string[] _alertSuccessMessages;
 	private string[] _alertErrorMessages;
 
-	public TmpCache _tmpCache;
-    public EntityManager _cManager;
-
-    this() 
-	{
-        _tmpCache = new TmpCache();
-        _cManager = defaultEntityManagerFactory().createEntityManager();
-
-        addMiddleware(new AuthenticationMiddleware(_cManager));
+    this() {
+        addMiddleware(new AuthenticationMiddleware());
     }
 
 	override void dispose() {
@@ -60,9 +40,9 @@ class  AdminBaseController : Controller
         Subject subject = cast(Subject)request.getAttribute(Subject.DEFAULT_NAME);
 
 		if(subject !is null && subject.isAuthenticated()) {
-			auto repository = new MenuRepository(_cManager);
+			auto repository = new MenuRepository();
 			view.assign("isLogin", "YES");
-			User currentUser = cast(User)subject.getPrincipal();
+			User currentUser = cast(User) subject.getPrincipal();
 			assert(currentUser !is null);
 			view.assign("nowUser", currentUser);
 
@@ -81,17 +61,31 @@ class  AdminBaseController : Controller
 		return true;
 	}
 
-	override bool after() {
-		logWarning("---running after----");
-		///请求结束自动销毁本次数据库连接
-		if(_cManager){
-			_cManager.close();
-		}
-        logWarning(request.elapsed());
-		return true;
+	void makePageBreadCrumbs (string breadSign) {
+		auto breadCrumbs = breadcrumbsManager.generate(breadSign);
+        string breadTitle;
+        int breadNum = cast(int) breadCrumbs.length;
+        if (breadNum > 0) {
+            breadTitle = breadCrumbs[breadNum - 1].title;
+        }
+        view.assign("breadCrumbs", breadCrumbs);
+        view.assign("breadTitle", breadTitle);
 	}
 	
-	bool assignSussess(string msg) {
+	Response ResponseView (string viewPath, string lang = "") {
+		lang = lang == "" ? findLocal() : lang;
+		return new Response(request)
+            .setHeader(HttpHeader.CONTENT_TYPE, MimeType.TEXT_HTML_UTF_8.asString())
+            .setContent(view.setLocale(lang).render(viewPath));
+	}
+
+	override bool after() {
+        ///请求结束自动销毁本次数据库连接
+        closeDefaultEntityManager();
+        return true;
+	}
+
+	bool assignSussess (string msg) {
 		if(!canFind(_alertSuccessMessages, msg)) {
 			_alertSuccessMessages ~= msg;
 			request.session(true).set("successMessages", toJson(_alertSuccessMessages).to!string);
@@ -99,7 +93,7 @@ class  AdminBaseController : Controller
 		return true;
 	}
 
-	bool assignError(string msg) {
+	bool assignError (string msg) {
 		if(!canFind(_alertErrorMessages, msg)) {
 			_alertErrorMessages ~= msg;
 			request.session(true).set("errorMessages", toJson(_alertErrorMessages).to!string);

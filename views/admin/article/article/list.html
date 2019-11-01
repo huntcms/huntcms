@@ -9,12 +9,16 @@
             <div class="col-sm-12">
                 <div class="page-title-box">
                     <div class="btn-group pull-right">
-                        <h4 class="page-title">Article List</h4>
+                        <h4 class="page-title">{{ breadTitle }}</h4>
                     </div>
                     <ol class="breadcrumb hide-phone p-0 m-0">
-                        <li class="breadcrumb-item"><a href="#">HuntCMS</a></li>
-                        <li class="breadcrumb-item"><a href="#">Articles</a></li>
-                        <li class="breadcrumb-item active">Article List</li>
+                        {% for item in breadCrumbs %}
+                            {% if item.link and not loop.last %}
+                                <li class="breadcrumb-item"><a href="{{ item.link }}">{{ item.title }}</a></li>
+                            {% else %}
+                                <li class="breadcrumb-item active">{{ item.title }}</li>
+                            {% endif %}
+                        {% endfor %}    
                     </ol>
                 </div>
             </div>
@@ -32,6 +36,26 @@
                             </div>
                         </div>
                     </div>
+                        <div class="form-inline m-b-20">
+                            <div class="row">
+                                <div class="col-md-6 text-xs-center">
+                                    <div class="form-group">
+                                        <label class="control-label m-r-5">Status</label>
+                                        <select id="demo-foo-filter-status" class="form-control input-sm">
+                                            <option value="">Show all</option>
+                                            <option value="active">Active</option>
+                                            <option value="disabled">{{ trans("COMMON_SYSTEM_DISABLED") }}</option>
+                                            <option value="suspended">Suspended</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 text-center text-right">
+                                    <div class="form-group float-right">
+                                        <input id="demo-foo-search" type="text" placeholder="Search" class="form-control" autocomplete="on">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     <table class="table table-striped add-edit-table" id="datatable-editable">
                         <thead>
                         <tr>
@@ -47,26 +71,6 @@
                             <th data-hide="">Operate</th>
                         </tr>
                         </thead>
-                        <div class="form-inline m-b-20">
-                            <div class="row">
-                                <div class="col-md-6 text-xs-center">
-                                    <div class="form-group">
-                                        <label class="control-label m-r-5">Status</label>
-                                        <select id="demo-foo-filter-status" class="form-control input-sm">
-                                            <option value="">Show all</option>
-                                            <option value="active">Active</option>
-                                            <option value="disabled">Disabled</option>
-                                            <option value="suspended">Suspended</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-6 text-center text-right">
-                                    <div class="form-group float-right">
-                                        <input id="demo-foo-search" type="text" placeholder="Search" class="form-control" autocomplete="on">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                         <tbody>                            
                             {% for article in articles %}
                                 <tr>
@@ -76,16 +80,24 @@
                                     <td>
                                         {% for tagarticle in tagarticles %}
                                             {% if article.id == tagarticle.article_id %}
-                                                {% for tag in tags %}
-                                                    {% if tag.id == tagarticle.tag_id %}
-                                                        {{tag.name}}
-                                                    {% endif %}
-                                                {% endfor %}
+                                                {{ article_id.tag.name }}
                                             {% endif %}
                                         {% endfor %}
                                     </td>
-                                    <td><img style="height:40px" src="{{article.picture}}"></td>
-                                    <td><video src="movie.ogg" style="height:40px"></video></td>
+                                    <td>
+                                        {% if article.picture != "" %}
+                                        <img style="height:40px" src="{{ article.picture }}">
+                                        {% else %}
+                                        未添加图片
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if article.video != "" %}
+                                        <video src="{{ article.video }}" style="height:40px"></video>
+                                        {% else %}
+                                        未添加视频
+                                        {% endif %}
+                                    </td>
                                     <td>{{ date('Y-m-d H:i:s',article.created) }}</td>
                                     <td>{{ date('Y-m-d H:i:s',article.updated) }}</td>
                                     <td><span class="badge label-table badge-success">
@@ -98,11 +110,11 @@
                                         {% endif %}
                                     </span></td>
                                     <td class="actions">
-                                        <a href="{{ url('article.article.edit', '')}}?id={{article.id}} " class="on-default edit-row" data-toggle="tooltip" data-placement="top"
+                                        <a href="{{ url('article.article.edit', '')}}?id={{ article.id }} " class="on-default edit-row" data-toggle="tooltip" data-placement="top"
                                             title="" data-original-title="Click Edit">
                                             <i class="fa fa-pencil"></i>
                                         </a>
-                                        <a href="{{ url('article.article.del', '')}}?id={{article.id}} "  onclick="javascript:if(!confirm('确定删除？'))return false;" class="on-default remove-row" data-toggle="tooltip" data-placement="top"
+                                        <a href="{{ url('article.article.del', '')}}?id={{ article.id }} "  onclick="javascript:if(!confirm('确定删除？'))return false;" class="on-default remove-row" data-toggle="tooltip" data-placement="top"
                                             title="" data-original-title="Click Delete">
                                             <i class="fa fa-trash-o"></i>
                                         </a>                                       
@@ -124,7 +136,7 @@
             </div>
         </div>
         <div class="clearfix">
-            {% include "../../../default/paginate.html" %}
+            {% include "../../paginate.html" %}
         </div>
         <!-- end row -->
 

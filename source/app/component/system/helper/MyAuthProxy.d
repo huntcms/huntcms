@@ -18,6 +18,7 @@ import app.component.system.repository.UserRoleRepository;
 import hunt.logging;
 import std.json;
 import hunt.entity.DefaultEntityManagerFactory;
+import hunt.framework.Simplify;
 
 alias AclUser = hunt.framework.security.acl.User.User;
 alias AclPermission = hunt.framework.security.acl.Permission.Permission;
@@ -26,35 +27,28 @@ alias AclRole = hunt.framework.security.acl.Role.Role;
 class MyAuthProxy : AuthenticateProxy {
 
     AclRole[] getAllRoles() {
-        EntityManager _myAuthManager;
-        _myAuthManager = defaultEntityManagerFactory().createEntityManager();
         AclRole[] roles;
-        try
-        {
-            auto roleRep = new RoleRepository(_myAuthManager);
+        try {
+            auto roleRep = new RoleRepository();
             auto allData = roleRep.findAll();
-            auto rpRep = new RolePermissionRepository(_myAuthManager);
+            auto rpRep = new RolePermissionRepository();
             foreach(oneData; allData){
                 auto per = new AclRole(oneData.id, oneData.name);
                 int[] permissionIds = rpRep.getRolePermissionIds(oneData.id);
                 per.addPermissionIds(permissionIds);
                 roles ~= per;
             }
-        }catch(Exception e)
-        {
+        } catch(Exception e) {
             logError(e);
         }
-        _myAuthManager.close();
+        closeDefaultEntityManager();
         return roles;
     }
 
     AclPermission[] getAllPermissions() {
-        EntityManager _myAuthManager;
-        _myAuthManager = defaultEntityManagerFactory().createEntityManager();
         AclPermission[] permissions;
-        try
-        {
-            auto repository = new PermissionRepository(_myAuthManager);
+        try {
+            auto repository = new PermissionRepository();
             auto allData = repository.findAll();
             foreach(oneData; allData){
                 auto per = new AclPermission();
@@ -63,22 +57,18 @@ class MyAuthProxy : AuthenticateProxy {
                 per.name = oneData.title;
                 permissions ~= per;
             }
-        }catch(Exception e)
-        {
+        } catch(Exception e) {
             logError(e);
         }
-        _myAuthManager.close();
+        closeDefaultEntityManager();
         return permissions;
     }
 
     AclUser[] getAllUsers(int[] userIds){
-        EntityManager _myAuthManager;
-        _myAuthManager = defaultEntityManagerFactory().createEntityManager();
         AclUser[] users;
-        try
-        {
-            auto userRepository = new UserRepository(_myAuthManager);
-            auto urRep = new UserRoleRepository(_myAuthManager);
+        try {
+            auto userRepository = new UserRepository();
+            auto urRep = new UserRoleRepository();
             foreach(userId; userIds){
                 auto findUser = userRepository.find(userId);
                 if(findUser){
@@ -89,11 +79,10 @@ class MyAuthProxy : AuthenticateProxy {
                     users ~= per;
                 }
             }
-        }catch(Exception e)
-        {
+        } catch(Exception e) {
             logError(e);
         }
-        _myAuthManager.close();
+        closeDefaultEntityManager();
         return users;
     }
 

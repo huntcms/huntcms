@@ -1,32 +1,32 @@
 module app.component.article.repository.ArticleRepository;
 
-import hunt.entity;
 import app.component.article.model.Article;
-import app.component.article.model.TagArticle;
 import app.component.article.model.Category;
-import hunt.logging;
+import app.component.article.model.TagArticle;
+
 import hunt.framework;
+import hunt.logging;
+import hunt.entity.EntityManager;
+import hunt.entity.repository;
+import hunt.framework.Simplify;
+import hunt.entity;
 
 import std.conv;
 
-class ArticleRepository : EntityRepository!(Article, int)
-{
+class ArticleRepository : EntityRepository!(Article, int) {
 
-    this(EntityManager manager = null) {
-        super(manager is null ? createEntityManager() : manager);
+    this() {
+        super(defaultEntityManager());
     }
 
-
-    Page!Article findByArticle(int categoriesId, int page = 0, int perPage = 10)
-    {
-        page = page < 1 ? 0 : page;
+    Page!Article findByArticle(int categoryId, int page = 1, int perPage = 10) {
+        page = page < 1 ? 1 : page;
         perPage = perPage < 1 ? 10 : perPage;
-
-        string conditions = categoriesId > 0 ? "WHERE a.categories_id = " ~ categoriesId.to!string : "";
-        auto temp = _manager.createQuery!(Article)("SELECT a,c FROM Article a LEFT JOIN Category c ON c.id = a.categories_id " ~ conditions, new Pageable(page, perPage))
-        .getPageResult();
-
-        return temp;
+        string conditions = categoryId > 0 ? "AND a.categories_id = " ~ categoryId.to!string ~ " " : "";
+        string sql = "SELECT a,c FROM Article a LEFT JOIN Category c ON c.id = a.categories_id WHERE a.deleted = 0 " ~ conditions 
+            ~ "ORDER BY a.updated DESC, a.id DESC";
+        return _manager.createQuery!(Article)(sql, new Pageable(page - 1, perPage))
+            .getPageResult();
     }
 
 }

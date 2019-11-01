@@ -5,12 +5,12 @@ import hunt.entity;
 import hunt.entity.EntityManager;
 import hunt.entity.repository;
 import app.component.system.model.FileInfo;
+import hunt.framework.Simplify;
 
-class FileInfoRepository : EntityRepository!(FileInfo, int)
-{
+class FileInfoRepository : EntityRepository!(FileInfo, int) {
 
-    this(EntityManager manager = null) {
-        super(manager is null ? createEntityManager() : manager);
+    this() {
+        super(defaultEntityManager());
     }
 
 }
